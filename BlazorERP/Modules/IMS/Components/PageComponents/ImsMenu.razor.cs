@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace WebAppTemplate.Modules.IMS.Components.PageComponents;
+namespace BlazorERP.Modules.IMS.Components.PageComponents;
 
 public class ImsMenuBase : ComponentBase
 {

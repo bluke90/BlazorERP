@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppTemplate", "WebAppTemplate\WebAppTemplate.csproj", "{1AE93C1E-A7AD-4C2E-B1CF-1453D78D6828}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorERP", "BlazorERP\BlazorERP.csproj", "{1AE93C1E-A7AD-4C2E-B1CF-1453D78D6828}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

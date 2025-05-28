@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WebAppTemplate.Data.Context;
-using WebAppTemplate.Data.Entities;
+﻿using BlazorERP.Data.Context;
+using BlazorERP.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace WebAppTemplate.Modules.Services;
+namespace BlazorERP.Modules.Services;
 
 public class ImsService
 {

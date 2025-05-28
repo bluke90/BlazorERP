@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using WebAppTemplate.Data.Entities;
-using WebAppTemplate.Modules.Services;
+using BlazorERP.Data.Entities;
+using BlazorERP.Modules.Services;
 
 public class ProductsBase : ComponentBase
 {

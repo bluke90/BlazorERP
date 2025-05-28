@@ -1,10 +1,10 @@
+using BlazorERP.Data.Context;
+using BlazorERP.Modules.Services;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
-using WebAppTemplate.Components;
-using WebAppTemplate.Data.Context;
-using WebAppTemplate.Modules.Services;
+using BlazorERP.Components;
 
-namespace WebAppTemplate;
+namespace BlazorERP;
 
 public class Program
 {

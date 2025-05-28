@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BlazorERP.Modules.Services;
+using Microsoft.EntityFrameworkCore;
 using MudBlazor;
-using WebAppTemplate.Modules.Services;
 
-namespace WebAppTemplate.Modules.Utilities;
+namespace BlazorERP.Modules.Utilities;
 
 public static class ImsReportingUtil
 {
