@@ -1,0 +1,118 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+<MudLayout>
+    <MudAppBar Elevation="5">
+        <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%;">
+            <MudImage Src="Images/protech_full_transp.png" Alt="Company Logo"
+                  ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Bottom" Height="50"/>
+            <MudText Typo="Typo.h5" Class="ml-3 mt-2" Align="Align.End" Color="Color.Secondary">MyERP</MudText>
+            <div>
+                <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle"/>
+                <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End"/>
+            </div>
+        </div>
+    </MudAppBar>
+    <MudDrawer id="nav-drawer" @bind-Open="_mainDrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="4" Variant="DrawerVariant.Mini">
+        <NavMenu/>
+        <MudSpacer/>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Ripple="false" ClickPropagation="false" Color="Color.Inherit" OnClick="@((e) => MainDrawerToggle())"/>
+    </MudDrawer>
+    <MudMainContent Class="pt-20 pa-4">
+        <CascadingValue Value="(Action)CloseMainDrawer">
+            @Body
+        </CascadingValue>
+    </MudMainContent>
+</MudLayout>
+
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+    public bool _mainDrawerOpen = true;
+    private bool _isDarkMode = true;
+    private MudTheme? _theme = null;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _theme = new()
+        {
+            PaletteLight = _lightPalette,
+            PaletteDark = _darkPalette,
+            LayoutProperties = new LayoutProperties()
+        };
+    }
+
+    private void CloseMainDrawer()
+    {
+        _mainDrawerOpen = false;
+    }
+    
+    private void MainDrawerToggle()
+    {
+        _mainDrawerOpen = !_mainDrawerOpen;
+    }
+
+    private void DarkModeToggle()
+    {
+        _isDarkMode = !_isDarkMode;
+    }
+    
+   
+    private readonly PaletteLight _lightPalette = new()
+    {
+        Secondary = "#010101",
+        Black = "#110e2d",
+        AppbarText = "#424242",
+        AppbarBackground = "rgba(255,255,255,0.8)",
+        DrawerBackground = "#ffffff",
+        GrayLight = "#e8e8e8",
+        GrayLighter = "#f9f9f9",
+    };
+
+    private readonly PaletteDark _darkPalette = new()
+    {
+        Primary = "#1944b4",
+        Secondary = "#DDDDDD",
+        Surface = "#252525EE",
+        Background = "#252525",
+        BackgroundGray = "#191919",
+        AppbarText = "#92929f",
+        AppbarBackground = "#050508F8",
+        DrawerIcon = "#92929f",
+        DrawerText = "#d6d6d6",
+        DrawerBackground = "#112a5c",
+        ActionDefault = "#74718e",
+        ActionDisabled = "#9999994d",
+        ActionDisabledBackground = "#605f6d4d",
+        TextPrimary = "#d1d0dd",
+        TextSecondary = "#92929f",
+        TextDisabled = "#ffffff33",
+        GrayLight = "#2a2833",
+        GrayLighter = "#1e1e2d",
+        Info = "#4a86ff",
+        Success = "#3dcb6c",
+        Warning = "#ffb545",
+        Error = "#ff3f5f",
+        LinesDefault = "#33323e",
+        TableLines = "#151515",
+        Divider = "#292838",
+        OverlayLight = "#1e1e2d80",
+    };
+
+    public string DarkLightModeButtonIcon => _isDarkMode switch
+    {
+        true => Icons.Material.Rounded.AutoMode,
+        false => Icons.Material.Outlined.DarkMode,
+    };
+
+}

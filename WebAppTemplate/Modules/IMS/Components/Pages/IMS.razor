@@ -1,0 +1,184 @@
+﻿@page "/IMS"
+@using MudBlazor
+@using WebAppTemplate.Data.Entities
+@using WebAppTemplate.Modules.Services
+@using WebAppTemplate.Modules.Utilities
+@using WebAppTemplate.Modules.IMS.Components.PageComponents
+@inject ImsService ims
+
+
+
+<PageTitle>Inventory Management System</PageTitle>
+
+<ImsMenu/>
+
+<MudGrid>
+    
+    <!-- ==== Card 1 | TL ==== -->
+    <MudItem xs="6">
+        @* <MudCard Elevation="10" Class="expand"> *@
+        @*     <MudCardHeader> *@
+        @*         <MudText Typo="Typo.h6"> *@
+        @*             <MudIcon Icon="@Icons.Material.Filled.PieChart" Size="Size.Medium" Color="Color.Primary"/> *@
+        @*             Supply % By Supplier *@
+        @*         </MudText> *@
+        @*     </MudCardHeader> *@
+        @*      *@
+        @*     <MudCardContent Class="pa-4"> *@
+        @*         <MudChart ChartType="_card1_opt" InputData="@_card1_data" InputLabels="@_card1_lbls" Height="250" Width="250" /> *@
+        @*     </MudCardContent> *@
+        @* *@
+        @* </MudCard> *@
+        
+        @* <PieTypeChartCard Title="Supply% By Supplier" Labels="_card1_lbls" Values="_card1_data"/> *@
+    </MudItem>
+    
+    <!-- ==== Card 2 | TL ==== -->
+    <MudItem xs="6">
+        <MudCard Elevation="10" Class="expand">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.BarChart" Size="Size.Medium"/>
+                    Item Stock By Storage Location
+                </MudText>
+            </MudCardHeader>
+            
+            <MudCardContent Class="pa-2">
+                <MudChart ChartType="_card2_opt" ChartSeries="@_card2_data" XAxisLabels="@_card2_lbls" Height="300" Width="800"/>
+            </MudCardContent>
+
+        </MudCard>
+    </MudItem>
+    
+    <!-- ==== Card 3 | TL ==== -->
+    <MudItem xs="6">
+        <MudCard Elevation="10" Class="expand">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.PieChart" Size="Size.Medium"/>
+                    Purchases
+                </MudText>
+            </MudCardHeader>
+            
+            <MudCardContent Class="pa-4">
+                
+                <MudTable Items="@Purchases" Elevation="2" Breakpoint="Breakpoint.Sm" Dense="true" FixedHeader="true" Height="250">
+                    
+                    <HeaderContent>
+                        <MudTh>PO #</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh>Supplier</MudTh>
+                    </HeaderContent>
+                    
+                    <RowTemplate>
+                        <MudTd DataLabel="PO #">@context.POId</MudTd>
+                        <MudTd DataLabel="Status">@context.Status</MudTd>
+                        <MudTd DataLabel="Supplier">@context.Supplier.Name</MudTd>
+                    </RowTemplate>
+                    
+                </MudTable>
+                
+                
+            </MudCardContent>
+
+        </MudCard>
+    </MudItem>
+    
+    <!-- ==== Card 4 | TL ==== -->
+    <MudItem xs="6">
+        <MudCard Elevation="10" Class="expand">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Storage" Size="Size.Medium"/>
+                    Current Stock
+                </MudText>
+            </MudCardHeader>
+            
+            <MudCardContent Class="pa-4">
+                
+                <MudTable Items="@CurrentStock" Elevation="2" Breakpoint="Breakpoint.Sm" SortLabel="Sort By"
+                          Dense="true" FixedHeader="true" Height="250">
+                    
+                    <HeaderContent>
+                        <MudTh>Item #</MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<Stock, object>(x=>x.Item.Name)">Item Name</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<Stock, object>(x=>x.StorageLocation.Name)">Location</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel  SortBy="new Func<Stock, object>(x=>x.OnHand)">Stock Qty.</MudTableSortLabel></MudTh>
+                    </HeaderContent>
+                    
+                    <RowTemplate>
+                        <MudTd DataLabel="Item #" HideSmall="true">@context.ItemId.ToString()</MudTd>
+                        <MudTd DataLabel="Item Name">@context.Item.Name</MudTd>
+                        <MudTd DataLabel="Location">@context.StorageLocation.Name</MudTd>
+                        <MudTd DataLabel="Stock Qty.">@context.OnHand.ToString()</MudTd>
+                    </RowTemplate>
+                    
+                </MudTable>
+                
+                
+            </MudCardContent>
+
+        </MudCard>
+    </MudItem>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</MudGrid>
+
+
+
+@code {
+    private ChartType _card1_opt = ChartType.Pie;
+    private string[] _card1_lbls;
+    private double[] _card1_data;
+    
+    private ChartType _card2_opt = ChartType.Bar;
+    private string[] _card2_lbls;
+    private List<ChartSeries> _card2_data = new List<ChartSeries>();
+
+
+    private List<Stock> CurrentStock = new List<Stock>();
+    private List<PurchaseOrder> Purchases = new List<PurchaseOrder>(); 
+
+    private void SelectCard1ChartData(int opt = 0)
+    {
+        switch (opt)
+        {
+            case 0:
+                var data = ims.GetStockSupplierPrecent();
+                _card1_lbls = data.Select(x => x.SupplierName).ToArray();
+                _card1_data = data.Select(x => (double)x.Percentage*100).ToArray();
+                break;
+        }
+    }
+
+    private void SelectCard2ChartData(int opt = 0)
+    {
+        switch (opt)
+        {
+            case 0:
+                var data = ims.GetItemStockByLocation();
+                _card2_lbls = data.XAxisLabels;
+                _card2_data = data.itemStock;
+                break;
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        SelectCard1ChartData();
+        SelectCard2ChartData();
+
+        CurrentStock = await ims.GetStock();
+        Purchases = await ims.GetPurchases();
+        
+        await base.OnInitializedAsync();
+    }
+
+}

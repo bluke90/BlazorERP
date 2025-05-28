@@ -1,0 +1,52 @@
+﻿:root {
+    --theme-primary: #1e499e;
+    --theme-primary-overlay: #112a90cc;
+    --DarkHightlight: #00000078;
+}
+
+.mud-navmenu.mud-navmenu-default .mud-nav-link.active:not(.mud-nav-link-disabled) {
+    background-color: var(--DarkHightlight);
+    color: var(--mud-palette-text-primary);
+}
+
+#nav-drawer {
+    background-image: linear-gradient(230deg, var(--theme-primary-overlay), #05051acc), url("../Images/tropical_bg.png");
+    background-position-x: center;
+    background-position-y: top;
+}
+
+
+
+.background-gradient-light {
+    background: linear-gradient(to right, #2b5db3, #15151a);
+}
+
+.background-gradient-dark {
+    background: linear-gradient(to right, #1a1a27, #2b5db3);
+}
+
+.mud-card.mud-paper {
+    background-color: var(--mud-palette-background-gray);
+}
+
+.mud-card-header {
+    background-color: var(--mud-palette-primary);
+    border-bottom: black 1px solid;
+    
+    .mud-typography {
+        .mud-icon-root {
+            vertical-align: sub;
+            margin-right: 0.25rem;
+        }
+    }
+}
+
+
+
+
+
+.mud-table-head .mud-table-row th {
+    background-color: var(--theme-primary-overlay) !important;
+}
+
+

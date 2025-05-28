@@ -1,0 +1,13 @@
+﻿@inherits ImsMenuBase
+
+
+
+    <MudDrawer @bind-Open="@IsOpen" ClipMode="DrawerClipMode.Always" Elevation="4" Variant="DrawerVariant.Mini" Anchor="Anchor.Right">
+        <MudNavMenu>
+            <MudNavLink Href="IMS" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Dashboard">IMS Dashboard</MudNavLink>
+            <MudNavLink Href="IMS/Products" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Bolt">Products</MudNavLink>
+            
+        </MudNavMenu>
+        <MudSpacer/>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Ripple="false" ClickPropagation="false" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())"/>
+    </MudDrawer>

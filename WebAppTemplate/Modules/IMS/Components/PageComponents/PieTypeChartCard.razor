@@ -1,0 +1,26 @@
+﻿@inherits PieTypeChartCardBase
+
+
+<MudCard Elevation="10" Class="expand">
+    <MudCardHeader>
+        <MudGrid Style="align-items: center;">
+            <MudItem xs="1" Class="PieTypeChartHeaderSelectItem">
+                <MudSelect Class="icon-select" ValueChanged="(Type1ChartOption option) => SetChartType(option)" 
+                           Dense="true" FitContent="true" Variant="Variant.Text" Underline="false" OpenIcon="null" CloseIcon="null" AnchorOrigin="Origin.BottomLeft">
+                    <MudSelectItem Value="Type1ChartOption.Pie"><MudIcon Icon="@Icons.Material.Filled.PieChart" Size="Size.Medium" Title="Pie"/></MudSelectItem>
+                    <MudSelectItem Value="Type1ChartOption.Doughnut"><MudIcon Icon="@Icons.Material.Filled.DonutLarge" Size="Size.Medium" Title="Doughnut"/></MudSelectItem>
+                </MudSelect>                
+            </MudItem>
+            <MudItem xs="10" Style="padding-left: 0;">
+                <MudText Typo="Typo.h6">
+                    Supply % By Supplier
+                </MudText>                
+            </MudItem>
+        </MudGrid>
+    </MudCardHeader>
+        
+    <MudCardContent Class="pa-4">
+        <MudChart ChartType="ChartType" InputData="@Values" InputLabels="@Labels" Height="250" Width="250" />
+    </MudCardContent>
+
+</MudCard>
