@@ -3,6 +3,7 @@ using BlazorERP.Modules.Services;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using BlazorERP.Components;
+using BlazorERP.Services;
 
 namespace BlazorERP;
 
@@ -25,7 +26,10 @@ public class Program
         Console.WriteLine($"{LogPre}Initializing Base Services...");
         
         // Add MudBlazor
-        builder.Services.AddMudServices();
+        builder.Services.AddMudServices(options =>
+        {
+            options.PopoverOptions.ThrowOnDuplicateProvider = false;
+        });
         
         // .NET and other critical services
         builder.Services.AddRazorComponents()
@@ -42,6 +46,7 @@ public class Program
         // - Database
         
         // - Scoped
+        builder.Services.AddScoped<SessionService>();
         builder.Services.AddScoped<ImsService>();
         // - Singleton
         

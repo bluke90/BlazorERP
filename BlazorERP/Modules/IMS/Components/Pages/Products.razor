@@ -1,67 +1,180 @@
+@using BlazorERP.Data.Entities
+@using BlazorERP.Modules.IMS.Components.PageComponents
+@using BlazorERP.Utilities
 @inherits ProductsBase
 
 @page "/IMS/Products"
 
 
-<MudGrid>
-    <!-- Card 1 -->
-    <MudItem xs="6">
-        <MudCard>
-            
-            <MudCardHeader>
-                <MudText Typo="Typo.h6"> <MudIcon Icon="@Icons.Material.Filled.Assignment" Size="Size.Medium"/>
-                    Product Details
-                </MudText>
-            </MudCardHeader>
 
-            <MudCardContent>
+<ImsMenu/>
+<MudGrid Spacing="5" Justify="Justify.SpaceBetween">
+    <MudItem xs="12">
+    <div class="flex">
+        <!-- Card 1 -->
 
-                <MudGrid>
-                    <!-- Icon -->
-                    <MudItem xs="5">
-                        <MudImage Src="Images/hexbolt.jpeg" ObjectFit="ObjectFit.Contain"/>
-                    </MudItem>
+        @if (SelectedItem != null)
+        {
+            <div class="col">
+                <MudCard>
 
-                    <MudItem xs="7">
-                        <MudTextField Label="Name" @bind-Value="@SelectedItem.Name" Variant="Variant.Outlined"/>
-                        <MudTextField Label="Category" @bind-Value="@SelectedItem.Category.Name"/>
-                    </MudItem>
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h6"> <MudIcon Icon="@Icons.Material.Filled.Assignment" Size="Size.Medium"/>
+                            Product Details
+                        </MudText>
+                    </MudCardHeader>
+
+                    <MudCardContent>
+
+                        <MudGrid>
+                            <!-- Icon -->
+                            <MudItem xs="5" Class="text-center">
+                                <MudImage Src="images/hexbolt.jpg" ObjectFit="ObjectFit.Contain" Height="200" Width="180"/>
+                            </MudItem>
+
+                            <MudItem xs="7">
+                                <MudTextField Label="Name" @bind-Value="@SelectedItem.Name" Variant="Variant.Outlined"/>
+                                <MudTextField Label="Category" @bind-Value="@SelectedItem.Category.Name" Variant="Variant.Outlined"/>
+                                @if (@SelectedItem.IsActive)
+                                {
+                                    <MudText Class="mt-2" Color="Color.Success" Typo="Typo.body2"><MudIcon Class="align-bottom" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success"/>Active</MudText>
+                                }
+                                else
+                                {
+                                    <MudText Class="mt-2" Color="Color.Error" Typo="Typo.body2"><MudIcon Icon="@Icons.Material.Filled.FlagCircle" Color="Color.Warning"/>Not Active</MudText>
+                                }
+
+                            </MudItem>
+
+                        </MudGrid>
+                        <MudDivider Class="gap"/>
+                        <MudGrid>
+                            <MudItem xs="6">
+                                <MudTextField Label="SKU" @bind-Value="@SelectedItem.SKU" Variant="Variant.Text"/>
+                                <MudTextField Label="Default Cost" @bind-Value="@SelectedItem.DefaultCost" Variant="Variant.Text"/>
+                                <MudTextField Label="Default Price" @bind-Value="@SelectedItem.DefaultPrice" Variant="Variant.Text"/>
+                            </MudItem>
+                            <MudItem xs="6">
+                                <MudTextField Label="Reorder Point" @bind-Value="@SelectedItem.ReorderPoint" Variant="Variant.Text"/>
+                                <MudTextField Label="Total Stock" ReadOnly="true" Variant="Variant.Text"
+                                              Value="@SelectedItem.Stocks.ToList().SumList(x => x.OnHand)"/>
+                            </MudItem>
+                        </MudGrid>
 
 
-                </MudGrid>
+                    </MudCardContent>
+
+                    <MudCardActions>
+                        <MudGrid>
+                            <MudItem xs="6">
+                                <MudButton Variant="Variant.Filled" Color="Color.Success" FullWidth="true">
+                                    <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/>
+                                    Save
+                                </MudButton>
+                            </MudItem>
+                            <MudSpacer/>
+                            <MudItem xs="6">
+                                <MudButton Variant="Variant.Filled" Color="Color.Error" FullWidth="true">
+                                    <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Cancel"/>
+                                    Deactivate
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardActions>
+
+                </MudCard>
+            </div>
+        }
+
+        <!-- Card 2 -->
+        <div class="col">
+            <MudCard>
+
+                <MudCardHeader>
+                    <MudGrid>
+                        <MudItem md="8" xs="12">
+                            <MudText Typo="Typo.h6"> <MudIcon Icon="@Icons.Material.Filled.TableView" Size="Size.Medium"/>
+                                Product List
+                            </MudText>
+                        </MudItem>
+                        <MudSpacer/>
 
 
-            </MudCardContent>
-        </MudCard>
+                        <MudItem md="4" xs="8" Class="text-right">
+                            <MudButton Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small">
+                                <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small"/>
+                                New Item
+                            </MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudTable T="Item" Items="Items" Breakpoint="Breakpoint.Sm" Dense="true" Elevation="2" Hover="true"
+                              RowClass="cursor-pointer" OnRowClick="ProductSelected">
+                        <HeaderContent>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Item, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Item, object>(x => x.Category.Name)">Category</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Item, object>(x => x.Stocks.ToList().SumList(s => s.OnHand))">Total Stock</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Item, object>(x => x.Unit?.Name ?? string.Empty)">Unit</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Item, object>(x => x.DefaultCost)">Def. Cost</MudTableSortLabel></MudTh>
+                            <MudTh><MudTableSortLabel SortBy="new Func<Item, object>(x => x.DefaultPrice)">Def. Price</MudTableSortLabel></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Name">@context.Name</MudTd>
+                            <MudTd DataLabel="Category">@context.Category.Name</MudTd>
+                            <MudTd DataLabel="Total Stock">@context.Stocks.ToList().SumList(x => x.OnHand)</MudTd>
+                            <MudTd DataLabel="Unit">@context.Unit?.Name</MudTd>
+                            <MudTd DataLabel="Def. Cost">@context.DefaultCost</MudTd>
+                            <MudTd DataLabel="Def. Price">@context.DefaultPrice</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudCardContent>
+
+            </MudCard>
+
+
+
+        </div>
+    </div>
     </MudItem>
-    <!-- Card 2 -->
-    <MudItem xs="6">
-        <MudCard>
-            
-            <MudCardHeader>
-                <MudText Typo="Typo.h6"> <MudIcon Icon="@Icons.Material.Filled.TableView" Size="Size.Medium"/>
-                    Product List    
-                </MudText>
-            </MudCardHeader>
-            <MudCardContent>
-                <MudTable Items="Items" Breakpoint="Breakpoint.Sm" Dense="true" Elevation="2" Hover="true">
-                    <HeaderContent>
-                        <MudTh>Name</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Name">@context.Name</MudTd>
-                    </RowTemplate>
-                </MudTable>
-            </MudCardContent>
-        </MudCard>
-        
-        
-    </MudItem>
-    <!-- Card 3 -->
-    <MudItem xs="6"></MudItem>
-    <!-- Card 4 -->
-    <MudItem xs="6"></MudItem>
-    
-    
-    
+    @if (SelectedItem != null)
+    {
+        <MudItem xs="4">
+            <MudCard>
+                <MudCardHeader>
+                    <MudText Typo="Typo.h6">
+                        <MudIcon Icon="@Icons.Material.Filled.Assessment" Size="Size.Medium"/>
+                        Item Stock
+                    </MudText>
+                </MudCardHeader>
+                <MudCardContent>
+
+                    <MudTable Items="SelectedItem?.Stocks" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
+                              @bind-SelectedItem="SelectedStock" SortLabel="Sort By" OnCommitEditClick="SaveStock">
+                        <HeaderContent>
+                            <MudTh>Storage Location</MudTh>
+                            <MudTh>Qty.</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Storage Location">@context.StorageLocation.Name</MudTd>
+                            <MudTd DataLabel="Qty.">@context.OnHand @context.Item.Unit?.Name.Pluralize() </MudTd>
+                        </RowTemplate>
+                        <RowEditingTemplate>
+                            <MudTd DataLabel="Storage Location">@context.StorageLocation.Name</MudTd>
+                            <MudTd DataLabel="Qty.">
+                                <MudNumericField Required 
+                                                 @bind-Value="SelectedItem.Stocks.FirstOrDefault(x => x.StorageLocationId == context.StorageLocationId).OnHand"/>
+                                @context.Item.Unit?.Name.Pluralize()
+                            </MudTd>
+                        </RowEditingTemplate>
+                        <EditButtonContent Context="button">
+                            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
+                        </EditButtonContent>
+                    </MudTable>
+
+                </MudCardContent>
+
+            </MudCard>
+        </MudItem>
+    }
 </MudGrid>

@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using BlazorERP.Utilities.JsInterop
+@inherits LayoutComponentBase
+@inject IJSRuntime JS
 
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"/>
 <MudPopoverProvider/>
@@ -22,9 +24,9 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Ripple="false" ClickPropagation="false" Color="Color.Inherit" OnClick="@((e) => MainDrawerToggle())"/>
     </MudDrawer>
     <MudMainContent Class="pt-20 pa-4">
-        <CascadingValue Value="(Action)CloseMainDrawer">
+        @* <CascadingValue Value="(Action)CloseMainDrawer"> *@
             @Body
-        </CascadingValue>
+        @* </CascadingValue> *@
     </MudMainContent>
 </MudLayout>
 
@@ -43,9 +45,13 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        
+
 
         _theme = new()
         {
+            Typography = _desktop_typography,
+            ZIndex = _zindex,
             PaletteLight = _lightPalette,
             PaletteDark = _darkPalette,
             LayoutProperties = new LayoutProperties()
@@ -67,6 +73,44 @@
         _isDarkMode = !_isDarkMode;
     }
     
+    private readonly ZIndex _zindex = new()
+    {
+        Drawer = 1100,
+        AppBar = 1200,
+        Dialog = 1300,
+        Snackbar = 1400,
+        Popover = 1500,
+        Tooltip = 1600
+    };
+    
+    private readonly Typography _desktop_typography = new()
+    {
+       
+        Button = new ButtonTypography
+        {
+            FontSize = "0.875rem",
+            FontWeight = "500",
+            TextTransform = "uppercase",
+            
+        }
+    };
+    
+    
+    
+    private readonly Typography _mobile_typography = new()
+    {
+        H6 = new H6Typography
+        {
+            FontSize = "1.1rem",
+            FontWeight = "500"
+        },
+        Button = new ButtonTypography
+        {
+            FontSize = "0.7rem",
+            FontWeight = "500",
+            TextTransform = "uppercase",
+        }
+    };
    
     private readonly PaletteLight _lightPalette = new()
     {
@@ -114,5 +158,16 @@
         true => Icons.Material.Rounded.AutoMode,
         false => Icons.Material.Outlined.DarkMode,
     };
+    
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var screenSize = await JS.GetScreenSize();
+        
+        _theme.Typography = screenSize.Width > 1080 ? _desktop_typography : _mobile_typography;
+        
+        
+        await base.OnAfterRenderAsync(firstRender);
+    }
 
 }

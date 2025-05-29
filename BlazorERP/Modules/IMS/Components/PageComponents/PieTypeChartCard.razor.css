@@ -1,0 +1,8 @@
+﻿.PieTypeChartHeaderSelectItem > .mud-select {
+    width: fit-content !important;
+}
+
+
+.icon-select-popover {
+    max-width: fit-content !important;
+}

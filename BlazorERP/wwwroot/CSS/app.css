@@ -4,6 +4,8 @@
     --DarkHightlight: #00000078;
 }
 
+/* ======= Base Layout Styling ======== */
+
 .mud-navmenu.mud-navmenu-default .mud-nav-link.active:not(.mud-nav-link-disabled) {
     background-color: var(--DarkHightlight);
     color: var(--mud-palette-text-primary);
@@ -15,8 +17,6 @@
     background-position-y: top;
 }
 
-
-
 .background-gradient-light {
     background: linear-gradient(to right, #2b5db3, #15151a);
 }
@@ -25,11 +25,21 @@
     background: linear-gradient(to right, #1a1a27, #2b5db3);
 }
 
+/* ======= End Base Layout Styling ======== */
+
+/* - Mud Card Styling */
+
 .mud-card.mud-paper {
     background-color: var(--mud-palette-background-gray);
 }
 
 .mud-card-header {
+    background-color: var(--mud-palette-primary);
+    border-bottom: black 1px solid;
+}
+
+.mud-card-header {
+
     background-color: var(--mud-palette-primary);
     border-bottom: black 1px solid;
     
@@ -41,12 +51,35 @@
     }
 }
 
+/* - Mud Button */
+.mud-button-root {
+    .mud-button-label {
+        line-height: 1.25;
+        align-items:center;
+    }
+}
+
+/* - Mud Input */
+.mud-input-control.mud-input-text-with-label.mud-input-input-control {
+    margin-top: 5px;
+}
+.mud-input-control.mud-input-outlined-with-label.mud-input-input-control {
+    margin-top: 12px;
+}
 
 
 
 
+
+/* - Mud Table */
 .mud-table-head .mud-table-row th {
     background-color: var(--theme-primary-overlay) !important;
 }
 
+
+
+.mud-divider.gap {
+    margin-top: .25rem;
+    margin-bottom: .4rem;
+}
 

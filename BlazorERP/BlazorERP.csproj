@@ -25,10 +25,14 @@
 
 
     <ItemGroup>
-      <Folder Include="Components\Global\PageComponents\" />
       <Folder Include="Data\Context\" />
       <Folder Include="Data\Models\" />
-      <Folder Include="Services\" />
-      <Folder Include="Utilities\" />
+      <Folder Include="Modules\IMS\Components\Dialogs\IMS\" />
+      <Folder Include="wwwroot\Components\IMS\" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <None Include="wwwroot\Components\Global\IconSelect.js" />
     </ItemGroup>
 </Project>

@@ -1,31 +1,62 @@
 using Microsoft.AspNetCore.Components;
 using BlazorERP.Data.Entities;
 using BlazorERP.Modules.Services;
+using MudBlazor;
 
 public class ProductsBase : ComponentBase
 {
     
-    public List<Item> Items { get; set; }
+    [Inject]
+    protected ImsService Ims { get; private set; }
+    [Inject]
+    protected ISnackbar Snackbar { get; set; }
     
-    public Item SelectedItem { get; set; }
-
-    public ImsService Ims { get; set; }
-
-    public ProductsBase(ImsService ims)
-    {
-        Ims = ims;
-    }
-
-    public ProductsBase()
-    {
-        
-    }
+    public List<Item>? Items { get; set; } = new List<Item>();
+    
+    public Item? SelectedItem { get; set; }
+    public Stock? SelectedStock { get; set; }
+    
+    // Dropdown List
+    public List<StorageLocation> StorageLocations { get; set; } = new List<StorageLocation>();
+    
     
     protected override async Task OnInitializedAsync()
     {
-        Items = await Ims.GetItems();
-        
         await base.OnInitializedAsync();
+        
+        if (Ims is null)
+            throw new InvalidOperationException("ImsService was not injected.");
+        
+        var ItemsTask = Ims.GetItems(includeStockLocations: true);
+        await Task.WhenAll(ItemsTask);
+        Items = ItemsTask.Result;
+        
+    }
+
+    public void ProductSelected(TableRowClickEventArgs<Item> args)
+    {
+        Item clicked_item = args.Item;
+        if (SelectedItem != clicked_item) 
+        {
+            SelectedItem = clicked_item;
+        }
+    }
+
+    public async Task SaveStock()
+    {
+        // Validate that both SelectedStock and SelectedItem are not null
+        if (SelectedStock is null || SelectedItem is null)
+        {
+            return;
+        }
+        
+        // Save the stock for the selected item
+        await Ims.SaveStock(SelectedStock); ;
+
+        // Set SelectedStock to null after saving
+        SelectedStock = null;
+        
+        Snackbar.Add("Stock saved", Severity.Success);
     }
     
 

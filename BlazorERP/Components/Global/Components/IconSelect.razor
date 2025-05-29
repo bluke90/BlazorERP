@@ -1,0 +1,12 @@
+﻿@inherits IconSelectBase
+
+<div>
+    <select id="icon-select" @ref="InputSelect" @onchange="OnInputSelectChanged">
+        @foreach (var item in SelectItems)
+        {
+            <option selected="@item.Default" value="@item.Value" @onclick="() => SelectedItem = item" data-icon="PieChart"><span><MudIcon Icon="@item.Icon.Icon" Size="Size.Small"/></span></option>
+        }
+    </select>
+</div>
+
+
