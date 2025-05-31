@@ -50,13 +50,17 @@
                         <MudDivider Class="gap"/>
                         <MudGrid>
                             <MudItem xs="6">
-                                <MudTextField Label="SKU" @bind-Value="@SelectedItem.SKU" Variant="Variant.Text"/>
-                                <MudTextField Label="Default Cost" @bind-Value="@SelectedItem.DefaultCost" Variant="Variant.Text"/>
-                                <MudTextField Label="Default Price" @bind-Value="@SelectedItem.DefaultPrice" Variant="Variant.Text"/>
+                                <MudTextField Label="SKU" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.QrCode2"
+                                              @bind-Value="@SelectedItem.SKU" Variant="Variant.Text"/>
+                                <MudTextField Label="Default Cost" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Adornment="Adornment.Start"
+                                              @bind-Value="@SelectedItem.DefaultCost" Variant="Variant.Text" InputMode="InputMode.numeric"/>
+                                <MudTextField Label="Default Price" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Adornment="Adornment.Start"
+                                              @bind-Value="@SelectedItem.DefaultPrice" Variant="Variant.Text" InputMode="InputMode.numeric"/>
                             </MudItem>
                             <MudItem xs="6">
-                                <MudTextField Label="Reorder Point" @bind-Value="@SelectedItem.ReorderPoint" Variant="Variant.Text"/>
-                                <MudTextField Label="Total Stock" ReadOnly="true" Variant="Variant.Text"
+                                <MudTextField Label="Reorder Point" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.SyncProblem" 
+                                              @bind-Value="@SelectedItem.ReorderPoint" Variant="Variant.Text"/>
+                                <MudTextField Label="Total Stock" ReadOnly="true" Variant="Variant.Text" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Warehouse"
                                               Value="@SelectedItem.Stocks.ToList().SumList(x => x.OnHand)"/>
                             </MudItem>
                         </MudGrid>
@@ -101,7 +105,7 @@
 
 
                         <MudItem md="4" xs="8" Class="text-right">
-                            <MudButton Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small">
+                            <MudButton Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" OnClick="OpenNewProductDialog">
                                 <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small"/>
                                 New Item
                             </MudButton>
@@ -111,6 +115,14 @@
                 <MudCardContent>
                     <MudTable T="Item" Items="Items" Breakpoint="Breakpoint.Sm" Dense="true" Elevation="2" Hover="true"
                               RowClass="cursor-pointer" OnRowClick="ProductSelected">
+                        <ColGroup>
+                            <col style="width: 30%"/>
+                            <col style="width: 28%"/>
+                            <col style="width: 12%"/>
+                            <col style="width: 12%"/>
+                            <col style="width: 9%"/>
+                            <col style="width: 9%"/>
+                        </ColGroup>
                         <HeaderContent>
                             <MudTh><MudTableSortLabel SortBy="new Func<Item, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
                             <MudTh><MudTableSortLabel SortBy="new Func<Item, object>(x => x.Category.Name)">Category</MudTableSortLabel></MudTh>
@@ -124,8 +136,8 @@
                             <MudTd DataLabel="Category">@context.Category.Name</MudTd>
                             <MudTd DataLabel="Total Stock">@context.Stocks.ToList().SumList(x => x.OnHand)</MudTd>
                             <MudTd DataLabel="Unit">@context.Unit?.Name</MudTd>
-                            <MudTd DataLabel="Def. Cost">@context.DefaultCost</MudTd>
-                            <MudTd DataLabel="Def. Price">@context.DefaultPrice</MudTd>
+                            <MudTd DataLabel="Def. Cost">$@context.DefaultCost</MudTd>
+                            <MudTd DataLabel="Def. Price">$@context.DefaultPrice</MudTd>
                         </RowTemplate>
                     </MudTable>
                 </MudCardContent>

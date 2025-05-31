@@ -67,6 +67,7 @@ public class ImsService
     public async Task<List<Item>> GetItems(bool includeCategory = true, bool includeStocks = true, bool includeStockLocations = false)
     {
         var query = _context.Items.AsQueryable();
+        query.Include(x => x.Unit);
 
         if (includeCategory)
         {
@@ -106,4 +107,14 @@ public class ImsService
         return storageLocations;
     }
     
+    public async Task<List<ItemCategory>> GetItemCategories()
+    {
+        return 
+            await _context.ItemCategories.ToListAsync();
+    }
+
+    public async Task<List<Unit>> GetUnits()
+    {
+        return await _context.Units.ToListAsync();
+    }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using BlazorERP.Data.Entities;
+using BlazorERP.Modules.IMS.Components.Dialogs;
 using BlazorERP.Modules.Services;
 using MudBlazor;
 
@@ -10,6 +11,8 @@ public class ProductsBase : ComponentBase
     protected ImsService Ims { get; private set; }
     [Inject]
     protected ISnackbar Snackbar { get; set; }
+    [Inject]
+    protected IDialogService Dialog { get; set; }
     
     public List<Item>? Items { get; set; } = new List<Item>();
     
@@ -57,6 +60,28 @@ public class ProductsBase : ComponentBase
         SelectedStock = null;
         
         Snackbar.Add("Stock saved", Severity.Success);
+    }
+    
+    public async Task OpenNewProductDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Large,
+            FullWidth = true,
+            BackdropClick = true,
+            Position = DialogPosition.Center
+        };
+        
+        var dialog = await Dialog.ShowAsync<_AddProduct>("New Product", options: options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            // Refresh the items list after adding a new product
+            Items = await Ims.GetItems(includeStockLocations: true);
+            Snackbar.Add("Product added successfully", Severity.Success);
+        }
     }
     
 

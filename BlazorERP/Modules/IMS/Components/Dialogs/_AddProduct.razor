@@ -1,0 +1,275 @@
+﻿@using BlazorERP.Data.Context
+@using BlazorERP.Data.Entities
+@using BlazorERP.Modules.Services
+@using BlazorERP.Utilities
+@inject IDialogService Dialog
+@inject ISnackbar Snackbar
+@inject proContext _context
+@inject ImsService Ims
+
+
+<MudDialog>
+    
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Medium"/>
+            Add Product
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <MudGrid>
+            <!-- Icon -->
+            <MudItem xs="5" Class="text-center">
+                @if (!string.IsNullOrEmpty(_fileDataUrl))
+                {
+                    <MudImage Src="@_fileDataUrl" ObjectFit="ObjectFit.Contain" Height="300" Width="250"/>
+                }
+                else
+                {
+                    <MudFileUpload T="IBrowserFile"
+                                   @ref="@_fileUpload"
+                                   OnFilesChanged="OnFileInputChanged"
+                                   Hidden="@false"
+                                   Class="align-items-center"
+                                   InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                                   InputStyle="opacity: 0; left: 0; cursor: pointer;"
+                                   tabindex="-1"
+                                   @ondrop="@ClearDragClass"
+                                   @ondragenter="@SetDragClass"
+                                   @ondragleave="@ClearDragClass"
+                                   @ondragend="@ClearDragClass">
+                        <ActivatorContent>
+                            <MudPaper Height="35vh"
+                                      Width="50vh"
+                                      Outlined="true"
+                                      Class="@_dragClass">
+                                <MudText Typo="Typo.h6">Drag and Drop item image here or click</MudText>
+                                <MudChip T="string"
+                                         Color="Color.Dark"
+                                         Text="@_fileName"
+                                         tabindex="-1">
+                                </MudChip>
+                            </MudPaper>
+                        </ActivatorContent>
+                    </MudFileUpload>
+                }
+                <!-- File Picker Toolbar -->
+                <MudToolBar Gutters="@false" Class="relative d-flex justify-center gap-4">
+                    @if (string.IsNullOrEmpty(_fileDataUrl))
+                    {
+                        <MudButton Color="Color.Primary"
+                                   OnClick="@OpenFilePickerAsync"
+                                   Variant="Variant.Filled">
+                            Open File Picker
+                        </MudButton>
+                    }
+                    <MudButton Color="Color.Error"
+                               Disabled="@(!_fileName.Any())"
+                               OnClick="@ClearAsync"
+                               Variant="Variant.Filled">
+                        Clear
+                    </MudButton>
+                </MudToolBar>
+                
+            </MudItem>
+
+            <MudItem xs="7">
+                <MudTextField Label="Name" @bind-Value="@_newItem.Name" Variant="Variant.Outlined" Required/>
+                <MudSelect Label="Category" @bind-Value="_newItem.Category" Text="Select Category" Variant="Variant.Outlined">
+                    @foreach(var cat in _categories)
+                    {
+                        <MudSelectItem Value="@cat">@cat.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                @if (_newItem.IsActive || _newItem.IsActive == null)
+                {
+                    <MudText Class="mt-2" Color="Color.Success" Typo="Typo.body2"><MudIcon Class="align-bottom" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success"/>Active</MudText>
+                }
+                else
+                {
+                    <MudText Class="mt-2" Color="Color.Error" Typo="Typo.body2"><MudIcon Icon="@Icons.Material.Filled.FlagCircle" Color="Color.Warning"/>Not Active</MudText>
+                }
+
+            </MudItem>
+
+        </MudGrid>
+        <MudDivider Class="gap"/>
+        <MudGrid>
+            <MudItem xs="6">
+                <MudTextField Label="SKU" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.QrCode2"
+                              @bind-Value="@_newItem.SKU" Variant="Variant.Text" Required/>
+                <MudTextField Label="Default Cost" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Adornment="Adornment.Start"
+                              @bind-Value="@_newItem.DefaultCost" Variant="Variant.Text" InputMode="InputMode.numeric"/>
+                <MudTextField Label="Default Price" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Adornment="Adornment.Start"
+                              @bind-Value="@_newItem.DefaultPrice" Variant="Variant.Text" InputMode="InputMode.numeric"/>
+            </MudItem>
+            <MudItem xs="6">
+                <MudSelect Label="Unit" @bind-Value="_newItem.Unit" Text="Select Unit" Variant="Variant.Text" Required>
+                    @foreach(var unit in _units)
+                    {
+                        <MudSelectItem Value="@unit">@unit.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudTextField Label="Reorder Point" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.SyncProblem"
+                              @bind-Value="@_newItem.ReorderPoint" Variant="Variant.Text"/>
+                <MudTextField Label="Total Stock" ReadOnly="true" Variant="Variant.Text" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Warehouse"
+                              Value="@_newItem.Stocks.ToList().SumList(x => x.OnHand)"/>
+            </MudItem>
+        </MudGrid>
+
+    </DialogContent>
+    
+    <DialogActions>
+        <MudGrid Justify="Justify.SpaceAround">
+            <MudItem xs="6">
+                <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Cancel" FullWidth="true">Cancel</MudButton>        
+            </MudItem>
+            <MudItem xs="6">
+                <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="Submit" FullWidth="true">Add</MudButton>        
+            </MudItem>
+        </MudGrid>
+    </DialogActions>
+    
+</MudDialog>
+
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private List<ItemCategory> _categories = new List<ItemCategory>();
+    private List<Unit> _units = new List<Unit>();
+    
+    private Item _newItem = new Item
+    {
+        Name = string.Empty,
+        SKU = string.Empty,
+        Category = new ItemCategory { CategoryId = -1, Name = "Uncategorized" },
+        Unit = new Unit() { UnitId = -1, Name = "Unspecified" },
+        DefaultCost = 0,
+        DefaultPrice = 0,
+        ReorderPoint = 0,
+        IsActive = true
+    };
+
+    private void Submit()
+    {
+        // Set CategoryId from Category object if it was set
+        if (_newItem.Category.CategoryId != -1)
+            _newItem.CategoryId = _newItem.Category.CategoryId;
+
+        // Set UnitId from Unit object if it was set
+        if (_newItem.Unit?.UnitId != -1)
+            _newItem.UnitId = _newItem.Unit?.UnitId;
+        
+        // Validate the new item
+        if (IsValid())
+            try 
+            {
+                // Add the new item to the context
+                _newItem.CreatedUtc = DateTime.UtcNow;
+                _context.Add(_newItem);
+                _context.SaveChanges();
+                Snackbar.Add("Product added successfully", Severity.Success);
+                MudDialog.Close(DialogResult.Ok(_newItem));
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error adding product: {ex.Message}", Severity.Error);
+            }
+    }
+
+    private bool IsValid()
+    {
+        // Check Required Fields
+        if (string.IsNullOrWhiteSpace(_newItem.Name)) {
+            Snackbar.Add("Name is required", Severity.Error);
+            return false;
+        }
+        if (string.IsNullOrWhiteSpace(_newItem.SKU)) {
+            Snackbar.Add("SKU is required", Severity.Error);
+            return false;
+        }
+        
+        // Check required dropdowns
+        if (_newItem.Unit == null || _newItem.Unit.UnitId == -1) {
+            Snackbar.Add("Unit is required", Severity.Error);
+            return false;
+        }
+
+        // Check for duplicates
+        var nameExists = _context.ValueExists<Item, string>(x => x.Name, _newItem.Name);
+        var skuExists = _context.ValueExists<Item, string>(x => x.SKU, _newItem.SKU);
+        
+        if (nameExists)
+        {
+            Snackbar.Add("An item with this name already exists", Severity.Error);
+            return false;
+        }
+        if (skuExists)
+        {
+            Snackbar.Add("An item with this SKU already exists", Severity.Error);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _units = await Ims.GetUnits();
+        _categories = _categories.Concat(await Ims.GetItemCategories()).ToList();
+    }
+    
+    
+    // File upload related variables and methods
+    private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mud-width-full mud-height-full";
+    private string _dragClass = DefaultDragClass;
+    private string _fileName = string.Empty;
+    private MudFileUpload<IBrowserFile>? _fileUpload;
+    private string? _fileDataUrl;
+
+    private async Task ClearAsync()
+    {
+        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
+        _fileName = string.Empty;
+        _fileDataUrl = null;
+        ClearDragClass();
+    }
+
+    private Task OpenFilePickerAsync()
+        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
+
+    private async Task OnFileInputChanged(InputFileChangeEventArgs e)
+    {
+        // Clear the drag class and set the file name
+        ClearDragClass();
+        var file = e.File;
+        _fileName= file.Name;
+        
+        // Get the file data URL
+        var buffer = new byte[file.Size];
+        var fileBytes = await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).ReadAsync(buffer); // 10 MB limit
+        
+        // Set the file data URL for preview
+        _fileDataUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer, 0, fileBytes)}";
+        StateHasChanged();
+    }
+
+    private void Upload()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void SetDragClass()
+        => _dragClass = $"{DefaultDragClass} mud-border-primary";
+
+    private void ClearDragClass()
+        => _dragClass = DefaultDragClass;
+
+}

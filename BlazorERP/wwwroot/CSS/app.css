@@ -27,6 +27,12 @@
 
 /* ======= End Base Layout Styling ======== */
 
+/* - Mud Dialog */
+.mud-dialog {
+    background-color: var(--mud-palette-background-gray);
+}
+
+
 /* - Mud Card Styling */
 
 .mud-card.mud-paper {
