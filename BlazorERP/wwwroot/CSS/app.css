@@ -27,6 +27,15 @@
 
 /* ======= End Base Layout Styling ======== */
 
+/* - Mud Tab Panel */
+.mud-tabs-tabbar {
+    background-color: var(--mud-palette-appbar-background);
+    
+    .mud-tab.mud-tab-active {
+        color: var(--mud-palette-primary-lighten);
+    }
+}
+
 /* - Mud Dialog */
 .mud-dialog {
     background-color: var(--mud-palette-background-gray);

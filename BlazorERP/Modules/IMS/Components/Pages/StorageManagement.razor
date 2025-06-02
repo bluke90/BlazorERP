@@ -1,0 +1,50 @@
+﻿@using BlazorERP.Data.Entities
+@using BlazorERP.Modules.IMS.Components.PageComponents
+@inherits StorageManagementBase
+
+@page "/IMS/StorageManagement"
+
+
+<ImsMenu/>
+
+<MudGrid>
+    
+    <MudItem xs="12">
+        
+        <MudTabs Elevation="5" Rounded="true" ApplyEffectsToContainer="true" PanelClass="p-6">
+            
+            <!-- Pop in pie chart of stock % by storage location -->
+            <!-- Table showing which location contains what items -->
+            
+            <MudTabPanel Text="Storage Locations" Icon="@Icons.Material.Filled.Storage" >
+
+                <MudTable Items="@_stores" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
+                          @bind-SelectedItem="_selectedStore" SortLabel="Sort By" OnCommitEditClick="SaveStorageLocation">
+                    
+                    <HeaderContent>
+                        <MudTh>ID</MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<StorageLocation, object>(x => x.Code)">Code</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<StorageLocation, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+                        <MudTh><MudTableSortLabel SortBy="new Func<StorageLocation, object>(x => x.Address)">Address</MudTableSortLabel></MudTh>
+                    </HeaderContent>
+                    
+                    <RowTemplate>
+                        <MudTd DataLabel="ID">@context.StorageLocationId</MudTd>
+                        <MudTd DataLabel="Code">@context.Code</MudTd>
+                        <MudTd DataLabel="Name">@context.Name</MudTd>
+                        <MudTd DataLabel="Address">@context.Address</MudTd>
+                    </RowTemplate>
+                    
+                </MudTable>
+
+            </MudTabPanel>
+
+
+        </MudTabs>
+        
+        
+    </MudItem>
+    
+    
+    
+</MudGrid>
