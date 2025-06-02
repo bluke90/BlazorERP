@@ -1,0 +1,65 @@
+﻿@inherits ImageDragDropBase
+
+
+
+@if (!string.IsNullOrEmpty(FileDataUrl))
+{
+    <MudPaper Height="30vh"
+              Width="45vh"
+              Outlined="true"
+              Class="@_dragClass"
+              Style="justify-self: center;">
+        <MudImage Src="@FileDataUrl" ObjectFit="ObjectFit.Contain" Class="auto-fit"/>
+    </MudPaper>
+}
+else
+{
+    <MudFileUpload T="IBrowserFile"
+                   @ref="@_fileUpload"
+                   OnFilesChanged="OnFileInputChanged"
+                   Hidden="@false"
+                   Class="align-items-center"
+                   InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                   InputStyle="opacity: 0; left: 0; cursor: pointer;"
+                   tabindex="-1"
+                   @ondrop="@ClearDragClass"
+                   @ondragenter="@SetDragClass"
+                   @ondragleave="@ClearDragClass"
+                   @ondragend="@ClearDragClass">
+        <ActivatorContent>
+            <MudPaper Height="30vh"
+                      Width="45vh"
+                      Outlined="true"
+                      Class="@_dragClass"
+                      Style="padding-top: 20% !important;">
+                
+                <MudChip T="string"
+                         Color="Color.Info"
+                         tabindex="-1"
+                         Class="p-4">
+                    <MudText Style="font-size: 0.85rem; font-weight: 500">
+                        <MudIcon Icon="@Icons.Material.Filled.UploadFile" Size="Size.Medium"/><br/>
+                        Drag & Drop or Click to Upload
+                    </MudText>
+                </MudChip>
+            </MudPaper>
+        </ActivatorContent>
+    </MudFileUpload>
+}
+<!-- File Picker Toolbar -->
+<MudToolBar Gutters="@false" Class="relative d-flex justify-center gap-4">
+    @if (string.IsNullOrEmpty(FileDataUrl))
+    {
+        <MudButton Color="Color.Primary"
+                   OnClick="@OpenFilePickerAsync"
+                   Variant="Variant.Filled">
+            Open File Picker
+        </MudButton>
+    }
+    <MudButton Color="Color.Error"
+               Disabled="@string.IsNullOrEmpty(File?.FileName)"
+               OnClick="@ClearAsync"
+               Variant="Variant.Filled">
+        Clear
+    </MudButton>
+</MudToolBar>

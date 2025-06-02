@@ -1,4 +1,6 @@
-﻿namespace BlazorERP.Utilities;
+﻿using BlazorERP.Data.Models;
+
+namespace BlazorERP.Utilities;
 
 public static class BaseUtil
 {
@@ -30,6 +32,11 @@ public static class BaseUtil
             return word + "es";
         
         return word + "s";
+    }
+
+    public static string GetDataUrl(this ErpFile file)
+    {
+        return $"data:{file.MimeType};base64,{Convert.ToBase64String(file.Bytes, 0, file.Size.GetValueOrDefault())}";
     }
     
 }
