@@ -44,6 +44,17 @@ public class ImsService
         
         return stock;
     }
+
+    public async Task<List<Stock>> GetItemStock(int ItemId, int StorageLocationId = 0)
+    {
+        // If StorageLocationId is provided, filter by it; otherwise, get all stock(s) for the item
+        var stock = await _context.Stocks.Where(x => x.ItemId == ItemId && 
+                                                (StorageLocationId == 0 || x.StorageLocationId == StorageLocationId))
+            .Include(x => x.StorageLocation)
+            .ToListAsync();
+
+        return stock;
+    }
     
     public async Task<List<PurchaseOrder>> GetPurchases()
     {
@@ -107,14 +118,31 @@ public class ImsService
         return storageLocations;
     }
     
-    public async Task<List<ItemCategory>> GetItemCategories()
+    public List<ItemCategory> GetItemCategories()
+    {
+        return 
+            _context.ItemCategories.ToList();
+    }
+    
+    public async Task<List<ItemCategory>> GetItemCategoriesAsync()
     {
         return 
             await _context.ItemCategories.ToListAsync();
     }
+    
+    public List<Unit> GetUnits()
+    {
+        return _context.Units.ToList();
+    }
 
-    public async Task<List<Unit>> GetUnits()
+    public async Task<List<Unit>> GetUnitsAsync()
     {
         return await _context.Units.ToListAsync();
+    }
+    
+    public async Task<ItemImage?> GetItemImage(int itemId)
+    {
+        return await _context.ItemImages
+            .FirstOrDefaultAsync(x => x.ItemId == itemId);
     }
 }

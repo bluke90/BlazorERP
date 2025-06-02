@@ -1,0 +1,39 @@
+﻿@using BlazorERP.Utilities
+@inherits ItemStockTableBase
+
+
+<MudCard>
+    <MudCardHeader>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Assessment" Size="Size.Medium"/>
+            Item Stock
+        </MudText>
+    </MudCardHeader>
+    <MudCardContent>
+
+        <MudTable Items="Item.Stocks" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
+                  @bind-SelectedItem="SelectedStock" SortLabel="Sort By" OnCommitEditClick="SaveStock">
+            <HeaderContent>
+                <MudTh>Storage Location</MudTh>
+                <MudTh>Qty.</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Storage Location">@context.StorageLocation.Name</MudTd>
+                <MudTd DataLabel="Qty.">@context.OnHand @context.Item.Unit?.Name.Pluralize() </MudTd>
+            </RowTemplate>
+            <RowEditingTemplate>
+                <MudTd DataLabel="Storage Location">@context.StorageLocation.Name</MudTd>
+                <MudTd DataLabel="Qty.">
+                    <MudNumericField Required
+                                     @bind-Value="Item.Stocks.FirstOrDefault(x => x.StorageLocationId == context.StorageLocationId).OnHand"/>
+                    @context.Item.Unit?.Name.Pluralize()
+                </MudTd>
+            </RowEditingTemplate>
+            <EditButtonContent Context="button">
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled"/>
+            </EditButtonContent>
+        </MudTable>
+
+    </MudCardContent>
+
+</MudCard>
