@@ -26,7 +26,6 @@
 
     <ItemGroup>
       <Folder Include="Data\Context\" />
-      <Folder Include="Data\Models\" />
       <Folder Include="wwwroot\Components\IMS\" />
     </ItemGroup>
 

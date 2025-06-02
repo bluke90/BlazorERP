@@ -2,10 +2,12 @@
 @using BlazorERP.Data.Entities
 @using BlazorERP.Modules.Services
 @using BlazorERP.Utilities
+@using BlazorERP.Components.Global.Components
+@using BlazorERP.Data.Models
+@inject ImsService Ims
 @inject IDialogService Dialog
 @inject ISnackbar Snackbar
 @inject proContext _context
-@inject ImsService Ims
 
 
 <MudDialog>
@@ -18,66 +20,76 @@
     </TitleContent>
 
     <DialogContent>
+        <!-- === Row 1 === -->
         <MudGrid>
-            <!-- Icon -->
-            <MudItem xs="5" Class="text-center">
-                @if (!string.IsNullOrEmpty(_fileDataUrl))
-                {
-                    <MudImage Src="@_fileDataUrl" ObjectFit="ObjectFit.Contain" Height="300" Width="250"/>
-                }
-                else
-                {
-                    <MudFileUpload T="IBrowserFile"
-                                   @ref="@_fileUpload"
-                                   OnFilesChanged="OnFileInputChanged"
-                                   Hidden="@false"
-                                   Class="align-items-center"
-                                   InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
-                                   InputStyle="opacity: 0; left: 0; cursor: pointer;"
-                                   tabindex="-1"
-                                   @ondrop="@ClearDragClass"
-                                   @ondragenter="@SetDragClass"
-                                   @ondragleave="@ClearDragClass"
-                                   @ondragend="@ClearDragClass">
-                        <ActivatorContent>
-                            <MudPaper Height="35vh"
-                                      Width="50vh"
-                                      Outlined="true"
-                                      Class="@_dragClass">
-                                <MudText Typo="Typo.h6">Drag and Drop item image here or click</MudText>
-                                <MudChip T="string"
-                                         Color="Color.Dark"
-                                         Text="@_fileName"
-                                         tabindex="-1">
-                                </MudChip>
-                            </MudPaper>
-                        </ActivatorContent>
-                    </MudFileUpload>
-                }
-                <!-- File Picker Toolbar -->
-                <MudToolBar Gutters="@false" Class="relative d-flex justify-center gap-4">
-                    @if (string.IsNullOrEmpty(_fileDataUrl))
-                    {
-                        <MudButton Color="Color.Primary"
-                                   OnClick="@OpenFilePickerAsync"
-                                   Variant="Variant.Filled">
-                            Open File Picker
-                        </MudButton>
-                    }
-                    <MudButton Color="Color.Error"
-                               Disabled="@(!_fileName.Any())"
-                               OnClick="@ClearAsync"
-                               Variant="Variant.Filled">
-                        Clear
-                    </MudButton>
-                </MudToolBar>
-                
+            <!-- === Image Upload === -->
+            <MudItem xs="5" Class="text-center justify-center align-items-center">
+                <ImageDragDrop @ref="_fileUpload"/>
+
+                @*     @if (!string.IsNullOrEmpty(_fileDataUrl)) *@
+                @*     { *@
+                @*         <MudPaper Height="35vh" *@
+                @*                   Width="50vh" *@
+                @*                   Outlined="true" *@
+                @*                   Class="@_dragClass"> *@
+                @*             <MudImage Src="@_fileDataUrl" ObjectFit="ObjectFit.Contain" Class="auto-fit"/> *@
+                @*         </MudPaper> *@
+                @*     } *@
+                @*     else *@
+                @*     { *@
+                @*         <MudFileUpload T="IBrowserFile" *@
+                @*                        @ref="@_fileUpload" *@
+                @*                        OnFilesChanged="OnFileInputChanged" *@
+                @*                        Hidden="@false" *@
+                @*                        Class="align-items-center" *@
+                @*                        InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10" *@
+                @*                        InputStyle="opacity: 0; left: 0; cursor: pointer;" *@
+                @*                        tabindex="-1" *@
+                @*                        @ondrop="@ClearDragClass" *@
+                @*                        @ondragenter="@SetDragClass" *@
+                @*                        @ondragleave="@ClearDragClass" *@
+                @*                        @ondragend="@ClearDragClass"> *@
+                @*             <ActivatorContent> *@
+                @*                 <MudPaper Height="35vh" *@
+                @*                           Width="50vh" *@
+                @*                           Outlined="true" *@
+                @*                           Class="@_dragClass" *@
+                @*                           Style="padding-top: 20% !important;"> *@
+                @*                     <MudChip T="string" *@
+                @*                              Color="Color.Dark" *@
+                @*                              Text="@_fileName" *@
+                @*                              tabindex="-1" *@
+                @*                              Class="p-3"> *@
+                @*                         <MudText Typo="Typo.h6">Drag and Drop item image here or click</MudText> *@
+                @*                     </MudChip> *@
+                @*                 </MudPaper> *@
+                @*             </ActivatorContent> *@
+                @*         </MudFileUpload> *@
+                @*     } *@
+                @*     <!-- File Picker Toolbar --> *@
+                @*     <MudToolBar Gutters="@false" Class="relative d-flex justify-center gap-4"> *@
+                @*         @if (string.IsNullOrEmpty(_fileDataUrl)) *@
+                @*         { *@
+                @*             <MudButton Color="Color.Primary" *@
+                @*                        OnClick="@OpenFilePickerAsync" *@
+                @*                        Variant="Variant.Filled"> *@
+                @*                 Open File Picker *@
+                @*             </MudButton> *@
+                @*         } *@
+                @*         <MudButton Color="Color.Error" *@
+                @*                    Disabled="@(!_fileName.Any())" *@
+                @*                    OnClick="@ClearAsync" *@
+                @*                    Variant="Variant.Filled"> *@
+                @*             Clear *@
+                @*         </MudButton> *@
+                @*     </MudToolBar> *@
             </MudItem>
 
-            <MudItem xs="7">
+            <!-- === Item Base Details === -->
+            <MudItem xs="7" Class="pt-5">
                 <MudTextField Label="Name" @bind-Value="@_newItem.Name" Variant="Variant.Outlined" Required/>
                 <MudSelect Label="Category" @bind-Value="_newItem.Category" Text="Select Category" Variant="Variant.Outlined">
-                    @foreach(var cat in _categories)
+                    @foreach (var cat in _categories)
                     {
                         <MudSelectItem Value="@cat">@cat.Name</MudSelectItem>
                     }
@@ -94,7 +106,10 @@
             </MudItem>
 
         </MudGrid>
+
         <MudDivider Class="gap"/>
+
+        <!-- === Row 2 === -->
         <MudGrid>
             <MudItem xs="6">
                 <MudTextField Label="SKU" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.QrCode2"
@@ -106,7 +121,7 @@
             </MudItem>
             <MudItem xs="6">
                 <MudSelect Label="Unit" @bind-Value="_newItem.Unit" Text="Select Unit" Variant="Variant.Text" Required>
-                    @foreach(var unit in _units)
+                    @foreach (var unit in _units)
                     {
                         <MudSelectItem Value="@unit">@unit.Name</MudSelectItem>
                     }
@@ -141,6 +156,9 @@
     private List<ItemCategory> _categories = new List<ItemCategory>();
     private List<Unit> _units = new List<Unit>();
     
+    private ImageDragDrop? _fileUpload;
+    private ErpFile? _uploadedFile;
+    
     private Item _newItem = new Item
     {
         Name = string.Empty,
@@ -153,7 +171,7 @@
         IsActive = true
     };
 
-    private void Submit()
+    private async Task Submit()
     {
         // Set CategoryId from Category object if it was set
         if (_newItem.Category.CategoryId != -1)
@@ -168,9 +186,8 @@
             try 
             {
                 // Add the new item to the context
-                _newItem.CreatedUtc = DateTime.UtcNow;
-                _context.Add(_newItem);
-                _context.SaveChanges();
+                await SaveItem();
+                await SaveItemImage();
                 Snackbar.Add("Product added successfully", Severity.Success);
                 MudDialog.Close(DialogResult.Ok(_newItem));
             }
@@ -216,60 +233,90 @@
         return true;
     }
 
+    private async Task SaveItem()
+    {
+        _newItem.CreatedUtc = DateTime.UtcNow;
+        _context.Add(_newItem);
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task SaveItemImage()
+    {
+        if (_fileUpload == null || _fileUpload.File == null)
+            return;
+
+        var file = new ItemImage()
+        {
+            ItemId = _newItem.ItemId,
+            FileName = _fileUpload.File.FileName,
+            MimeType = _fileUpload.File.MimeType,
+            Size = (int)_fileUpload.File.Size,
+            CreatedAt = _fileUpload.File.CreatedAt.GetValueOrDefault(),
+            Content = _fileUpload.File.Bytes
+        };
+        
+        _context.Add(file);
+        await _context.SaveChangesAsync();
+    }
+
     private void Cancel() => MudDialog.Cancel();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        _units = await Ims.GetUnits();
-        _categories = _categories.Concat(await Ims.GetItemCategories()).ToList();
+        _units = await Ims.GetUnitsAsync();
+        _categories = await Ims.GetItemCategoriesAsync();
     }
-    
-    
+
+
+
     // File upload related variables and methods
-    private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mud-width-full mud-height-full";
-    private string _dragClass = DefaultDragClass;
-    private string _fileName = string.Empty;
-    private MudFileUpload<IBrowserFile>? _fileUpload;
-    private string? _fileDataUrl;
-
-    private async Task ClearAsync()
-    {
-        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
-        _fileName = string.Empty;
-        _fileDataUrl = null;
-        ClearDragClass();
-    }
-
-    private Task OpenFilePickerAsync()
-        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
-
-    private async Task OnFileInputChanged(InputFileChangeEventArgs e)
-    {
-        // Clear the drag class and set the file name
-        ClearDragClass();
-        var file = e.File;
-        _fileName= file.Name;
-        
-        // Get the file data URL
-        var buffer = new byte[file.Size];
-        var fileBytes = await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).ReadAsync(buffer); // 10 MB limit
-        
-        // Set the file data URL for preview
-        _fileDataUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer, 0, fileBytes)}";
-        StateHasChanged();
-    }
-
-    private void Upload()
-    {
-        throw new NotImplementedException();
-    }
-
-    private void SetDragClass()
-        => _dragClass = $"{DefaultDragClass} mud-border-primary";
-
-    private void ClearDragClass()
-        => _dragClass = DefaultDragClass;
+    // private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mud-width-full mud-height-full";
+    // private string _dragClass = DefaultDragClass;
+    // private string _fileName = string.Empty;
+    // private MudFileUpload<IBrowserFile>? _fileUpload;
+    // private string? _fileDataUrl;
+    //
+    // private async Task ClearAsync()
+    // {
+    //     await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
+    //     _fileName = string.Empty;
+    //     _fileDataUrl = null;
+    //     ClearDragClass();
+    // }
+    //
+    // private Task OpenFilePickerAsync()
+    //     => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
+    //
+    // private async Task OnFileInputChanged(InputFileChangeEventArgs e)
+    // {
+    //     // Clear the drag class and set the file name
+    //     ClearDragClass();
+    //     var file = e.File;
+    //     _fileName= file.Name;
+    //     
+    //     // Get the file data URL
+    //     using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024); // 10 MB limit
+    //     using var ms = new MemoryStream();
+    //     await stream.CopyToAsync(ms);
+    //     
+    //     var bytes = ms.ToArray();
+    //     
+    //     // Set the file data URL for preview
+    //     _fileDataUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(bytes, 0, bytes.Length)}";
+    //     StateHasChanged();
+    // }
+    //
+    // private void Upload()
+    // {
+    //     throw new NotImplementedException();
+    // }
+    //
+    // private void SetDragClass()
+    //     => _dragClass = $"{DefaultDragClass} mud-border-primary";
+    //
+    // private void ClearDragClass()
+    //     => _dragClass = DefaultDragClass;
 
 }

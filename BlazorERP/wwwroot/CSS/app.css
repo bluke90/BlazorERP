@@ -44,7 +44,7 @@
     border-bottom: black 1px solid;
 }
 
-.mud-card-header {
+.mud-card-header, .mud-dialog-title {
 
     background-color: var(--mud-palette-primary);
     border-bottom: black 1px solid;
@@ -55,6 +55,14 @@
             margin-right: 0.25rem;
         }
     }
+    
+    .mud-button-close .mud-icon-root {
+        color: white;
+    }
+}
+
+.mud-dialog-title {
+    margin-bottom: 0.5vh !important;
 }
 
 /* - Mud Button */

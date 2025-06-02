@@ -17,6 +17,7 @@ public class ProductsBase : ComponentBase
     public List<Item>? Items { get; set; } = new List<Item>();
     
     public Item? SelectedItem { get; set; }
+    public string? SelectedItemImageUrl { get; set; }
     public Stock? SelectedStock { get; set; }
     
     // Dropdown List
@@ -36,13 +37,36 @@ public class ProductsBase : ComponentBase
         
     }
 
-    public void ProductSelected(TableRowClickEventArgs<Item> args)
+    public async Task ProductSelected(TableRowClickEventArgs<Item> args)
     {
         Item clicked_item = args.Item;
         if (SelectedItem != clicked_item) 
         {
             SelectedItem = clicked_item;
+            await SetItemImageUrl();
         }
+    }
+    
+    private async Task SetItemImageUrl()
+    {
+        if (SelectedItem is not null)
+        {
+            // Set the image URL for the selected item
+            var itemImage = await Ims.GetItemImage(SelectedItem.ItemId);
+            if (itemImage is not null)
+            {
+                SelectedItemImageUrl = $"data:{itemImage.MimeType};base64,{Convert.ToBase64String(itemImage.Content)}";
+            }
+            else
+            {
+                SelectedItemImageUrl = null; // Reset if no image found
+            }
+            
+            return;
+        }
+
+        // Reset the image URL if no item is selected
+        SelectedItemImageUrl = null;
     }
 
     public async Task SaveStock()
