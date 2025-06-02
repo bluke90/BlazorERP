@@ -114,7 +114,25 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <MudTable T="Item" Items="Items" Breakpoint="Breakpoint.Sm" Dense="true" Elevation="2" Hover="true"
-                              RowClass="cursor-pointer" OnRowClick="ProductSelected">
+                              RowClass="cursor-pointer" OnRowClick="ProductSelected" Filter="new Func<Item, bool>(LocationFilterFunc)">
+                        
+                        <ToolBarContent>
+                            <MudGrid>
+                                <MudItem xs="4">
+                                    <MudSelect Class="no-label" T="StorageLocation" @bind-SelectedValues="LocationFilter" @bind-Value="SelectedStorageLocation" MultiSelection="true"
+                                               Dense="true" Variant="Variant.Filled" Text="Filter By Location" MaxHeight="180" Typo="Typo.body2" >
+                                        @if (StorageLocations != null)
+                                        {
+                                            foreach (var store in StorageLocations)
+                                            {
+                                                <MudSelectItem Value="@store">@store.Code</MudSelectItem>
+                                            }
+                                        }
+                                    </MudSelect>
+                                </MudItem>
+                            </MudGrid>
+                        </ToolBarContent>
+                        
                         <ColGroup>
                             <col style="width: 30%"/>
                             <col style="width: 28%"/>
@@ -153,41 +171,6 @@
     {
         <MudItem xs="4">
             <ItemStockTable Item="SelectedItem"/>
-            @* <MudCard> *@
-            @*     <MudCardHeader> *@
-            @*         <MudText Typo="Typo.h6"> *@
-            @*             <MudIcon Icon="@Icons.Material.Filled.Assessment" Size="Size.Medium"/> *@
-            @*             Item Stock *@
-            @*         </MudText> *@
-            @*     </MudCardHeader> *@
-            @*     <MudCardContent> *@
-            @* *@
-            @*         <MudTable Items="SelectedItem?.Stocks" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true" *@
-            @*                   @bind-SelectedItem="SelectedStock" SortLabel="Sort By" OnCommitEditClick="SaveStock"> *@
-            @*             <HeaderContent> *@
-            @*                 <MudTh>Storage Location</MudTh> *@
-            @*                 <MudTh>Qty.</MudTh> *@
-            @*             </HeaderContent> *@
-            @*             <RowTemplate> *@
-            @*                 <MudTd DataLabel="Storage Location">@context.StorageLocation.Name</MudTd> *@
-            @*                 <MudTd DataLabel="Qty.">@context.OnHand @context.Item.Unit?.Name.Pluralize() </MudTd> *@
-            @*             </RowTemplate> *@
-            @*             <RowEditingTemplate> *@
-            @*                 <MudTd DataLabel="Storage Location">@context.StorageLocation.Name</MudTd> *@
-            @*                 <MudTd DataLabel="Qty."> *@
-            @*                     <MudNumericField Required *@
-            @*                                      @bind-Value="SelectedItem.Stocks.FirstOrDefault(x => x.StorageLocationId == context.StorageLocationId).OnHand"/> *@
-            @*                     @context.Item.Unit?.Name.Pluralize() *@
-            @*                 </MudTd> *@
-            @*             </RowEditingTemplate> *@
-            @*             <EditButtonContent Context="button"> *@
-            @*                 <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled"/> *@
-            @*             </EditButtonContent> *@
-            @*         </MudTable> *@
-            @* *@
-            @*     </MudCardContent> *@
-            @* *@
-            @* </MudCard> *@
         </MudItem>
     }
 </MudGrid>

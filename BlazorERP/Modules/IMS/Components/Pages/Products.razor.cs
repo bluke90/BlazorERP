@@ -7,6 +7,7 @@ using MudBlazor;
 public class ProductsBase : ComponentBase
 {
     
+    // Injects
     [Inject]
     protected ImsService Ims { get; private set; }
     [Inject]
@@ -14,15 +15,36 @@ public class ProductsBase : ComponentBase
     [Inject]
     protected IDialogService Dialog { get; set; }
     
+    // List
     public List<Item>? Items { get; set; } = new List<Item>();
     
+    // Selected Item 
     public Item? SelectedItem { get; set; }
     public string? SelectedItemImageUrl { get; set; }
     public Stock? SelectedStock { get; set; }
+    public List<StorageLocation>? SelectedStores { get; set; }
     
-    // Dropdown List
-    public List<StorageLocation> StorageLocations { get; set; } = new List<StorageLocation>();
+    // Drop Down
+    public IEnumerable<StorageLocation>? StorageLocations { get; set; }
+    public StorageLocation? SelectedStorageLocation { get; set; }
     
+    // Filters
+    protected IEnumerable<StorageLocation> LocationFilter { get; set; } = new List<StorageLocation>();
+
+    protected bool LocationFilterFunc(Item item) => LocFilter(item, LocationFilter.ToList());
+
+    private bool LocFilter(Item item, List<StorageLocation> locations)
+    {
+        if (locations is null || item is null || locations.Count == 0)
+            return true;
+        
+        if (item.Stocks
+            .Any(stock => locations
+                .Any(loc => loc.StorageLocationId == stock.StorageLocationId)))
+            return true; // At least one stock matches the location
+
+        return false;
+    }
     
     protected override async Task OnInitializedAsync()
     {
@@ -31,10 +53,12 @@ public class ProductsBase : ComponentBase
         if (Ims is null)
             throw new InvalidOperationException("ImsService was not injected.");
         
+        // Load storage locations for dropdown
+        StorageLocations = await Ims.GetStorageLocations();
+        
         var ItemsTask = Ims.GetItems(includeStockLocations: true);
         await Task.WhenAll(ItemsTask);
         Items = ItemsTask.Result;
-        
     }
 
     public async Task ProductSelected(TableRowClickEventArgs<Item> args)
@@ -42,8 +66,12 @@ public class ProductsBase : ComponentBase
         Item clicked_item = args.Item;
         if (SelectedItem != clicked_item) 
         {
+            // Set Item
             SelectedItem = clicked_item;
+            // Get Icon Data Url
             await SetItemImageUrl();
+            // Get Location codes containing the item
+            SelectedStores = await Ims.GetItemStore(SelectedItem.ItemId);
         }
     }
     

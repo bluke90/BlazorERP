@@ -62,6 +62,13 @@
     flex: 1;
 }
 
+/* === MudSelect Tags === */
+.no-label {
+    .mud-input-slot {
+        padding: 1vh !important;
+    }
+}
+
 /* === Image Tags === */
 img.mud-image.auto-fit {
     width: 100% !important;

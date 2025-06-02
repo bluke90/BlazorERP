@@ -12,6 +12,27 @@ public class ImsService
     {
         _context = context;
     }
+    
+    public async Task SaveStorageLocation(StorageLocation storageLocation)
+    {
+        var storageLocationToUpdate = await _context.StorageLocations
+            .FirstOrDefaultAsync(x => x.StorageLocationId == storageLocation.StorageLocationId);
+        
+        if (storageLocationToUpdate != null)
+        {
+            storageLocationToUpdate.Name = storageLocation.Name;
+            storageLocationToUpdate.Code = storageLocation.Code;
+            storageLocationToUpdate.Address = storageLocation.Address;
+            _context.StorageLocations.Update(storageLocationToUpdate);
+        }
+        else
+        {
+            // If the storage location does not exist, add it
+            _context.StorageLocations.Add(storageLocation);
+        }
+        
+        await _context.SaveChangesAsync();
+    }
 
     public async Task SaveStock(Stock stock)
     {
@@ -54,6 +75,18 @@ public class ImsService
             .ToListAsync();
 
         return stock;
+    }
+
+    public async Task<List<StorageLocation>> GetItemStore(int ItemId)
+    {
+        // Get all storage locations that have stock for the specified item
+        var storageLocations = await _context.Stocks
+            .Where(x => x.ItemId == ItemId)
+            .Select(x => x.StorageLocation)
+            .Distinct()
+            .ToListAsync();
+
+        return storageLocations;
     }
     
     public async Task<List<PurchaseOrder>> GetPurchases()
