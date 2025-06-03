@@ -7,14 +7,22 @@
 
 <ImsMenu/>
 
-<MudGrid>
+<MudGrid Class="alternate-bg-50">
+    <MudItem xs="12" Style="z-index: 1;">
+        <MudCard>
+            <MudCardHeader>
+
+            </MudCardHeader>
+            <MudCardContent></MudCardContent>
+        </MudCard>
+    </MudItem>
     
     <MudItem xs="12">
         
         <MudTabs Elevation="5" Rounded="true" ApplyEffectsToContainer="true" PanelClass="p-6">
             
             <!-- Pop in pie chart of stock % by storage location -->
-            <!-- Table showing which location contains what items -->
+            <!-- Table showing which location contains what items (Contents) -->
             
             <MudTabPanel Text="Storage Locations" Icon="@Icons.Material.Filled.Storage" >
 

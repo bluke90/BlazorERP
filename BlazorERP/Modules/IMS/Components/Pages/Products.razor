@@ -16,7 +16,7 @@
         @if (SelectedItem != null)
         {
             <div class="col">
-                <MudCard>
+                <MudCard Class="mb-2" Elevation="8">
 
                     <MudCardHeader>
                         <MudText Typo="Typo.h6"> <MudIcon Icon="@Icons.Material.Filled.Assignment" Size="Size.Medium"/>
@@ -87,12 +87,17 @@
                     </MudCardActions>
 
                 </MudCard>
+                
+                @if (SelectedItem != null)
+                {
+                    <ItemStockTable Item="SelectedItem"/>
+                }
             </div>
         }
 
         <!-- Card 2 -->
         <div class="col">
-            <MudCard>
+            <MudCard Elevation="8">
 
                 <MudCardHeader>
                     <MudGrid>
@@ -167,10 +172,5 @@
         </div>
     </div>
     </MudItem>
-    @if (SelectedItem != null)
-    {
-        <MudItem xs="4">
-            <ItemStockTable Item="SelectedItem"/>
-        </MudItem>
-    }
+
 </MudGrid>
