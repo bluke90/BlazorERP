@@ -1,0 +1,106 @@
+﻿
+
+
+
+<!-- Tabbed table with Customers and Sales Orders -->
+@using BlazorERP.Data.Entities
+@using BlazorERP.Modules.IMS.Components.PageComponents
+@using BlazorERP.Modules.Services
+@inject ImsService Ims
+
+@page "/IMS/Sales"
+
+
+<ImsMenu/>
+
+    <MudGrid Justify="Justify.Center"> 
+        <MudItem xs="12">
+            <MudCard Elevation="10" Outlined="true">
+                <MudCardContent Class="p-0">
+
+
+ 
+
+                    <MudTabs Elevation="5" Rounded="true" ApplyEffectsToContainer="true" PanelClass="p-6" Border="true">
+
+                        <!-- Pop in pie chart of stock % by storage location -->
+                        <!-- Table showing which location contains what items (Contents) -->
+
+                        <MudTabPanel Text="Customers" Icon="@Icons.Material.Filled.Person">
+
+                            <MudTable T="Customer" Items="@_customers" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
+                                      @bind-SelectedItem="_selectedCustomer" SortLabel="Sort By" OnCommitEditClick="SaveCustomer">
+
+                                <HeaderContent>
+                                    <MudTh>ID</MudTh>
+                                    <MudTh><MudTableSortLabel SortBy="new Func<Customer, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+                                    <MudTh><MudTableSortLabel SortBy="new Func<Customer, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
+                                    <MudTh><MudTableSortLabel SortBy="new Func<Customer, object>(x => x.Phone)">Phone</MudTableSortLabel></MudTh>
+                                    <MudTh><MudTableSortLabel SortBy="new Func<Customer, object>(x => x.MailingAddress)">Mailing Address</MudTableSortLabel></MudTh>
+                                </HeaderContent>
+
+                                <RowTemplate>
+                                    <MudTd DataLabel="ID">@context.CustomerId</MudTd>
+                                    <MudTd DataLabel="Name">@context.Name</MudTd>
+                                    <MudTd DataLabel="Email">@context.Email</MudTd>
+                                    <MudTd DataLabel="Phone">@context.Phone</MudTd>
+                                    <MudTd DataLabel="Mailing Address">@context.MailingAddress</MudTd>
+                                </RowTemplate>
+
+                                <RowEditingTemplate>
+
+                                    <MudTd DataLabel="ID">@context.CustomerId</MudTd>
+                                    <MudTd DataLabel="Name">
+                                        <MudTextField @bind-Value="_selectedCustomer.Name" Required/>
+                                        <MudTextField @bind-Value="_selectedCustomer.Email" Required/>
+                                        <MudTextField @bind-Value="_selectedCustomer.Phone" Required/>
+                                        <MudTextField @bind-Value="_selectedCustomer.MailingAddress" Required/>
+                                    </MudTd>
+
+                                </RowEditingTemplate>
+
+                                <EditButtonContent Context="button">
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled"/>
+                                </EditButtonContent>
+
+                            </MudTable>
+
+                        </MudTabPanel>
+                        <MudTabPanel Text="Sales Orders" Icon="@Icons.Material.Filled.ShoppingCart">
+
+                            <MudText Typo="Typo.h6">Sales Orders will be implemented here.</MudText>
+                            
+                        </MudTabPanel>
+
+
+                    </MudTabs>
+
+
+            
+
+
+
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    
+    </MudGrid>
+
+
+@code {
+
+    private List<Customer> _customers = new List<Customer>();
+    
+    private Customer _selectedCustomer = new Customer();
+
+    private async Task SaveCustomer()
+    {
+        throw new NotImplementedException();
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _customers = await Ims.GetCustomers();
+    }
+
+}
