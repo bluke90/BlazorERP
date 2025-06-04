@@ -27,4 +27,55 @@ public static class ContextUtil
         return context.Set<T>().Any(lambda);
     }
 
+    /// <summary>
+    /// Loads a collection of related entities for a given entity, applying a filter predicate.
+    /// </summary>
+    /// <param name="context"> Database Context </param>
+    /// <param name="entity"> Entity to load related entities for </param>
+    /// <param name="navigation"> Related entity to load /param>
+    /// <param name="filter">Entity where clause</param>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TRelated"></typeparam>
+    public static async Task LoadCollectionsAsync<TEntity, TRelated>(
+        this DbContext context,
+        TEntity entity,
+        Expression<Func<TEntity, IEnumerable<TRelated>>> navigation,
+        Expression<Func<TRelated, bool>> filter)
+        where TEntity : class
+        where TRelated : class
+    {
+        // Convert nav to CollectionEntry<TEntity, TRelated>
+        var collection = context
+            .Entry(entity)
+            .Collection(navigation);
+        
+        // Apply filter and load data
+        await collection
+            .Query()
+            .Where(filter)
+            .LoadAsync()
+            .ConfigureAwait(false);
+    }
+    
+    /// <summary>
+    /// Loads a reference to a related entity for a given entity.
+    /// </summary>
+    /// <param name="context"> Database Context </param>
+    /// <param name="entity"> Entity to load reference for</param>
+    /// <param name="navigation"> Navigation to reference</param>
+    /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TRelated"></typeparam>
+    public static async Task LoadReferenceAsync<TEntity, TRelated>(
+        this DbContext                     context,
+        TEntity                            entity,
+        Expression<Func<TEntity, TRelated>> navigation)
+        where TEntity  : class
+        where TRelated : class
+    {
+        await context.Entry(entity)
+            .Reference(navigation)
+            .LoadAsync()
+            .ConfigureAwait(false);
+    }
+
 }
