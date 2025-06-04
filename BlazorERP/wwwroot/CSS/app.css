@@ -28,6 +28,10 @@
 /* ======= End Base Layout Styling ======== */
 
 /* - Mud Tab Panel */
+.mud-tabs {
+    background-color: var(--mud-palette-background-gray);
+}
+
 .mud-tabs-tabbar {
     background-color: var(--mud-palette-appbar-background);
     

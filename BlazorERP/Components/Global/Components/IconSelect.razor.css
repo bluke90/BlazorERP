@@ -1,0 +1,32 @@
+﻿.icon-select {
+
+    .mud-input-adornment {
+        display: none;
+    }
+
+    .mud-input-slot {
+        padding: 0 !important;
+        height: 100% !important;
+        width: 100% !important;
+    }
+
+    .mud-icon-root {
+        align-items: end;
+        vertical-align: bottom;
+    }
+
+    .mud-select-filler {
+        max-width: 1.65vw;
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+.icon-select-popover {
+    width: fit-content !important;
+
+    .mud-list > .mud-list-item {
+        padding-left:8px;
+        padding-right:8px;
+    }
+}

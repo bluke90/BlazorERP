@@ -54,7 +54,7 @@ public class ProductsBase : ComponentBase
             throw new InvalidOperationException("ImsService was not injected.");
         
         // Load storage locations for dropdown
-        StorageLocations = await Ims.GetStorageLocations();
+        StorageLocations = await Ims.GetAllStorageLocations();
         
         var ItemsTask = Ims.GetItems(includeStockLocations: true);
         await Task.WhenAll(ItemsTask);

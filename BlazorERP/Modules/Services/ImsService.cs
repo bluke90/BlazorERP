@@ -132,9 +132,30 @@ public class ImsService
         return items;
     }
 
-    public async Task<List<StorageLocation>> GetStorageLocations(bool includeStocks = false, bool includeTransactions = false)
+    public async Task<List<StorageLocation>> GetAllStorageLocations(bool includeStocks = false, bool includeTransactions = false)
     {
         var query = _context.StorageLocations.AsQueryable();
+
+        if (includeStocks)
+        {
+            query = query.Include(x => x.Stocks)
+                .ThenInclude(x => x.Item);
+        }
+
+        if (includeTransactions)
+        {
+            query = query.Include(x => x.InventoryTransactions);
+        }
+
+        var storageLocations = await query.ToListAsync();
+        
+        return storageLocations;
+    }
+    
+    public async Task<StorageLocation> GetStorageLocation(int storageLocationId, bool includeStocks = false, bool includeTransactions = false)
+    {
+        var query = _context.StorageLocations.AsQueryable()
+            .Where(x => x.StorageLocationId == storageLocationId);
 
         if (includeStocks)
         {
@@ -146,9 +167,9 @@ public class ImsService
             query = query.Include(x => x.InventoryTransactions);
         }
 
-        var storageLocations = await query.ToListAsync();
+        var storageLocation = await query.FirstOrDefaultAsync();
         
-        return storageLocations;
+        return storageLocation;
     }
     
     public List<ItemCategory> GetItemCategories()
@@ -177,5 +198,10 @@ public class ImsService
     {
         return await _context.ItemImages
             .FirstOrDefaultAsync(x => x.ItemId == itemId);
+    }
+
+    public async Task<List<Customer>> GetCustomers()
+    {
+        return await _context.Customers.ToListAsync();
     }
 }

@@ -7,6 +7,7 @@ public class PieTypeChartCardBase : ComponentBase
 {
     // Card Options
     [Parameter] public string Title { get; set; } = "Pie Chart";
+    [Parameter] public bool DenseHeader { get; set; } = false;
     
     // Type 1 Chart Data
     [Parameter] public required string[] Labels { get; set; }

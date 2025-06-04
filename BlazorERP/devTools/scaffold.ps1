@@ -1,15 +1,13 @@
-﻿# Parameters for Scaffold-DbContext
-$connectionString = "server=172.19.8.28;Database=Dev;Trusted_Connection=True;User Id=readonly_user;Password=Read0nly!;Trusted_Connection=false;MultipleActiveResultSets=true;persist security info=true;TrustServerCertificate=True;Integrated Security=false;"
-$provider = "Microsoft.EntityFrameworkCore.SqlServer"
-$outputDir = "Data/Entities"
+﻿# Params
+$connectionString = "server=172.19.8.28;Database=Dev;User Id=readonly_user;Password=Read0nly!;Trusted_Connection=True;"
 $contextDir = "Data/Context"
+$outputDir = "Data/Entities"
 $contextName = "proContext"
 
-# Running the Scaffold-DbContext command using .NET Core CLI
-dotnet ef dbcontext scaffold --no-onconfiguring --use-database-names --verbose $connectionString $provider --output-dir $outputDir --context-dir $contextDir --context $contextName --force --no-build
+# Run Scaffold
+dotnet ef dbcontext scaffold --no-onconfiguring --use-database-names --verbose $connectionString "Microsoft.EntityFrameworkCore.SqlServer" --output-dir $outputDir --context-dir $contextDir --context $contextName --force --no-build
 
-
-# Path to database context
+# Set path to database context
 $dbContextFile = Join-Path $contextDir "$contextName.cs"
 
 # Custom OnConfiguring method
@@ -33,17 +31,13 @@ $customOnConfiguring = @"
     } 
 "@
 
-
-
-# Regex to find the constructor
-$constructorRegex = @"
-public\s+\w+\s*\(\s*DbContextOptions<\w+>\s*\w*\s*\)\s*:\s*base\(.*?\)\s*\{[^}]*\}
-"@
+# Use regex to find the constructor
+$constructorRegex = "public\s+\w+\s*\(\s*DbContextOptions<\w+>\s*\w*\s*\)\s*:\s*base\(.*?\)\s*\{[^}]*\}"
 
 # Get Content
 $content = Get-Content $dbContextFile -Raw
 
-# Add "using Microsoft.Extensions.Configuration;" if doesnt exist
+# Add Microsoft.Extensions.Configuration if it doesnt exist
 if ($content -notmatch "using Microsoft\.Extensions\.Configuration;") {
     Write-Host "Adding 'using Microsoft.Extensions.Configuration;' to the top of the file."
     $content = "using Microsoft.Extensions.Configuration;" + $content
@@ -57,4 +51,5 @@ if ($content -match $constructorRegex) {
     Write-Host "Constructor not found. No changes made."
 }
 
+# Write the modified content back to the file
 Set-Content $dbContextFile $content
