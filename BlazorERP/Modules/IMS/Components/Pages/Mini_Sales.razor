@@ -68,8 +68,47 @@
                         </MudTabPanel>
                         <MudTabPanel Text="Sales Orders" Icon="@Icons.Material.Filled.ShoppingCart">
 
-                            <MudText Typo="Typo.h6">Sales Orders will be implemented here.</MudText>
-                            
+                            <MudGrid>
+                                <MudItem xs="12" md="6">
+                                    <MudTable T="SalesOrder" Items="@_salesOrders" Dense="true" Breakpoint="Breakpoint.SmAndDown" Hover="true"
+                                              RowClass="cursor-pointer" OnRowClick="SalesOrderSelected">
+                                        <HeaderContent>
+                                            <MudTh>ID</MudTh>
+                                            <MudTh><MudTableSortLabel SortBy="new Func<SalesOrder, object>(x => x.OrderedUtc)">Ordered</MudTableSortLabel></MudTh>
+                                            <MudTh><MudTableSortLabel SortBy="new Func<SalesOrder, object>(x => x.Customer!.Name)">Customer</MudTableSortLabel></MudTh>
+                                            <MudTh>Status</MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate>
+                                            <MudTd DataLabel="ID">@context.SOId</MudTd>
+                                            <MudTd DataLabel="Ordered">@context.OrderedUtc.ToShortDateString()</MudTd>
+                                            <MudTd DataLabel="Customer">@context.Customer?.Name</MudTd>
+                                            <MudTd DataLabel="Status">@context.Status</MudTd>
+                                        </RowTemplate>
+                                    </MudTable>
+                                </MudItem>
+                                <MudItem xs="12" md="6">
+                                    @if (_selectedSalesOrder is not null)
+                                    {
+                                        <MudTable T="SalesOrderLine" Items="@_selectedSalesOrder.SalesOrderLines.ToList()" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true">
+                                            <HeaderContent>
+                                                <MudTh>Item</MudTh>
+                                                <MudTh>Qty</MudTh>
+                                                <MudTh>Price</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd DataLabel="Item">@context.Item.Name</MudTd>
+                                                <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
+                                                <MudTd DataLabel="Price">$@context.UnitPrice</MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    }
+                                    else
+                                    {
+                                        <MudText Typo="Typo.subtitle1" Class="m-2">Select a sales order to view lines.</MudText>
+                                    }
+                                </MudItem>
+                            </MudGrid>
+
                         </MudTabPanel>
 
 
@@ -90,6 +129,9 @@
 @code {
 
     private List<Customer> _customers = new List<Customer>();
+
+    private List<SalesOrder> _salesOrders = new List<SalesOrder>();
+    private SalesOrder? _selectedSalesOrder;
     
     private Customer _selectedCustomer = new Customer();
 
@@ -101,6 +143,12 @@
     protected override async Task OnInitializedAsync()
     {
         _customers = await Ims.GetCustomers();
+        _salesOrders = await Ims.GetSalesOrders();
+    }
+
+    private void SalesOrderSelected(TableRowClickEventArgs<SalesOrder> args)
+    {
+        _selectedSalesOrder = args.Item;
     }
 
 }

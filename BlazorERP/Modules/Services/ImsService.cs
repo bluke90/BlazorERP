@@ -103,9 +103,21 @@ public class ImsService
         var sales = await _context.SalesOrderLines
             .Include(x => x.Item)
             .ToListAsync();
-        
+
         return sales;
-        
+
+    }
+
+    public async Task<List<SalesOrder>> GetSalesOrders()
+    {
+        var orders = await _context.SalesOrders
+            .Include(x => x.Customer)
+            .Include(x => x.SalesOrderLines)
+                .ThenInclude(line => line.Item)
+            .ToListAsync();
+
+        return orders;
+
     }
 
     public async Task<List<Item>> GetItems(bool includeCategory = true, bool includeStocks = true, bool includeStockLocations = false)
