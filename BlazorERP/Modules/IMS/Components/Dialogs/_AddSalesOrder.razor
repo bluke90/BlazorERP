@@ -1,0 +1,134 @@
+﻿@using System.Security.AccessControl
+@using BlazorERP.Data.Context
+@using BlazorERP.Data.Entities
+@using BlazorERP.Modules.Services
+@using BlazorERP.Data.Models
+@inject ImsService Ims
+@inject IDialogService Dialog
+@inject ISnackbar Snackbar
+@inject proContext _context
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Medium" />
+            Add Sales Order
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="6">
+                <MudSelect T="Customer" Label="Customer" @bind-Value="_newOrder.Customer" Variant="Variant.Outlined" Required>
+                    @foreach (var cust in _customers)
+                    {
+                        <MudSelectItem Value="@cust">@cust.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="6">
+                <MudDatePicker @bind-Date="_orderedDate" Label="Order Date" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Status" @bind-Value="_newOrder.Status" Variant="Variant.Outlined" />
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="my-2" />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="AddLine" StartIcon="@Icons.Material.Filled.Add">
+            Add Line
+        </MudButton>
+
+        <MudTable T="SalesOrderLine" Items="_lines" Dense="true" @bind-SelectedItem="_selectedLine" Class="mt-2">
+            <HeaderContent>
+                <MudTh>Item</MudTh>
+                <MudTh>Qty</MudTh>
+                <MudTh>Price</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Item">@context.Item?.Name</MudTd>
+                <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
+                <MudTd DataLabel="Price">$@context.UnitPrice</MudTd>
+            </RowTemplate>
+            <RowEditingTemplate>
+                <MudTd DataLabel="Item">
+                    <MudSelect T="Item" @bind-Value="context.Item" Variant="Variant.Outlined" Dense Required>
+                        @foreach (var item in _items)
+                        {
+                            <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudTd>
+                <MudTd DataLabel="Qty">
+                    <MudNumericField @bind-Value="context.QtyOrdered" Variant="Variant.Outlined" Required />
+                </MudTd>
+                <MudTd DataLabel="Price">
+                    <MudNumericField @bind-Value="context.UnitPrice" Variant="Variant.Outlined" Required />
+                </MudTd>
+            </RowEditingTemplate>
+            <EditButtonContent Context="button">
+                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
+            </EditButtonContent>
+        </MudTable>
+    </DialogContent>
+
+    <DialogActions>
+        <MudGrid Justify="Justify.SpaceAround">
+            <MudItem xs="6">
+                <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Cancel" FullWidth="true">Cancel</MudButton>
+            </MudItem>
+            <MudItem xs="6">
+                <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="Save" FullWidth="true">Save</MudButton>
+            </MudItem>
+        </MudGrid>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private SalesOrder _newOrder = new() { OrderedUtc = DateTime.Today, Status = "Pending" };
+    private List<SalesOrderLine> _lines = new();
+    private SalesOrderLine? _selectedLine;
+    private DateTime? _orderedDate = DateTime.Today;
+
+    private List<Customer> _customers = new();
+    private List<Item> _items = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _customers = await Ims.GetCustomers();
+        _items = await Ims.GetItems();
+    }
+
+    private void AddLine()
+    {
+        var line = new SalesOrderLine { QtyOrdered = 1, UnitPrice = 0 };
+        _lines.Add(line);
+        _selectedLine = line;
+    }
+
+    private async Task Save()
+    {
+        _newOrder.OrderedUtc = _orderedDate ?? DateTime.Today;
+        
+        if (_newOrder.Customer != null)
+            _newOrder.CustomerId = _newOrder.Customer.CustomerId;
+
+        foreach (var line in _lines)
+        {
+            if (line.Item != null)
+                line.ItemId = line.Item.ItemId;
+            _newOrder.SalesOrderLines.Add(line);
+        }
+
+        _context.Add(_newOrder);
+        await _context.SaveChangesAsync();
+        Snackbar.Add("Sales order added", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(_newOrder));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

@@ -25,64 +25,6 @@
             <!-- === Image Upload === -->
             <MudItem xs="5" Class="text-center justify-center align-items-center">
                 <ImageDragDrop @ref="_fileUpload"/>
-
-                @*     @if (!string.IsNullOrEmpty(_fileDataUrl)) *@
-                @*     { *@
-                @*         <MudPaper Height="35vh" *@
-                @*                   Width="50vh" *@
-                @*                   Outlined="true" *@
-                @*                   Class="@_dragClass"> *@
-                @*             <MudImage Src="@_fileDataUrl" ObjectFit="ObjectFit.Contain" Class="auto-fit"/> *@
-                @*         </MudPaper> *@
-                @*     } *@
-                @*     else *@
-                @*     { *@
-                @*         <MudFileUpload T="IBrowserFile" *@
-                @*                        @ref="@_fileUpload" *@
-                @*                        OnFilesChanged="OnFileInputChanged" *@
-                @*                        Hidden="@false" *@
-                @*                        Class="align-items-center" *@
-                @*                        InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10" *@
-                @*                        InputStyle="opacity: 0; left: 0; cursor: pointer;" *@
-                @*                        tabindex="-1" *@
-                @*                        @ondrop="@ClearDragClass" *@
-                @*                        @ondragenter="@SetDragClass" *@
-                @*                        @ondragleave="@ClearDragClass" *@
-                @*                        @ondragend="@ClearDragClass"> *@
-                @*             <ActivatorContent> *@
-                @*                 <MudPaper Height="35vh" *@
-                @*                           Width="50vh" *@
-                @*                           Outlined="true" *@
-                @*                           Class="@_dragClass" *@
-                @*                           Style="padding-top: 20% !important;"> *@
-                @*                     <MudChip T="string" *@
-                @*                              Color="Color.Dark" *@
-                @*                              Text="@_fileName" *@
-                @*                              tabindex="-1" *@
-                @*                              Class="p-3"> *@
-                @*                         <MudText Typo="Typo.h6">Drag and Drop item image here or click</MudText> *@
-                @*                     </MudChip> *@
-                @*                 </MudPaper> *@
-                @*             </ActivatorContent> *@
-                @*         </MudFileUpload> *@
-                @*     } *@
-                @*     <!-- File Picker Toolbar --> *@
-                @*     <MudToolBar Gutters="@false" Class="relative d-flex justify-center gap-4"> *@
-                @*         @if (string.IsNullOrEmpty(_fileDataUrl)) *@
-                @*         { *@
-                @*             <MudButton Color="Color.Primary" *@
-                @*                        OnClick="@OpenFilePickerAsync" *@
-                @*                        Variant="Variant.Filled"> *@
-                @*                 Open File Picker *@
-                @*             </MudButton> *@
-                @*         } *@
-                @*         <MudButton Color="Color.Error" *@
-                @*                    Disabled="@(!_fileName.Any())" *@
-                @*                    OnClick="@ClearAsync" *@
-                @*                    Variant="Variant.Filled"> *@
-                @*             Clear *@
-                @*         </MudButton> *@
-                @*     </MudToolBar> *@
             </MudItem>
 
             <!-- === Item Base Details === -->

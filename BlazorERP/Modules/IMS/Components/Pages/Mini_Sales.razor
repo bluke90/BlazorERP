@@ -4,9 +4,12 @@
 
 <!-- Tabbed table with Customers and Sales Orders -->
 @using BlazorERP.Data.Entities
+@using BlazorERP.Modules.IMS.Components.Dialogs
 @using BlazorERP.Modules.IMS.Components.PageComponents
 @using BlazorERP.Modules.Services
 @inject ImsService Ims
+@inject IDialogService Dialog
+@inject ISnackbar Snackbar
 
 @page "/IMS/Sales"
 
@@ -18,13 +21,7 @@
             <MudCard Elevation="10" Outlined="true">
                 <MudCardContent Class="p-0">
 
-
- 
-
                     <MudTabs Elevation="5" Rounded="true" ApplyEffectsToContainer="true" PanelClass="p-6" Border="true">
-
-                        <!-- Pop in pie chart of stock % by storage location -->
-                        <!-- Table showing which location contains what items (Contents) -->
 
                         <MudTabPanel Text="Customers" Icon="@Icons.Material.Filled.Person">
 
@@ -69,6 +66,12 @@
                         <MudTabPanel Text="Sales Orders" Icon="@Icons.Material.Filled.ShoppingCart">
 
                             <MudGrid>
+                                <MudItem xs="12" Class="text-right">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" OnClick="OpenNewSalesOrderDialog">
+                                        <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small" />
+                                        New Order
+                                    </MudButton>
+                                </MudItem>
                                 <MudItem xs="12" md="6">
                                     <MudTable T="SalesOrder" Items="@_salesOrders" Dense="true" Breakpoint="Breakpoint.SmAndDown" Hover="true"
                                               RowClass="cursor-pointer" OnRowClick="SalesOrderSelected">
@@ -149,6 +152,25 @@
     private void SalesOrderSelected(TableRowClickEventArgs<SalesOrder> args)
     {
         _selectedSalesOrder = args.Item;
+    }
+    
+    private async Task OpenNewSalesOrderDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            Position = DialogPosition.Center
+        };
+
+        var dialog = await Dialog.ShowAsync<_AddSalesOrder>("New Sales Order", options: options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            _salesOrders = await Ims.GetSalesOrders();
+            Snackbar.Add("Sales order added", Severity.Success);
+        }
     }
 
 }
