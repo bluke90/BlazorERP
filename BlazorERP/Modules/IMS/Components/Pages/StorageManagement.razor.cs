@@ -1,5 +1,6 @@
 ﻿using BlazorERP.Data.Entities;
 using BlazorERP.Modules.Services;
+using BlazorERP.Utilities;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,11 +12,16 @@ public class StorageManagementBase : ComponentBase
     
     protected List<StorageLocation> _stores { get; set; } = new List<StorageLocation>();
     protected StorageLocation? _selectedStore { get; set; }
+    protected List<Stock>? _selectedStoreStocks { get; set; }
     
     [Inject]
     protected ImsService Ims { get; private set; }
     [Inject]
     protected ISnackbar Snackbar { get; private set; }
+    
+    // Chart Values
+    public string[] ChartLabels { get; set; } = Array.Empty<string>();
+    public double[] ChartValues { get; set; } = Array.Empty<double>();
     
     protected override async Task OnInitializedAsync()
     {
@@ -25,7 +31,34 @@ public class StorageManagementBase : ComponentBase
             throw new InvalidOperationException("ImsService was not injected.");
         
         // Load storage locations
-        _stores = await Ims.GetStorageLocations(includeStocks: true);
+        _stores = await Ims.GetAllStorageLocations(includeStocks: true);
+    }
+    
+    public async Task LocationSelected(TableRowClickEventArgs<StorageLocation> args)
+    {
+        StorageLocation clicked_item = args.Item;
+        if (_selectedStore != clicked_item) 
+        {
+            // Set Item
+            _selectedStore = clicked_item;
+            
+            // Get Stock Chart Data
+            await Ims._context.LoadCollectionsAsync<StorageLocation, Stock>(
+                _selectedStore, 
+                x => x.Stocks,
+                f => f.StorageLocationId == _selectedStore.StorageLocationId);
+            
+            _selectedStoreStocks = _selectedStore.Stocks.ToList();
+            
+            // Get Chart Values
+            ChartLabels = _selectedStore.Stocks
+                .Select(stock => stock.Item?.Name ?? "Unknown Item")
+                .ToArray();
+            
+            ChartValues = _selectedStore.Stocks
+                .Select(stock => (double)stock.OnHand)
+                .ToArray();
+        }
     }
     
     public async Task SaveStorageLocation()
@@ -37,6 +70,6 @@ public class StorageManagementBase : ComponentBase
         await Ims.SaveStorageLocation(_selectedStore);
         
         // Refresh the list of storage locations
-        _stores = await Ims.GetStorageLocations(includeStocks: true);
+        _stores = await Ims.GetAllStorageLocations(includeStocks: true);
     }
 }

@@ -7,14 +7,82 @@
 
 <ImsMenu/>
 
-<MudGrid Class="alternate-bg-50">
-    <MudItem xs="12" Style="z-index: 1;">
-        <MudCard>
-            <MudCardHeader>
+<MudGrid Class="fix-pos">
+    <MudItem xs="12" Style="z-index: 1;" Class="alternate-bg-50">
+        @if (_selectedStore != null)
+        {
+            <MudGrid>
 
-            </MudCardHeader>
-            <MudCardContent></MudCardContent>
-        </MudCard>
+                <MudItem xs="5">
+                    <PieTypeChartCard Labels="ChartLabels" Values="ChartValues" Title="Storage Location Contents" DenseHeader="true"/>
+                </MudItem>
+                <MudItem xs="7">
+                    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" ActiveTabClass="alternate">
+                        
+                        <MudTabPanel Text="Details" Icon="@Icons.Material.Filled.Info">
+                            <MudGrid>
+                                <MudItem xs="6">
+                                    <MudTextField Label="Name" @bind-Value="_selectedStore.Name" Variant="Variant.Filled" AdornmentIcon="@Icons.Material.Filled.PermIdentity">@_selectedStore.Name</MudTextField>
+                                    <MudTextField Label="Code" @bind-Value="_selectedStore.Code" Variant="Variant.Filled" AdornmentIcon="@Icons.Material.Filled.Code">@_selectedStore.Code</MudTextField>
+                                    <MudTextField Label="Address" @bind-Value="_selectedStore.Address" Variant="Variant.Filled" AdornmentIcon="@Icons.Material.Filled.LocationOn">@_selectedStore.Address</MudTextField>
+                                </MudItem>
+                                <MudItem xs="6">
+
+                                </MudItem>
+                                <MudItem xs="12" Class="flex flex-row justify-center p-1" Style="margin-left: 24px">
+                                    <MudButton Class="w-48" Variant="Variant.Filled" Color="Color.Success">
+                                        <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/>
+                                        Save
+                                    </MudButton>
+                                    <MudSpacer/>
+                                    <MudButton Class="w-48" Variant="Variant.Filled" Color="Color.Error">
+                                        <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Cancel"/>
+                                        Deactivate
+                                    </MudButton>
+                                </MudItem>
+
+                            </MudGrid>
+                        </MudTabPanel>
+                        
+                        <MudTabPanel Text="Contents" Icon="@Icons.Material.Filled.Storage">
+                            <MudPaper Class="justify-center" Style="background: none;">
+                                
+                                <ItemStockTable ItemStockTableVariant="ItemStockTableVariant.ByItem" Stocks="_selectedStoreStocks" TableOnly="true"></ItemStockTable>
+                        
+                                <MudChip T="string"
+                                         Color="Color.Dark"
+                                         tabindex="-1"
+                                         Class="p-2 m-2" Style="right: 10px;">
+                                    <MudText Typo="Typo.body1" Color="Color.Default">
+                                        <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Edit" Size="Size.Medium"/>
+                                        Click On Any Quantity to Edit
+                                    </MudText>
+                                </MudChip>
+                            
+                            </MudPaper>
+                        </MudTabPanel>
+                        
+                    </MudTabs>
+                </MudItem>
+
+            </MudGrid>
+        }
+        else
+        {
+            <MudPaper Class="justify-center bg-none flex">
+                
+                <MudChip T="string"
+                         Color="Color.Dark"
+                         tabindex="-1"
+                         Class="p-2 m-2">
+                    <MudText Typo="Typo.body1" Color="Color.Default">
+                        <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium"/>
+                        Select a Storage Location to View Details
+                    </MudText>
+                </MudChip>
+                
+            </MudPaper>
+        }
     </MudItem>
     
     <MudItem xs="12">
@@ -26,8 +94,8 @@
             
             <MudTabPanel Text="Storage Locations" Icon="@Icons.Material.Filled.Storage" >
 
-                <MudTable Items="@_stores" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
-                          @bind-SelectedItem="_selectedStore" SortLabel="Sort By" OnCommitEditClick="SaveStorageLocation">
+                <MudTable T="StorageLocation" Items="@_stores" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true" 
+                          OnRowClick="LocationSelected" SortLabel="Sort By">
                     
                     <HeaderContent>
                         <MudTh>ID</MudTh>
