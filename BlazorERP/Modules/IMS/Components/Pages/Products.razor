@@ -1,6 +1,7 @@
 @using BlazorERP.Data.Entities
 @using BlazorERP.Modules.IMS.Components.PageComponents
 @using BlazorERP.Utilities
+@using BlazorERP.Components.Global.Components
 @inherits ProductsBase
 
 @page "/IMS/Products"
@@ -8,95 +9,121 @@
 
 
 <ImsMenu/>
-<MudGrid Spacing="5" Justify="Justify.SpaceBetween">
-    <MudItem xs="12">
-    <div class="flex">
+<MudGrid Class="fix-pos">
+    <MudToolWindow WindowTitle="Product Details">
         <!-- Card 1 -->
 
         @if (SelectedItem != null)
         {
-            <div class="col">
-                <MudCard Class="mb-2" Elevation="8">
+                    <MudCard Class="mb-2" Elevation="8">
 
-                    <MudCardHeader>
-                        <MudText Typo="Typo.h6"> <MudIcon Icon="@Icons.Material.Filled.Assignment" Size="Size.Medium"/>
-                            Product Details
-                        </MudText>
-                    </MudCardHeader>
+                        <MudCardHeader>
+                            <MudText Typo="Typo.h6"> <MudIcon Icon="@Icons.Material.Filled.Assignment" Size="Size.Medium"/>
+                                Product Details
+                            </MudText>
+                        </MudCardHeader>
 
-                    <MudCardContent Class="p-2">
+                        <MudCardContent Class="p-2">
+                            <MudGrid>
+                                <MudItem xs="6">
+                                    <MudGrid>
+                                        <!-- Icon -->
+                                        <MudItem xs="5" Class="text-center">
+                                            <MudImage Src="@SelectedItemImageUrl" ObjectFit="ObjectFit.Contain" Height="180" Width="180"/>
+                                        </MudItem>
 
-                        <MudGrid>
-                            <!-- Icon -->
-                            <MudItem xs="5" Class="text-center">
-                                <MudImage Src="@SelectedItemImageUrl" ObjectFit="ObjectFit.Contain" Height="200" Width="180"/>
-                            </MudItem>
+                                        <MudItem xs="7">
+                                            <MudTextField Label="Name" @bind-Value="@SelectedItem.Name" Variant="Variant.Outlined"/>
+                                            <MudTextField Label="Category" @bind-Value="@SelectedItem.Category.Name" Variant="Variant.Outlined"/>
+                                            <MudStack Row="true" Spacing="10" Justify="Justify.SpaceBetween" Class="relative">
+                                                @if (@SelectedItem.IsActive)
+                                                {
+                                                    <MudText Class="mt-2" Color="Color.Success" Typo="Typo.body2"><MudIcon Class="align-bottom" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success"/>Active</MudText>
+                                                }
+                                                else
+                                                {
+                                                    <MudText Class="mt-2" Color="Color.Error" Typo="Typo.body2"><MudIcon Icon="@Icons.Material.Filled.FlagCircle" Color="Color.Warning"/>Not Active</MudText>
+                                                }
+                                                <div class="w-50">
+                                                    <MudTextField Label="Total Stock" ReadOnly="true" Variant="Variant.Text" Adornment="Adornment.Start" Class="no-hover"
+                                                                  AdornmentIcon="@Icons.Material.Filled.Warehouse" AdornmentColor="@(SelectedItem.Stocks.ToList().SumList(x => x.OnHand) > SelectedItem.ReorderPoint ? Color.Success : Color.Warning)"
+                                                                  Value="@SelectedItem.Stocks.ToList().SumList(x => x.OnHand)" Underline="false"/>
+                                                </div>
+                                            </MudStack>
+                                        </MudItem>
 
-                            <MudItem xs="7">
-                                <MudTextField Label="Name" @bind-Value="@SelectedItem.Name" Variant="Variant.Outlined"/>
-                                <MudTextField Label="Category" @bind-Value="@SelectedItem.Category.Name" Variant="Variant.Outlined"/>
-                                @if (@SelectedItem.IsActive)
-                                {
-                                    <MudText Class="mt-2" Color="Color.Success" Typo="Typo.body2"><MudIcon Class="align-bottom" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success"/>Active</MudText>
-                                }
-                                else
-                                {
-                                    <MudText Class="mt-2" Color="Color.Error" Typo="Typo.body2"><MudIcon Icon="@Icons.Material.Filled.FlagCircle" Color="Color.Warning"/>Not Active</MudText>
-                                }
+                                    </MudGrid>
+                                    <MudDivider Class="gap"/>
+                                    <MudGrid>
+                                        <MudItem xs="6">
+                                            <MudTextField Label="SKU" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.QrCode2"
+                                                          @bind-Value="@SelectedItem.SKU" Variant="Variant.Text"/>
+                                            <MudTextField Label="Default Cost" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Adornment="Adornment.Start"
+                                                          @bind-Value="@SelectedItem.DefaultCost" Variant="Variant.Text" InputMode="InputMode.numeric"/>
+                                        </MudItem>
+                                        <MudItem xs="6">
+                                            <MudTextField Label="Reorder Point" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.SyncProblem"
+                                                          @bind-Value="@SelectedItem.ReorderPoint" Variant="Variant.Text"/>
+                                            <MudTextField Label="Default Price" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Adornment="Adornment.Start"
+                                                          @bind-Value="@SelectedItem.DefaultPrice" Variant="Variant.Text" InputMode="InputMode.numeric"/>
 
-                            </MudItem>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudItem>
+                                <MudItem xs="6">
+                                    <MudExpansionPanels>
+                                        <MudExpansionPanel Text="Item Stocks" Icon="@Icons.Material.Filled.Storage">
+                                            <ItemStockTable Stocks="SelectedItem.Stocks.ToList()" TableOnly="true"/>
+                                        </MudExpansionPanel>
+                                        <MudExpansionPanel Text="Stock Locations">
 
-                        </MudGrid>
-                        <MudDivider Class="gap"/>
-                        <MudGrid>
-                            <MudItem xs="6">
-                                <MudTextField Label="SKU" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.QrCode2"
-                                              @bind-Value="@SelectedItem.SKU" Variant="Variant.Text"/>
-                                <MudTextField Label="Default Cost" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Adornment="Adornment.Start"
-                                              @bind-Value="@SelectedItem.DefaultCost" Variant="Variant.Text" InputMode="InputMode.numeric"/>
-                                <MudTextField Label="Default Price" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Adornment="Adornment.Start"
-                                              @bind-Value="@SelectedItem.DefaultPrice" Variant="Variant.Text" InputMode="InputMode.numeric"/>
-                            </MudItem>
-                            <MudItem xs="6">
-                                <MudTextField Label="Reorder Point" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.SyncProblem" 
-                                              @bind-Value="@SelectedItem.ReorderPoint" Variant="Variant.Text"/>
-                                <MudTextField Label="Total Stock" ReadOnly="true" Variant="Variant.Text" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Warehouse"
-                                              Value="@SelectedItem.Stocks.ToList().SumList(x => x.OnHand)"/>
-                            </MudItem>
-                        </MudGrid>
+                                        </MudExpansionPanel>
+                                    </MudExpansionPanels>
+                                </MudItem>
+                            </MudGrid>
 
+                        </MudCardContent>
 
-                    </MudCardContent>
+                        <MudCardActions Class="pl-2 pr-2">
+                            <MudGrid>
+                                <MudItem xs="6">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Success" FullWidth="true">
+                                        <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/>
+                                        Save
+                                    </MudButton>
+                                </MudItem>
+                                <MudSpacer/>
+                                <MudItem xs="6">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Error" FullWidth="true">
+                                        <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Cancel"/>
+                                        Deactivate
+                                    </MudButton>
+                                </MudItem>
+                            </MudGrid>
+                        </MudCardActions>
 
-                    <MudCardActions Class="pl-2 pr-2">
-                        <MudGrid>
-                            <MudItem xs="6">
-                                <MudButton Variant="Variant.Filled" Color="Color.Success" FullWidth="true">
-                                    <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/>
-                                    Save
-                                </MudButton>
-                            </MudItem>
-                            <MudSpacer/>
-                            <MudItem xs="6">
-                                <MudButton Variant="Variant.Filled" Color="Color.Error" FullWidth="true">
-                                    <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Cancel"/>
-                                    Deactivate
-                                </MudButton>
-                            </MudItem>
-                        </MudGrid>
-                    </MudCardActions>
-
-                </MudCard>
-                
-                @if (SelectedItem != null)
-                {
-                    <ItemStockTable Stocks="SelectedItem.Stocks.ToList()"/>
-                }
-            </div>
+                    </MudCard>
+            
         }
-
+        else
+        {
+            <MudPaper Class="justify-center bg-none flex">
+                
+                <MudChip T="string"
+                         Color="Color.Dark"
+                         tabindex="-1"
+                         Class="p-2 m-2">
+                    <MudText Typo="Typo.body1" Color="Color.Default">
+                        <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium"/>
+                        Select an Item to View Details
+                    </MudText>
+                </MudChip>
+                
+            </MudPaper>
+        }
+        </MudToolWindow>
+    <MudItem xs="12">
         <!-- Card 2 -->
-        <div class="col">
             <MudCard Elevation="8">
 
                 <MudCardHeader>
@@ -169,8 +196,7 @@
 
 
 
-        </div>
-    </div>
+
     </MudItem>
 
 </MudGrid>

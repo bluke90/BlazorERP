@@ -1,0 +1,32 @@
+﻿<MudItem xs="12" Style="z-index: 1;" Class="alternate-bg-50 tool-window">
+    <div class="tool-window-container">
+        @if (ChildContent == null)
+        {
+            <MudText Typo="Typo.h6" Class="text-center">
+                <MudIcon Icon="@FooterIcon" Size="Size.Medium" />
+                No Content Available
+            </MudText>
+        }
+        else
+        {
+            @ChildContent    
+        }
+        
+    </div>
+    <div class="tool-window-footer">
+        <MudText Typo="Typo.h6" Class="align-sub">
+            <MudIcon Icon="@FooterIcon"/>
+            @WindowTitle
+        </MudText>
+    </div>
+</MudItem>
+
+@code{
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public string WindowTitle { get; set; } = "Tool Window";
+    [Parameter]
+    public string FooterIcon { get; set; } = Icons.Material.Filled.Info;
+    
+}

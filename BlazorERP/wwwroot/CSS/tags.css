@@ -14,6 +14,27 @@
     flex: 1;
 }
 
+.relative {
+    position: relative;
+}
+.no-hover {
+    pointer-events: none;
+    :hover {
+        cursor: default;
+    }
+    &:focus {
+        outline: none;
+    }
+    &:focus-visible {
+        outline: none;
+    }
+    &:focus-within {
+        outline: none;
+    }
+    &:active {
+        outline: none;
+    }
+}
 
 /* === Mud Card Tags === */
 .mud-card.mud-paper.expand {
@@ -93,6 +114,10 @@
 /* === MudTab Tags === */
 .alternate.mud-tab-active {
     background-color: var(--DarkHightlight) !important;
+}
+
+.dark.mud-table {
+    background-color: var(--mud-palette-background-gray) !important;
 }
 
 /* === MudSelect Tags === */

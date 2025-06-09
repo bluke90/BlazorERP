@@ -1,0 +1,26 @@
+﻿:root {
+    --theme-primary: #1e499e;
+    --theme-primary-overlay: #112a90cc;
+    --DarkHighlight: #00000078;
+}
+
+.tool-window {
+    
+}
+
+.tool-window-container {
+    
+}
+
+.tool-window-footer {
+    position: absolute;
+    background-color:var(--DarkHighlight);
+    top: 95%;
+    left: 1px;
+    padding: 0.25vh;
+    width: 101%;
+    
+    h6 {
+        font-size: 1.2rem;
+    }
+}

@@ -33,4 +33,8 @@
     <ItemGroup>
       <None Include="wwwroot\Components\Global\IconSelect.js" />
     </ItemGroup>
+
+    <ItemGroup>
+        <RazorCssIsolation Include="**/*.razor.css" />
+    </ItemGroup>
 </Project>
