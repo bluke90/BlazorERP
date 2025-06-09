@@ -94,8 +94,13 @@
             
             <MudTabPanel Text="Storage Locations" Icon="@Icons.Material.Filled.Storage" >
 
-                <MudTable T="StorageLocation" Items="@_stores" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true" 
-                          OnRowClick="LocationSelected" SortLabel="Sort By">
+                <MudTable T="StorageLocation" Items="@_stores" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
+                          OnRowClick="LocationSelected" SortLabel="Sort By" Class="dark">
+                    <ToolBarContent>
+                        <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenNewStorageLocationDialog">
+                            New Location
+                        </MudButton>
+                    </ToolBarContent>
                     
                     <HeaderContent>
                         <MudTh>ID</MudTh>

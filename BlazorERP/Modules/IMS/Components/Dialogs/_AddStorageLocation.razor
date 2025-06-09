@@ -1,0 +1,49 @@
+﻿@using BlazorERP.Data.Context
+@using BlazorERP.Data.Entities
+@inject ISnackbar Snackbar
+@inject proContext _context
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Medium"/>
+            Add Storage Location
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <MudTextField Label="Code" @bind-Value="_newLocation.Code" Variant="Variant.Outlined" Required />
+        <MudTextField Label="Name" @bind-Value="_newLocation.Name" Variant="Variant.Outlined" Required />
+        <MudTextField Label="Address" @bind-Value="_newLocation.Address" Variant="Variant.Outlined" />
+    </DialogContent>
+
+    <DialogActions>
+        <MudGrid Justify="Justify.SpaceAround">
+            <MudItem xs="6">
+                <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Cancel" FullWidth="true">Cancel</MudButton>
+            </MudItem>
+            <MudItem xs="6">
+                <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="Save" FullWidth="true">Save</MudButton>
+            </MudItem>
+        </MudGrid>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    // Snackbar and DbContext are injected via @inject directives
+
+    private StorageLocation _newLocation = new() { Code = string.Empty, Name = string.Empty };
+
+    private async Task Save()
+    {
+        _context.Add(_newLocation);
+        await _context.SaveChangesAsync();
+        Snackbar.Add("Storage location added", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(_newLocation));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

@@ -1,4 +1,5 @@
 ﻿using BlazorERP.Data.Entities;
+using BlazorERP.Modules.IMS.Components.Dialogs;
 using BlazorERP.Modules.Services;
 using BlazorERP.Utilities;
 using Microsoft.AspNetCore.Components;
@@ -18,6 +19,8 @@ public class StorageManagementBase : ComponentBase
     protected ImsService Ims { get; private set; }
     [Inject]
     protected ISnackbar Snackbar { get; private set; }
+    [Inject]
+    protected IDialogService Dialog { get; private set; }
     
     // Chart Values
     public string[] ChartLabels { get; set; } = Array.Empty<string>();
@@ -71,5 +74,25 @@ public class StorageManagementBase : ComponentBase
         
         // Refresh the list of storage locations
         _stores = await Ims.GetAllStorageLocations(includeStocks: true);
+    }
+    public async Task OpenNewStorageLocationDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            BackdropClick = true,
+            Position = DialogPosition.Center
+        };
+
+        var dialog = await Dialog.ShowAsync<_AddStorageLocation>("New Storage Location", options: options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            _stores = await Ims.GetAllStorageLocations(includeStocks: true);
+            Snackbar.Add("Storage location added", Severity.Success);
+        }
     }
 }
