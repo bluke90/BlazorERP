@@ -18,6 +18,8 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         
         builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+        builder.Configuration.AddUserSecrets<Program>();
+        builder.Configuration.AddEnvironmentVariables();
         Configuration = builder.Configuration;
         
         // Logging - Serilog
