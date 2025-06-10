@@ -1,5 +1,5 @@
 ﻿# Params
-$connectionString = "server=172.19.8.28;Database=Dev;User Id=readonly_user;Password=Read0nly!;Trusted_Connection=True;"
+$connectionString = ''
 $contextDir = "Data/Context"
 $outputDir = "Data/Entities"
 $contextName = "proContext"
@@ -14,13 +14,9 @@ $dbContextFile = Join-Path $contextDir "$contextName.cs"
 $customOnConfiguring = @"
     private readonly IConfiguration _configuration;
     
-    public proContext(DbContextOptions<proContext> options) : base(options)
-    {
-    }
+    public proContext(DbContextOptions<proContext> options) : base(options) {}
     
-    public proContext()
-    {
-    }
+    public proContext() {}
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

@@ -13,10 +13,10 @@
 }
 
 .fix-pos.mud-grid.mud-grid-spacing-xs-6.justify-start {
-    width: calc(100% + 28px) !important;
+    width: calc(100% + 32px) !important;
     margin-left: -16px !important;
     > .mud-grid-item {
-        padding-left: 16px !important;
-        padding-right: 16px !important;
+        padding-left: 16px;
+        padding-right: 16px;
     }
 }

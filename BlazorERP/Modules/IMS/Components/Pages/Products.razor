@@ -15,15 +15,6 @@
 
         @if (SelectedItem != null)
         {
-                    <MudCard Class="mb-2" Elevation="8">
-
-                        <MudCardHeader>
-                            <MudText Typo="Typo.h6"> <MudIcon Icon="@Icons.Material.Filled.Assignment" Size="Size.Medium"/>
-                                Product Details
-                            </MudText>
-                        </MudCardHeader>
-
-                        <MudCardContent Class="p-2">
                             <MudGrid>
                                 <MudItem xs="6">
                                     <MudGrid>
@@ -81,45 +72,7 @@
                                     </MudExpansionPanels>
                                 </MudItem>
                             </MudGrid>
-
-                        </MudCardContent>
-
-                        <MudCardActions Class="pl-2 pr-2">
-                            <MudGrid>
-                                <MudItem xs="6">
-                                    <MudButton Variant="Variant.Filled" Color="Color.Success" FullWidth="true">
-                                        <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/>
-                                        Save
-                                    </MudButton>
-                                </MudItem>
-                                <MudSpacer/>
-                                <MudItem xs="6">
-                                    <MudButton Variant="Variant.Filled" Color="Color.Error" FullWidth="true">
-                                        <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Cancel"/>
-                                        Deactivate
-                                    </MudButton>
-                                </MudItem>
-                            </MudGrid>
-                        </MudCardActions>
-
-                    </MudCard>
             
-        }
-        else
-        {
-            <MudPaper Class="justify-center bg-none flex">
-                
-                <MudChip T="string"
-                         Color="Color.Dark"
-                         tabindex="-1"
-                         Class="p-2 m-2">
-                    <MudText Typo="Typo.body1" Color="Color.Default">
-                        <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium"/>
-                        Select an Item to View Details
-                    </MudText>
-                </MudChip>
-                
-            </MudPaper>
         }
         </MudToolWindow>
     <MudItem xs="12">
