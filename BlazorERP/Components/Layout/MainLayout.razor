@@ -11,14 +11,14 @@
         <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%;">
             <MudImage Src="Images/protech_full_transp.png" Alt="Company Logo"
                   ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Bottom" Height="50"/>
-            <MudText Typo="Typo.h5" Class="ml-3 mt-2" Align="Align.End" Color="Color.Secondary">MyERP</MudText>
+            <MudText Typo="Typo.h5" Class="ml-3 mt-2" Align="Align.End">MyERP</MudText>
             <div>
                 <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle"/>
                 <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End"/>
             </div>
         </div>
     </MudAppBar>
-    <MudDrawer id="nav-drawer" @bind-Open="_mainDrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="4" Variant="DrawerVariant.Mini">
+    <MudDrawer id="nav-drawer" @bind-Open="_mainDrawerOpen" Fixed="true" ClipMode="DrawerClipMode.Always" Elevation="4" Variant="DrawerVariant.Mini">
         <NavMenu/>
         <MudSpacer/>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Ripple="false" ClickPropagation="false" Color="Color.Inherit" OnClick="@((e) => MainDrawerToggle())"/>
@@ -113,10 +113,11 @@
    
     private readonly PaletteLight _lightPalette = new()
     {
+        Primary = "#1944b4",
         Secondary = "#010101",
         Black = "#110e2d",
-        AppbarText = "#424242",
-        AppbarBackground = "rgba(255,255,255,0.8)",
+        AppbarText = "#dcdcdc",
+        AppbarBackground = "#050508F8",
         DrawerBackground = "#ffffff",
         GrayLight = "#e8e8e8",
         GrayLighter = "#f9f9f9",

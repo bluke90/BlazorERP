@@ -16,14 +16,14 @@
         @if (SelectedItem != null)
         {
                             <MudGrid>
-                                <MudItem xs="6">
+                                <MudItem xs="12" sm="12" md="6">
                                     <MudGrid>
                                         <!-- Icon -->
-                                        <MudItem xs="5" Class="text-center">
+                                        <MudItem xs="12" sm="12" md="5" Class="text-center">
                                             <MudImage Src="@SelectedItemImageUrl" ObjectFit="ObjectFit.Contain" Height="180" Width="180"/>
                                         </MudItem>
 
-                                        <MudItem xs="7">
+                                        <MudItem xs="12" sm="12" md="7">
                                             <MudTextField Label="Name" @bind-Value="@SelectedItem.Name" Variant="Variant.Outlined"/>
                                             <MudTextField Label="Category" @bind-Value="@SelectedItem.Category.Name" Variant="Variant.Outlined"/>
                                             <MudStack Row="true" Spacing="10" Justify="Justify.SpaceBetween" Class="relative">
@@ -61,10 +61,10 @@
                                         </MudItem>
                                     </MudGrid>
                                 </MudItem>
-                                <MudItem xs="6">
+                                <MudItem xs="12" sm="12" md="6">
                                     <MudExpansionPanels>
                                         <MudExpansionPanel Text="Item Stocks" Icon="@Icons.Material.Filled.Storage">
-                                            <ItemStockTable Stocks="SelectedItem.Stocks.ToList()" TableOnly="true"/>
+                                            <ItemStockTable Stocks="SelectedItem.Stocks.ToList()" TableOnly="true" SelectedItem="SelectedItem"/>
                                         </MudExpansionPanel>
                                         <MudExpansionPanel Text="Stock Locations">
 

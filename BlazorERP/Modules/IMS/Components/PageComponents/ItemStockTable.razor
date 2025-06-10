@@ -1,4 +1,5 @@
-﻿@using BlazorERP.Utilities
+﻿@using BlazorERP.Data.Entities
+@using BlazorERP.Utilities
 @inherits ItemStockTableBase
 
 @if (!TableOnly)
@@ -37,7 +38,14 @@
                     @switch (ItemStockTableVariant)
                     {
                         case ItemStockTableVariant.ByStorageLocation:
-                            <MudTd DataLabel="Storage Location">@context.Stock.StorageLocation.Name</MudTd>
+                            <MudTd DataLabel="Storage Location">@context.Stock.StorageLocation.Code
+                                <MudSelect T="int" bind-Value="@context.Stock.StorageLocationId" Label="Storage Location" Variant="Variant.Text" Dense="true" Required="true">
+                                    @foreach (var store in StorageLocations)
+                                    {
+                                        <MudSelectItem Value="@store.StorageLocationId">@store.Code</MudSelectItem>
+                                    }
+                                </MudSelect>
+                                </MudTd>
                             break;
                         case ItemStockTableVariant.ByItem:
                             <MudTd DataLabel="Item Name">@context.Item.Name</MudTd>
@@ -60,45 +68,62 @@
 }
 else
 {
-                <MudTable Class="w-100" Items="ItemStockModels" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
-                      @bind-SelectedItem="SelectedStock" SortLabel="Sort By" OnCommitEditClick="SaveStock">
-                <HeaderContent>
-                    <MudTh>Storage Location</MudTh>
-                    <MudTh>Qty.</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    @switch (ItemStockTableVariant)
-                    {
-                        case ItemStockTableVariant.ByStorageLocation:
-                            <MudTd DataLabel="Storage Location">@context.Stock.StorageLocation.Name</MudTd>
-                            break;
-                        case ItemStockTableVariant.ByItem:
-                            <MudTd DataLabel="Item Name">@context.Item.Name</MudTd>
-                            break;
-                    }
-                    <MudTd DataLabel="Qty.">
-                        @context.Stock.OnHand
-                        @context.Item.Unit?.Name.Pluralize()
+    <MudTable Class="w-100" Items="ItemStockModels" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
+              @bind-SelectedItem="SelectedStock" SortLabel="Sort By" OnCommitEditClick="SaveStock">
+        <HeaderContent>
+            <MudTh>Storage Location</MudTh>
+            <MudTh>Qty.</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            @switch (ItemStockTableVariant)
+            {
+                case ItemStockTableVariant.ByStorageLocation:
+                    <MudTd DataLabel="Storage Location">@context.Stock.StorageLocation.Code
+
                     </MudTd>
-                </RowTemplate>
-                <RowEditingTemplate>
-                    @switch (ItemStockTableVariant)
-                    {
-                        case ItemStockTableVariant.ByStorageLocation:
-                            <MudTd DataLabel="Storage Location">@context.Stock.StorageLocation.Name</MudTd>
-                            break;
-                        case ItemStockTableVariant.ByItem:
-                            <MudTd DataLabel="Item Name">@context.Item.Name</MudTd>
-                            break;
-                    }
-                    <MudTd DataLabel="Qty.">
-                        <MudNumericField Required
-                                         @bind-Value="@context.Stock.OnHand"/>
-                        @context.Item.Unit?.Name.Pluralize()
+                    break;
+                case ItemStockTableVariant.ByItem:
+                    <MudTd DataLabel="Item Name">@context.Item.Name</MudTd>
+                    break;
+            }
+            <MudTd DataLabel="Qty.">
+                @context.Stock.OnHand
+                @context.Item.Unit?.Name.Pluralize()
+            </MudTd>
+        </RowTemplate>
+        <RowEditingTemplate>
+            @switch (ItemStockTableVariant)
+            {
+                case ItemStockTableVariant.ByStorageLocation:
+                    <MudTd DataLabel="Storage Location">
+                        <MudSelect T="StorageLocation" @bind-Value="context.Stock.StorageLocation" Variant="Variant.Text" Dense="true" Required="true"
+                                   Text="@(context.Stock.StorageLocation.StorageLocationId < 1 ? "Select Location" : context.Stock.StorageLocation.Code)">
+                            @foreach (var store in StorageLocations)
+                            {
+                                <MudSelectItem Value="@store">@store.Code</MudSelectItem>
+                            }
+                        </MudSelect>
                     </MudTd>
-                </RowEditingTemplate>
-                <EditButtonContent Context="button">
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled"/>
-                </EditButtonContent>
-            </MudTable>
+                    break;
+                case ItemStockTableVariant.ByItem:
+                    <MudTd DataLabel="Item Name">@context.Item.Name</MudTd>
+                    break;
+            }
+            <MudTd DataLabel="Qty.">
+                <MudNumericField Required
+                                 @bind-Value="@context.Stock.OnHand"/>
+                @context.Item.Unit?.Name.Pluralize()
+            </MudTd>
+        </RowEditingTemplate>
+        <EditButtonContent Context="button">
+            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled"/>
+        </EditButtonContent>
+        <FooterContent>
+            <MudButton Color="Color.Info" Size="Size.Small" FullWidth="true" OnClick="AddStockClick" 
+                       Style="width: 165%; border-top: 1px black solid; background-color: var(--DarkHightlight)">
+                <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add"/>
+                Add New Stock
+            </MudButton>
+        </FooterContent>
+    </MudTable>
 }

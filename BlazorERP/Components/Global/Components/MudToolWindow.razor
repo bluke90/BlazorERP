@@ -1,4 +1,4 @@
-﻿<MudItem xs="12" Style="z-index: 1;" Class="alternate-bg-50 tool-window">
+﻿<MudItem xs="12" Style="z-index: 1;" Class="tool-window">
     <div class="tool-window-container">
         @if (ChildContent == null || !ChildContent.HasSingleTarget)
         {
@@ -34,17 +34,27 @@
             @if (ChildContent != null)
             {
                 <MudItem xs="2">
-                    <MudButton Variant="Variant.Outlined" Color="Color.Success" FullWidth="true" Size="Size.Small">
-                        <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/>
-                        Save
-                    </MudButton>
+                    <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                        <MudIconButton Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.Save"/>    
+                    </MudHidden>
+                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Success" FullWidth="true" Size="Size.Small">
+                            <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/>
+                            Save
+                        </MudButton>                        
+                    </MudHidden>
                 </MudItem>
                 <MudSpacer/>
                 <MudItem xs="2">
-                    <MudButton Variant="Variant.Outlined" Color="Color.Error" FullWidth="true" Size="Size.Small">
-                        <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Cancel"/>
-                        Deactivate
-                    </MudButton>
+                    <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                        <MudIconButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" Icon="@Icons.Material.Filled.Cancel"/>    
+                    </MudHidden>
+                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" FullWidth="true" Size="Size.Small">
+                            <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Cancel"/>
+                            Deactivate
+                        </MudButton>                        
+                    </MudHidden>
                 </MudItem>
             }
         </MudGrid>

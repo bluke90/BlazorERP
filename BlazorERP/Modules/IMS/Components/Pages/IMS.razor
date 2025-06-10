@@ -15,29 +15,38 @@
 <MudGrid>
     
     <!-- ==== Card 1 | TL ==== -->
-    <MudItem xs="6">
+    <MudItem xs="12" sm="12" md="6">
         <PieTypeChartCard Title="Supply% By Supplier" Labels="_card1_lbls" Values="_card1_data"/>
     </MudItem>
     
     <!-- ==== Card 2 | TL ==== -->
-    <MudItem xs="6">
-        <MudCard Elevation="10" Class="expand">
-            <MudCardHeader>
-                <MudText Typo="Typo.h6">
-                    <MudIcon Icon="@Icons.Material.Filled.BarChart" Size="Size.Medium"/>
-                    Item Stock By Storage Location
-                </MudText>
-            </MudCardHeader>
-            
-            <MudCardContent Class="pa-2">
-                <MudChart ChartType="_card2_opt" ChartSeries="@_card2_data" XAxisLabels="@_card2_lbls" Height="300" Width="800"/>
-            </MudCardContent>
+    <MudBreakpointProvider OnBreakpointChanged="BreakpointChanged">
+        @if (Breakpoint == Breakpoint.MdAndUp)
+        {
+            <MudItem xs="12" sm="12" md="6">
+                <MudCard Elevation="10" Class="expand">
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h6">
+                            <MudIcon Icon="@Icons.Material.Filled.BarChart" Size="Size.Medium"/>
+                            Item Stock By Storage Location
+                        </MudText>
+                    </MudCardHeader>
 
-        </MudCard>
-    </MudItem>
+                    <MudCardContent Class="pa-2">
+                        <MudChart ChartType="_card2_opt" ChartSeries="@_card2_data" XAxisLabels="@_card2_lbls" Height="300" Width="800"/>
+                    </MudCardContent>
+
+                </MudCard>
+            </MudItem>
+        }
+        else
+        {
+            
+        }
+    </MudBreakpointProvider>
     
     <!-- ==== Card 3 | TL ==== -->
-    <MudItem xs="6">
+    <MudItem xs="12" sm="12" md="6">
         <MudCard Elevation="10" Class="expand">
             <MudCardHeader>
                 <MudText Typo="Typo.h6">
@@ -71,7 +80,7 @@
     </MudItem>
     
     <!-- ==== Card 4 | TL ==== -->
-    <MudItem xs="6">
+    <MudItem xs="12" sm="12" md="6">
         <MudCard Elevation="10" Class="expand">
             <MudCardHeader>
                 <MudText Typo="Typo.h6">
@@ -133,6 +142,14 @@
     private List<Stock> CurrentStock = new List<Stock>();
     private List<PurchaseOrder> Purchases = new List<PurchaseOrder>(); 
 
+    
+    protected Breakpoint Breakpoint { get; set; } = Breakpoint.None;
+    
+    protected void BreakpointChanged(Breakpoint breakpoint)
+    {
+        Breakpoint = breakpoint;
+    }
+    
     private void SelectCard1ChartData(int opt = 0)
     {
         switch (opt)

@@ -26,6 +26,7 @@
 
 
     <ItemGroup>
+      <Folder Include="Components\Global\PageComponents\" />
       <Folder Include="Data\Context\" />
       <Folder Include="wwwroot\Components\IMS\" />
     </ItemGroup>

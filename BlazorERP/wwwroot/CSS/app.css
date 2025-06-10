@@ -13,17 +13,22 @@
 
 .tool-window {
     padding: 4px 0 1rem !important;
+    position: relative;
 }
 
 .tool-window-container {
+    position: relative;
     padding: 1rem !important;
-    padding-bottom: 1.25rem !important;
+    padding-bottom: 50px !important;
+    background-color: var(--DarkHightlight);
+    border-bottom: 2px solid var(--mud-palette-table-striped);
+    min-height: 15vh;
 }
 
 .tool-window-footer {
     position: absolute;
     background-color:var(--DarkHighlight);
-    bottom: -0.92rem;
+    bottom: 18px;
     left: 1px;
     padding: 0.75vh;
     width: 100%;
@@ -85,6 +90,7 @@
 .mud-card-header {
     background-color: var(--mud-palette-primary);
     border-bottom: black 1px solid;
+    color: white;
 }
 
 .mud-card-header, .mud-dialog-title {

@@ -18,6 +18,12 @@ public class PieTypeChartCardBase : ComponentBase
     // Type 1 Chart Options
     public Type1ChartOption ChartTypeOption { get; set; } = Type1ChartOption.Pie;
     public ChartType ChartType { get; set; } = ChartType.Pie;
+    protected Breakpoint Breakpoint { get; set; } = Breakpoint.None;
+    
+    protected void BreakpointChanged(Breakpoint breakpoint)
+    {
+        Breakpoint = breakpoint;
+    }
 
     public void SetChartType(Type1ChartOption option)
     {

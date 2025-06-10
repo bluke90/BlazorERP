@@ -25,16 +25,16 @@
 
                         <MudTabPanel Text="Customers" Icon="@Icons.Material.Filled.Person">
 
-                            <MudTable T="Customer" Items="@_customers" Dense="true" Breakpoint="Breakpoint.SmAndUp"
+                            <MudTable T="Customer" Items="@_customers" Dense="true" Breakpoint="Breakpoint.SmAndDown"
                                       @bind-SelectedItem="_selectedCustomer" SortLabel="Sort By" OnCommitEditClick="SaveCustomer">
                                 
                                 <ColGroup>
                                     <col style="width: 5%"/>
                                     <col style="width: 20%"/>
-                                    <col style="width: 15%"/>
                                     <col style="width: 20%"/>
-                                    <col/>
-                                    <col/>
+                                    <col style="width: 20%"/>
+                                    <col style="width: 30%"/>
+                                    <col style="width: 5%;"/>
                                 </ColGroup>
 
                                 <HeaderContent>
@@ -58,8 +58,14 @@
                                     <MudTd DataLabel="ID">@context.CustomerId</MudTd>
                                     <MudTd DataLabel="Name">
                                         <MudTextField @bind-Value="_selectedCustomer.Name" Required/>
+                                    </MudTd>
+                                    <MudTd DataLabel="Email">
                                         <MudTextField @bind-Value="_selectedCustomer.Email" Required/>
+                                    </MudTd>
+                                    <MudTd DataLabel="Phone">
                                         <MudTextField @bind-Value="_selectedCustomer.Phone" Required/>
+                                    </MudTd>
+                                    <MudTd DataLabel="Mailing Address">
                                         <MudTextField @bind-Value="_selectedCustomer.MailingAddress"/>
                                     </MudTd>
 

@@ -11,12 +11,12 @@ public class ItemStockTableBase : ComponentBase
     [Parameter]
     public required List<Stock> Stocks { get; set; }
     
-    protected ItemStockModel? SelectedStock { get; set; }
-    
     [Parameter]
     public ItemStockTableVariant ItemStockTableVariant { get; set; } = ItemStockTableVariant.ByStorageLocation;
     [Parameter]
     public bool TableOnly { get; set; } = false; // If true, the table will not have any actions or selection
+    [Parameter]
+    public Item? SelectedItem { get; set; }
     
     [Inject]
     protected ImsService Ims { get; private set; }
@@ -24,7 +24,9 @@ public class ItemStockTableBase : ComponentBase
     [Inject]
     protected ISnackbar Snackbar { get; private set; }
     
+    protected ItemStockModel? SelectedStock { get; set; }
     protected List<ItemStockModel> ItemStockModels { get; set; } = new List<ItemStockModel>();
+    protected List<StorageLocation>? StorageLocations { get; set; } = new List<StorageLocation>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -46,6 +48,39 @@ public class ItemStockTableBase : ComponentBase
             await Ims._context.LoadReferenceAsync<Stock, StorageLocation>(Stock, x => x.StorageLocation);
             await Ims._context.LoadReferenceAsync<Item, Unit>(Stock.Item, x => x.Unit);
             ItemStockModels.Add(new ItemStockModel(Stock.Item, Stock));
+        }
+    }
+    
+    private async Task RefreashStorageLocations()
+    {
+        StorageLocations = await Ims.GetAllStorageLocations();
+    }
+    
+    public async Task AddStockClick()
+    {
+        // Check if SelectedStock is null
+        if (SelectedStock is not null)
+        {
+            Snackbar.Add("Please save or cancel the current stock before adding a new one.", Severity.Warning);
+            return;
+        }
+
+        if (SelectedItem is not null)
+        {
+            // Create a new stock for the selected item
+            var newStock = new Stock
+            {
+                ItemId = SelectedItem.ItemId, // Assuming SelectedStock is set before this method is called
+                Item = SelectedItem,
+                StorageLocationId = 0, // Default or selected storage location ID
+                StorageLocation = new StorageLocation() {StorageLocationId = 0, Code = "Default Location", Name = "Default"}, // Placeholder for storage location
+                OnHand = 0 // Default initial stock quantity
+            };
+            
+            var newItemStockModel = new ItemStockModel(SelectedItem, newStock);
+            ItemStockModels.Add(newItemStockModel);
+            SelectedStock = newItemStockModel;
+            RefreashStorageLocations();
         }
     }
 
