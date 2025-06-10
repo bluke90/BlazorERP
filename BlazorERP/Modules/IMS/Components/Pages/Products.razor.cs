@@ -69,32 +69,24 @@ public class ProductsBase : ComponentBase
             // Set Item
             SelectedItem = clicked_item;
             // Get Icon Data Url
-            await SetItemImageUrl();
+            var itemImage = await Ims.GetItemImage(SelectedItem.ItemId);
+            SelectedItemImageUrl = SetItemImageUrl(itemImage);
             // Get Location codes containing the item
             SelectedStores = await Ims.GetItemStore(SelectedItem.ItemId);
         }
     }
     
-    private async Task SetItemImageUrl()
+    private static string SetItemImageUrl(ItemImage itemImage)
     {
-        if (SelectedItem is not null)
-        {
-            // Set the image URL for the selected item
-            var itemImage = await Ims.GetItemImage(SelectedItem.ItemId);
+            var ImageUrl = string.Empty;
+            
+            // Set the image URL for the selected item       
             if (itemImage is not null)
             {
-                SelectedItemImageUrl = $"data:{itemImage.MimeType};base64,{Convert.ToBase64String(itemImage.Content)}";
-            }
-            else
-            {
-                SelectedItemImageUrl = null; // Reset if no image found
+                ImageUrl = $"data:{itemImage.MimeType};base64,{Convert.ToBase64String(itemImage.Content)}";
             }
             
-            return;
-        }
-
-        // Reset the image URL if no item is selected
-        SelectedItemImageUrl = null;
+            return ImageUrl;
     }
 
     public async Task SaveStock()
