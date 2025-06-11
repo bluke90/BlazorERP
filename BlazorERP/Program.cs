@@ -37,11 +37,12 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
         
-        // Database Context
-        builder.Services.AddDbContext<proContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));  
+
+        // Factory for contexts
+        builder.Services.AddDbContextFactory<proContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         
-        
+        builder.Services.AddScoped(sp => sp.GetRequiredService<IDbContextFactory<proContext>>().CreateDbContext());
         
         // ===== Add DI Services =====
         Console.WriteLine($"{LogPre}Initializing Dependency Injection Services...");

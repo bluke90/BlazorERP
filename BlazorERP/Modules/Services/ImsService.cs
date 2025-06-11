@@ -6,11 +6,13 @@ namespace BlazorERP.Modules.Services;
 
 public class ImsService
 {
-    public readonly proContext _context;
+    private readonly proContext _context;
+    public readonly IDbContextFactory<proContext> _dbContextFactory;
     
-    public ImsService(proContext context)
+    public ImsService(proContext context, IDbContextFactory<proContext> dbContextFactory)
     {
         _context = context;
+        _dbContextFactory = dbContextFactory;
     }
     
     public async Task SaveStorageLocation(StorageLocation storageLocation)
@@ -79,8 +81,10 @@ public class ImsService
 
     public async Task<List<StorageLocation>> GetItemStore(int ItemId)
     {
+        var db = _dbContextFactory.CreateDbContext();
+        
         // Get all storage locations that have stock for the specified item
-        var storageLocations = await _context.Stocks
+        var storageLocations = await db.Stocks
             .Where(x => x.ItemId == ItemId)
             .Select(x => x.StorageLocation)
             .Distinct()
@@ -208,7 +212,9 @@ public class ImsService
     
     public async Task<ItemImage?> GetItemImage(int itemId)
     {
-        return await _context.ItemImages
+        var db = _dbContextFactory.CreateDbContext();
+        
+        return await db.ItemImages
             .FirstOrDefaultAsync(x => x.ItemId == itemId);
     }
 

@@ -21,6 +21,8 @@ public class StorageManagementBase : ComponentBase
     protected ISnackbar Snackbar { get; private set; }
     [Inject]
     protected IDialogService Dialog { get; private set; }
+    [Inject]
+    private proContext _context { get; set; } // Injected for loading references
     
     // Chart Values
     public string[] ChartLabels { get; set; } = Array.Empty<string>();
@@ -46,7 +48,7 @@ public class StorageManagementBase : ComponentBase
             _selectedStore = clicked_item;
             
             // Get Stock Chart Data
-            await Ims._context.LoadCollectionsAsync<StorageLocation, Stock>(
+            await _context.LoadCollectionsAsync<StorageLocation, Stock>(
                 _selectedStore, 
                 x => x.Stocks,
                 f => f.StorageLocationId == _selectedStore.StorageLocationId);

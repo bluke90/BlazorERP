@@ -1,4 +1,6 @@
-﻿using BlazorERP.Modules.Services;
+﻿using BlazorERP.Data;
+using BlazorERP.Data.Context;
+using BlazorERP.Modules.Services;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 
@@ -6,20 +8,22 @@ namespace BlazorERP.Modules.Utilities;
 
 public static class ImsReportingUtil
 {
-    public static List<(string SupplierName, decimal Percentage)> GetStockSupplierPrecent(this ImsService ims)
+    public static List<(string SupplierName, decimal Percentage)> GetStockSupplierPrecent(this IDbContextFactory<proContext> factory)
     {
+        var _context = factory.CreateDbContext();
+        
         // create list of tuples for each supplier and its total percentage of stock
         var tupleList = new List<(string SupplierName, decimal Percentage)>();
         
         
         // Get all purchase order lines and suppliers
-        var POLs = ims._context.PurchaseOrderLines
+        var POLs = _context.PurchaseOrderLines
             .Include(x => x.PO)
             .Include(x => x.Item)
             .ToList();
         
         // Get all suppliers
-        var suppliers = ims._context.Suppliers
+        var suppliers = _context.Suppliers
             .ToList();
 
         // Get the percentage of product each supplier is supplying
@@ -37,11 +41,11 @@ public static class ImsReportingUtil
         return tupleList;
     }
     
-    public static (string[] XAxisLabels, List<ChartSeries> itemStock) GetItemStockByLocation(this ImsService ims)
+    public static (string[] XAxisLabels, List<ChartSeries> itemStock) GetItemStockByLocation(this IDbContextFactory<proContext> factory)
     {
+        var _context = factory.CreateDbContext();
         // Get all stock items
-        
-        var xAxisLabels = ims._context.Items
+        var xAxisLabels = _context.Items
             .Include(x => x.Stocks)
             .Where(x => x.Stocks.Count > 0)
             .OrderByDescending(x => x.Name)
@@ -49,7 +53,7 @@ public static class ImsReportingUtil
             .ToList();
         
         // Get all storage locations
-        var locations = ims._context.StorageLocations
+        var locations = _context.StorageLocations
             .Include(x => x.Stocks)
             .ThenInclude(x => x.Item)
             .ToList();

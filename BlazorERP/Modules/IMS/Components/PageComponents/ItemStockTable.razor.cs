@@ -23,7 +23,8 @@ public class ItemStockTableBase : ComponentBase
     
     [Inject]
     protected ISnackbar Snackbar { get; private set; }
-    
+    [Inject]
+    private proContext _context { get; set; } // Injected for loading references
     protected ItemStockModel? SelectedStock { get; set; }
     protected List<ItemStockModel> ItemStockModels { get; set; } = new List<ItemStockModel>();
     protected List<StorageLocation>? StorageLocations { get; set; } = new List<StorageLocation>();
@@ -44,9 +45,9 @@ public class ItemStockTableBase : ComponentBase
         
         foreach (var Stock in Stocks)
         {
-            await Ims._context.LoadReferenceAsync<Stock, Item>(Stock, x => x.Item);
-            await Ims._context.LoadReferenceAsync<Stock, StorageLocation>(Stock, x => x.StorageLocation);
-            await Ims._context.LoadReferenceAsync<Item, Unit>(Stock.Item, x => x.Unit);
+            await _context.LoadReferenceAsync<Stock, Item>(Stock, x => x.Item);
+            await _context.LoadReferenceAsync<Stock, StorageLocation>(Stock, x => x.StorageLocation);
+            await _context.LoadReferenceAsync<Item, Unit>(Stock.Item, x => x.Unit);
             ItemStockModels.Add(new ItemStockModel(Stock.Item, Stock));
         }
     }

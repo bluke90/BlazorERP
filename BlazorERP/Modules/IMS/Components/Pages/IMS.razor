@@ -155,7 +155,7 @@
         switch (opt)
         {
             case 0:
-                var data = ims.GetStockSupplierPrecent();
+                var data = ims._dbContextFactory.GetStockSupplierPrecent();
                 _card1_lbls = data.Select(x => x.SupplierName).ToArray();
                 _card1_data = data.Select(x => (double)x.Percentage*100).ToArray();
                 break;
@@ -167,7 +167,7 @@
         switch (opt)
         {
             case 0:
-                var data = ims.GetItemStockByLocation();
+                var data = ims._dbContextFactory.GetItemStockByLocation();
                 _card2_lbls = data.XAxisLabels;
                 _card2_data = data.itemStock;
                 break;
