@@ -222,4 +222,9 @@ public class ImsService
     {
         return await _context.Customers.ToListAsync();
     }
+
+    public bool StockExist(Stock stock)
+    {
+        return _context.Stocks.Any(x => x.ItemId == stock.ItemId && x.StorageLocationId == stock.StorageLocationId);
+    }
 }

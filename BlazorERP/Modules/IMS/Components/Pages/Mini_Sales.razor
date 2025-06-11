@@ -78,16 +78,11 @@
                             </MudTable>
 
                         </MudTabPanel>
+                        <!-- Sales Orders Tab -->
                         <MudTabPanel Text="Sales Orders" Icon="@Icons.Material.Filled.ShoppingCart">
 
                             <MudGrid>
-                                <MudItem xs="12" Class="text-right">
-                                    <MudButton Variant="Variant.Filled" Color="Color.Dark" Size="Size.Small" OnClick="OpenNewSalesOrderDialog">
-                                        <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small" />
-                                        New Order
-                                    </MudButton>
-                                </MudItem>
-                                <MudItem xs="12" md="6">
+                                <MudItem xs="12" md="5">
                                     <MudTable T="SalesOrder" Items="@_salesOrders" Dense="true" Breakpoint="Breakpoint.SmAndDown" Hover="true"
                                               RowClass="cursor-pointer" OnRowClick="SalesOrderSelected">
                                         <HeaderContent>
@@ -102,9 +97,25 @@
                                             <MudTd DataLabel="Customer">@context.Customer?.Name</MudTd>
                                             <MudTd DataLabel="Status">@context.Status</MudTd>
                                         </RowTemplate>
+                                        <FooterContent>
+                                            <td colspan="4">
+                                                <div style="width: 100%; text-align: center;">
+                                                    <MudButton Size="Size.Small" FullWidth="true" Color="Color.Info" Variant="Variant.Filled" OnClick="OpenNewSalesOrderDialog">
+                                                        <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add" Color="Color.Secondary"/>
+                                                        Add New Sales Order
+                                                    </MudButton>
+                                                </div>
+                                            </td>
+                                        </FooterContent>
                                     </MudTable>
                                 </MudItem>
-                                <MudItem xs="12" md="6">
+                                <MudItem xs="0" md="1" Style="padding-left: 0;">
+                                    <MudStack Spacing="0" Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-left: var(--mud-palette-secondary) 4px solid;">
+                                        <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
+                                        <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.ArrowRight"/>
+                                    </MudStack>
+                                </MudItem>
+                                <MudItem xs="12" md="5">
                                     @if (_selectedSalesOrder is not null)
                                     {
                                         <MudTable T="SalesOrderLine" Items="@_selectedSalesOrder.SalesOrderLines.ToList()" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true">
@@ -122,7 +133,15 @@
                                     }
                                     else
                                     {
-                                        <MudText Typo="Typo.subtitle1" Class="m-2">Select a sales order to view lines.</MudText>
+                                        <MudChip T="string"
+                                                 Color="Color.Dark"
+                                                 tabindex="-1"
+                                                 Class="p-2 m-2">
+                                            <MudText Typo="Typo.body1" Color="Color.Default">
+                                                <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium"/>
+                                                Select a Sales Order View Lines
+                                            </MudText>
+                                        </MudChip>
                                     }
                                 </MudItem>
                             </MudGrid>
