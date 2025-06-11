@@ -15,7 +15,7 @@ public partial class ItemImage
 
     public int Size { get; set; }
 
-    public byte[]? Content { get; set; }
+    public byte[] Content { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
 

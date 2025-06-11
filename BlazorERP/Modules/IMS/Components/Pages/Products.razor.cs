@@ -73,6 +73,7 @@ public class ProductsBase : ComponentBase
             SelectedItemImageUrl = SetItemImageUrl(itemImage);
             // Get Location codes containing the item
             SelectedStores = await Ims.GetItemStore(SelectedItem.ItemId);
+            StateHasChanged();
         }
     }
     
@@ -81,7 +82,7 @@ public class ProductsBase : ComponentBase
             var ImageUrl = string.Empty;
             
             // Set the image URL for the selected item       
-            if (itemImage is not null)
+            if (itemImage is not null && itemImage.Content is not null)
             {
                 ImageUrl = $"data:{itemImage.MimeType};base64,{Convert.ToBase64String(itemImage.Content)}";
             }

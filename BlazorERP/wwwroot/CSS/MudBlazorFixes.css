@@ -20,3 +20,7 @@
         padding-right: 16px;
     }
 }
+
+.mud-table-foot th {
+    display: none !important;
+}

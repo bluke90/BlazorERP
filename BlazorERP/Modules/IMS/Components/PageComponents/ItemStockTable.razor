@@ -38,14 +38,15 @@
                     @switch (ItemStockTableVariant)
                     {
                         case ItemStockTableVariant.ByStorageLocation:
-                            <MudTd DataLabel="Storage Location">@context.Stock.StorageLocation.Code
-                                <MudSelect T="int" bind-Value="@context.Stock.StorageLocationId" Label="Storage Location" Variant="Variant.Text" Dense="true" Required="true">
+                            <MudTd DataLabel="Storage Location">
+                                <MudSelect @bind-Value="context.Stock.StorageLocation.Code" Variant="Variant.Text" Dense="true" Required="true"
+                                           Text="Select Location">
                                     @foreach (var store in StorageLocations)
                                     {
-                                        <MudSelectItem Value="@store.StorageLocationId">@store.Code</MudSelectItem>
+                                        <MudSelectItem Value="@store.Code">@store.Code</MudSelectItem>
                                     }
                                 </MudSelect>
-                                </MudTd>
+                            </MudTd>
                             break;
                         case ItemStockTableVariant.ByItem:
                             <MudTd DataLabel="Item Name">@context.Item.Name</MudTd>
@@ -69,7 +70,7 @@
 else
 {
     <MudTable Class="w-100" Items="ItemStockModels" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
-              @bind-SelectedItem="SelectedStock" SortLabel="Sort By" OnCommitEditClick="SaveStock">
+              @bind-SelectedItem="SelectedStock" SortLabel="Sort By" OnCommitEditClick="SaveStock" ReadOnly="Readonly">
         <HeaderContent>
             <MudTh>Storage Location</MudTh>
             <MudTh>Qty.</MudTh>
@@ -96,11 +97,11 @@ else
             {
                 case ItemStockTableVariant.ByStorageLocation:
                     <MudTd DataLabel="Storage Location">
-                        <MudSelect T="StorageLocation" @bind-Value="context.Stock.StorageLocation" Variant="Variant.Text" Dense="true" Required="true"
-                                   Text="@(context.Stock.StorageLocation.StorageLocationId < 1 ? "Select Location" : context.Stock.StorageLocation.Code)">
+                        <MudSelect @bind-Value="context.Stock.StorageLocation.Code" Variant="Variant.Text" Dense="true" Required="true"
+                                   Text="Select Location">
                             @foreach (var store in StorageLocations)
                             {
-                                <MudSelectItem Value="@store">@store.Code</MudSelectItem>
+                                <MudSelectItem Value="@store.Code">@store.Code</MudSelectItem>
                             }
                         </MudSelect>
                     </MudTd>
@@ -115,15 +116,19 @@ else
                 @context.Item.Unit?.Name.Pluralize()
             </MudTd>
         </RowEditingTemplate>
-        <EditButtonContent Context="button">
-            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled"/>
-        </EditButtonContent>
         <FooterContent>
-            <MudButton Color="Color.Info" Size="Size.Small" FullWidth="true" OnClick="AddStockClick" 
-                       Style="width: 165%; border-top: 1px black solid; background-color: var(--DarkHightlight)">
-                <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add"/>
-                Add New Stock
-            </MudButton>
+            @if (!Readonly)
+            {
+                <td colspan="3">
+                    <div class="100%">
+                        <MudButton Color="Color.Info" Size="Size.Small" FullWidth="true" OnClick="AddStockClick"
+                                   Style="border-top: 1px black solid; background-color: var(--DarkHightlight)">
+                            <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add"/>
+                            Add New Stock
+                        </MudButton>
+                    </div>
+                </td>
+            }
         </FooterContent>
     </MudTable>
 }

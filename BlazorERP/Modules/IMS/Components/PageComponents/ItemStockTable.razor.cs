@@ -1,7 +1,9 @@
-﻿using BlazorERP.Data.Entities;
+﻿using BlazorERP.Data.Context;
+using BlazorERP.Data.Entities;
 using BlazorERP.Modules.Services;
 using BlazorERP.Utilities;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Data.SqlClient;
 using MudBlazor;
 
 namespace BlazorERP.Modules.IMS.Components.PageComponents;
@@ -16,6 +18,8 @@ public class ItemStockTableBase : ComponentBase
     [Parameter]
     public bool TableOnly { get; set; } = false; // If true, the table will not have any actions or selection
     [Parameter]
+    public bool Readonly { get; set; } = false; // If true, the table will not allow any actions or selection
+    [Parameter]
     public Item? SelectedItem { get; set; }
     
     [Inject]
@@ -28,6 +32,7 @@ public class ItemStockTableBase : ComponentBase
     protected ItemStockModel? SelectedStock { get; set; }
     protected List<ItemStockModel> ItemStockModels { get; set; } = new List<ItemStockModel>();
     protected List<StorageLocation>? StorageLocations { get; set; } = new List<StorageLocation>();
+    protected StorageLocation? SelectedStorageLocation { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,6 +40,9 @@ public class ItemStockTableBase : ComponentBase
         
         if (Ims is null)
             throw new InvalidOperationException("ImsService was not injected.");
+        
+        if (ItemStockTableVariant != ItemStockTableVariant.ByStorageLocation)
+            Readonly = true;
     }
 
     protected override async Task OnParametersSetAsync()
@@ -78,6 +86,7 @@ public class ItemStockTableBase : ComponentBase
                 OnHand = 0 // Default initial stock quantity
             };
             
+            // Create a new ItemStockModel with the selected item and the new stock
             var newItemStockModel = new ItemStockModel(SelectedItem, newStock);
             ItemStockModels.Add(newItemStockModel);
             SelectedStock = newItemStockModel;
@@ -87,6 +96,17 @@ public class ItemStockTableBase : ComponentBase
 
     public async Task SaveStock()
     {
+        // Set the storage location for the stock based on selected code
+        SelectedStock.Stock.StorageLocation = StorageLocations.FirstOrDefault(x => x.Code == SelectedStock.Stock.StorageLocation.Code);
+        SelectedStock.Stock.StorageLocationId = SelectedStock.Stock.StorageLocation.StorageLocationId;
+        
+        if (Ims.StockExist(SelectedStock.Stock))
+        {
+            Snackbar.Add("Stock already exists for this item and storage location.", Severity.Warning);
+            ItemStockModels.Remove(SelectedStock);
+            return;
+        }
+        
         // Save the stock for the selected item
         await Ims.SaveStock(SelectedStock.Stock);
 
