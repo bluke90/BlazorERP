@@ -41,8 +41,6 @@ public class ItemStockTableBase : ComponentBase
         if (Ims is null)
             throw new InvalidOperationException("ImsService was not injected.");
         
-        if (ItemStockTableVariant != ItemStockTableVariant.ByStorageLocation)
-            Readonly = true;
     }
 
     protected override async Task OnParametersSetAsync()
@@ -97,16 +95,19 @@ public class ItemStockTableBase : ComponentBase
     public async Task SaveStock()
     {
         // Set the storage location for the stock based on selected code
-        SelectedStock.Stock.StorageLocation = StorageLocations.FirstOrDefault(x => x.Code == SelectedStock.Stock.StorageLocation.Code);
-        SelectedStock.Stock.StorageLocationId = SelectedStock.Stock.StorageLocation.StorageLocationId;
-        
-        if (Ims.StockExist(SelectedStock.Stock))
+        var newStock = SelectedStock.Stock.StorageLocationId == 0;
+        if (newStock)
         {
-            Snackbar.Add("Stock already exists for this item and storage location.", Severity.Warning);
-            ItemStockModels.Remove(SelectedStock);
-            return;
+            SelectedStock.Stock.StorageLocation = StorageLocations.FirstOrDefault(x => x.Code == SelectedStock.Stock.StorageLocation.Code);
+            SelectedStock.Stock.StorageLocationId = SelectedStock.Stock.StorageLocation.StorageLocationId;            
+            
+            if (Ims.StockExist(SelectedStock.Stock))
+            {
+                Snackbar.Add("Stock already exists for this item and storage location.", Severity.Warning);
+                ItemStockModels.Remove(SelectedStock);
+                return;
+            }
         }
-        
         // Save the stock for the selected item
         await Ims.SaveStock(SelectedStock.Stock);
 

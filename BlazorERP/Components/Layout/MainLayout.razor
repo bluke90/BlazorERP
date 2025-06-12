@@ -66,11 +66,19 @@
     private void MainDrawerToggle()
     {
         _mainDrawerOpen = !_mainDrawerOpen;
+        
     }
 
     private void DarkModeToggle()
     {
         _isDarkMode = !_isDarkMode;
+        ApplyGradient();
+    }
+
+    private async Task ApplyGradient()
+    {
+        var cssClass = _isDarkMode ? "dark-gradient" : "light-gradient";
+        await JS.InvokeVoidAsync("setGradientClass", cssClass);
     }
     
     private readonly ZIndex _zindex = new()
@@ -165,6 +173,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var screenSize = await JS.GetScreenSize();
+        await ApplyGradient();
         
         _theme.Typography = screenSize.Width > 1080 ? _desktop_typography : _mobile_typography;
         

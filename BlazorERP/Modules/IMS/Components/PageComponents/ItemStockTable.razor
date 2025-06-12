@@ -72,7 +72,7 @@ else
     <MudTable Class="w-100" Items="ItemStockModels" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
               @bind-SelectedItem="SelectedStock" SortLabel="Sort By" OnCommitEditClick="SaveStock" ReadOnly="Readonly">
         <HeaderContent>
-            <MudTh>Storage Location</MudTh>
+            <MudTh>@(ItemStockTableVariant == ItemStockTableVariant.ByStorageLocation ? "Storage Location" : "Item Name")</MudTh>
             <MudTh>Qty.</MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -117,7 +117,7 @@ else
             </MudTd>
         </RowEditingTemplate>
         <FooterContent>
-            @if (!Readonly)
+            @if (!Readonly && ItemStockTableVariant == ItemStockTableVariant.ByStorageLocation)
             {
                 <td colspan="3">
                     <div class="100%">
