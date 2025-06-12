@@ -1,8 +1,8 @@
 ﻿:root {
     --theme-primary: #1e499e;
     --theme-primary-overlay: #112a90cc;
-    --DarkHightlight: #00000078;
-    --DarkHighlight: #00000078;
+    --DarkHightlight: #000000cc;
+    --DarkHighlight: #000000cc;
     --LightBackgroundGradient: radial-gradient(circle,rgba(191, 191, 191, 1) 7%, rgba(219, 219, 219, 1) 39%, rgba(140, 140, 140, 1) 100%);
     --DarkBackgroundGradient: linear-gradient(137deg,rgba(64, 64, 64, 1) 6%, rgba(48, 48, 48, 1) 46%, rgba(56, 56, 56, 1) 80%);
 }
@@ -42,6 +42,10 @@ html.dark-gradient {
     background-color: var(--DarkHightlight);
     border-bottom: 2px solid var(--mud-palette-table-striped);
     min-height: 15vh;
+    
+    .mud-input, .mud-input-label {
+        color: var(--mud-palette-white) !important;
+    }
 }
 
 .tool-window-footer {
@@ -54,6 +58,7 @@ html.dark-gradient {
 
     h6 {
         font-size: 1.2rem;
+        color: var(--mud-palette-white) !important;
     }
 }
 
@@ -83,27 +88,31 @@ html.dark-gradient {
 
 /* - Mud Tab Panel */
 .mud-tabs {
-    background-color: var(--mud-palette-background-gray);
+    background-color: var(--mud-palette-background);
 }
 
 .mud-tabs-tabbar {
-    background-color: var(--mud-palette-appbar-background);
-    
+    background-color: var(--mud-palette-background);
     .mud-tab.mud-tab-active {
         color: var(--mud-palette-primary-lighten);
     }
 }
 
+/* - Mud Expand Panels */
+.mud-expand-panel {
+    background-color: var(--mud-palette-background-gray);
+}
+
 /* - Mud Dialog */
 .mud-dialog {
-    background-color: var(--mud-palette-background-gray);
+    background-color: var(--mud-palette-background);
 }
 
 
 /* - Mud Card Styling */
 
 .mud-card.mud-paper {
-    background-color: var(--mud-palette-background-gray);
+    background-color: var(--mud-palette-background);
 }
 
 .mud-card-header {
@@ -154,8 +163,16 @@ html.dark-gradient {
 
 
 /* - Mud Table */
+.mud-table {
+    background-color: var(--mud-palette-background-gray) !important;
+}
+
 .mud-table-head .mud-table-row th {
-    background-color: var(--theme-primary-overlay) !important;
+    background-color: var(--mud-palette-surface) !important;
+}
+
+.mud-table-root .mud-table-head .mud-table-cell {
+    color: var(--mud-palette-white) !important;
 }
 
 

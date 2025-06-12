@@ -51,7 +51,7 @@
                                 <ItemStockTable ItemStockTableVariant="ItemStockTableVariant.ByItem" Stocks="_selectedStoreStocks" TableOnly="true"></ItemStockTable>
                         
                                 <MudChip T="string"
-                                         Color="Color.Dark"
+                                         Color="Color.Info"
                                          tabindex="-1"
                                          Class="p-2 m-2" Style="right: 10px;">
                                     <MudText Typo="Typo.subtitle1" Color="Color.Default">
@@ -97,11 +97,6 @@
 
                 <MudTable T="StorageLocation" Items="@_stores" Dense="true" FixedHeader="true"
                           OnRowClick="LocationSelected" SortLabel="Sort By" Class="dark">
-                    <ToolBarContent>
-                        <MudButton Variant="Variant.Filled" Color="Color.Dark" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenNewStorageLocationDialog">
-                            New Location
-                        </MudButton>
-                    </ToolBarContent>
                     
                     <HeaderContent>
                         <MudTh>ID</MudTh>
@@ -116,6 +111,18 @@
                         <MudTd DataLabel="Name">@context.Name</MudTd>
                         <MudTd DataLabel="Address">@context.Address</MudTd>
                     </RowTemplate>
+                    
+                    <FooterContent>
+                        <td colspan="4">
+                            <MudButton Size="Size.Small" FullWidth="true" OnClick="OpenNewStorageLocationDialog"
+                                       Style="border-top: 1px black solid; background-color: var(--mud-palette-info)">
+                                <MudText Typo="Typo.button" Style="color: var(--mud-palette-white)">
+                                    <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add"/>
+                                    Add New Location
+                                </MudText>
+                            </MudButton>
+                        </td>
+                    </FooterContent>
                     
                 </MudTable>
 
