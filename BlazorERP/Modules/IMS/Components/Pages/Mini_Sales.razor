@@ -13,6 +13,7 @@
 
 @page "/IMS/Sales"
 
+<PageTitle>IMS Sales</PageTitle>
 
 <ImsMenu/>
 
@@ -89,7 +90,7 @@
                                               RowClass="cursor-pointer" OnRowClick="SalesOrderSelected">
                                         <ToolBarContent>
                                             <MudText Typo="Typo.subtitle1">
-                                                <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.MoveToInbox" Size="Size.Medium"/>
+                                                <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Outbound" Size="Size.Medium"/>
                                                 Orders
                                             </MudText>
                                         </ToolBarContent>
@@ -117,20 +118,28 @@
                                         </FooterContent>
                                     </MudTable>
                                 </MudItem>
-                                <MudItem xs="0" md="1" Style="padding-left: 0;">
-                                    <MudStack Spacing="0" Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-left: var(--mud-palette-secondary) 4px solid;">
-                                        <MudIcon Class="ml-2" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
-                                        <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.ArrowRight"/>
-                                    </MudStack>
+                                <MudItem xs="1" Style="padding-left: 0;">
+                                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                                        <MudStack Spacing="0" Row="true" Justify="Justify.FlexStart" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-left: var(--mud-palette-secondary) 4px solid;">
+                                            <MudIcon Class="ml-2" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
+                                            <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.ArrowRight"/>
+                                        </MudStack>
+                                    </MudHidden>
+                                    <MudHidden Breakpoint="Breakpoint.SmAndUp">
+                                        <MudStack Spacing="0" Justify="Justify.Center" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-top: var(--mud-palette-secondary) 4px solid;">
+                                            <MudIcon Class="mt-1" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
+                                            <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.KeyboardArrowDown"/>
+                                        </MudStack>
+                                    </MudHidden>
                                 </MudItem>
-                                <MudItem xs="12" md="5">
+                                <MudItem xs="12" md="5" Class="rpl-0">
                                     @if (_selectedSalesOrder is not null)
                                     {
-                                        <MudTable Class="dense-toolbar" T="SalesOrderLine" Items="@_selectedSalesOrder.SalesOrderLines.ToList()" Dense="true" FixedHeader="true">
+                                        <MudTable Class="dense-toolbar" T="SalesOrderLine" Items="@_selectedSalesOrder.SalesOrderLines.ToList()"Dense="true" FixedHeader="true">
                                             <ToolBarContent>
                                                     <MudText Typo="Typo.subtitle1">
                                                         <MudIcon Class="align-sub" Size="Size.Medium" Icon="@Icons.Material.Filled.Style"/>
-                                                        Lines for Sales Order @(_selectedSalesOrder.SOId)
+                                                        Lines for Sales Order #@(_selectedSalesOrder.SOId)
                                                     </MudText>
                                             </ToolBarContent>
                                             

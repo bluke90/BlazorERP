@@ -36,6 +36,10 @@
     }
 }
 
+.responsive-font-size {
+    font-size: calc(0.5rem + 0.8vh);
+}
+
 /* === Mud Card Tags === */
 
 
@@ -129,7 +133,11 @@
 }
 
 .dark.mud-table {
-    background-color: var(--mud-palette-background-gray) !important;
+    background-color: var(--mud-palette-background) !important;
+    
+    .mud-table-cell{
+        border-bottom-color: var(--mud-palette-black);
+    }
 }
 
 /* === MudSelect Tags === */
@@ -283,6 +291,14 @@ img.mud-image.auto-fit {
 .pl-4 { padding-left: 4vh !important; }
 .pl-5 { padding-left: 5vh !important; }
 
+.rpl-0 { padding-left: 0 !important; }
+
+@media (max-width: 768px) {
+    .rpl-0 {
+        padding-left: 24px !important;
+    }
+}
+
 /* === Width and Height Tags === */
 .h-fit-content {
     height: fit-content !important;
@@ -314,4 +330,8 @@ img.mud-image.auto-fit {
 }
 .w-100 {
     width: 100% !important;
+}
+
+.h-100 {
+    height: 100% !important;
 }

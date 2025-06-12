@@ -9,6 +9,8 @@
 <!-- Mini Sales Pages -->
 @page "/IMS/Supply"
 
+<PageTitle>IMS Supply</PageTitle>
+
 <ImsMenu/>
 
 <!-- tabbed tables with suppliers and purchases -->
@@ -83,10 +85,16 @@
                     <!-- Purchase Orders Tab -->
                     <MudTabPanel Text="Purchase Orders" Icon="@Icons.Material.Filled.ShoppingCart">
 
-                        <MudGrid>
-                            <MudItem xs="12" md="5">
+                        <MudGrid Justify="Justify.Center">
+                            <MudItem xs="12" md="6">
                                 <MudTable T="PurchaseOrder" Items="@_purchaseOrders" Dense="true" Hover="true"
                                           RowClass="cursor-pointer" OnRowClick="PurchaseOrderSelected">
+                                    <ToolBarContent>
+                                        <MudText Typo="Typo.subtitle1">
+                                            <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.MoveToInbox" Size="Size.Medium"/>
+                                            Purchases
+                                        </MudText>
+                                    </ToolBarContent>
                                     <HeaderContent>
                                         <MudTh>ID</MudTh>
                                         <MudTh><MudTableSortLabel SortBy="new Func<PurchaseOrder, object>(x => x.OrderedUtc)">Ordered</MudTableSortLabel></MudTh>
@@ -103,7 +111,7 @@
                                         <td colspan="4">
                                             <div style="width: 100%; text-align: center;">
                                                 <MudButton Size="Size.Small" FullWidth="true" Color="Color.Info" Variant="Variant.Filled" OnClick="OpenNewPurchaseOrderDialog">
-                                                    <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add" Color="Color.Secondary" />
+                                                    <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add" Color="Color.Secondary"/>
                                                     Add New Purchase Order
                                                 </MudButton>
                                             </div>
@@ -111,38 +119,55 @@
                                     </FooterContent>
                                 </MudTable>
                             </MudItem>
-                            <MudItem xs="0" md="1" Style="padding-left: 0;">
-                                <MudStack Spacing="0" Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-left: var(--mud-palette-secondary) 4px solid;">
-                                    <MudIcon Class="ml-2" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage" />
-                                    <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.ArrowRight" />
-                                </MudStack>
+                            <MudItem xs="1" Style="padding-left: 0;">
+                                <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                                    <MudStack Spacing="0" Row="true" Justify="Justify.FlexStart" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-left: var(--mud-palette-black) 4px solid; background-color: var(--mud-palette-surface)">
+                                        <MudIcon Class="ml-2" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
+                                        <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.ArrowRight"/>
+                                    </MudStack>
+                                </MudHidden>
+                                <MudHidden Breakpoint="Breakpoint.SmAndUp">
+                                    <MudStack Spacing="0" Justify="Justify.Center" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-top: var(--mud-palette-secondary) 4px solid;">
+                                        <MudIcon Class="mt-1" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
+                                        <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.KeyboardArrowDown"/>
+                                    </MudStack>
+                                </MudHidden>
+                                
                             </MudItem>
-                            <MudItem xs="12" md="5">
                                 @if (_selectedPurchaseOrder is not null)
                                 {
-                                    <MudTable T="PurchaseOrderLine" Items="@_selectedPurchaseOrder.PurchaseOrderLines.ToList()" Dense="true" FixedHeader="true">
-                                        <HeaderContent>
-                                            <MudTh>Item</MudTh>
-                                            <MudTh>Qty</MudTh>
-                                            <MudTh>Cost</MudTh>
-                                        </HeaderContent>
-                                        <RowTemplate>
-                                            <MudTd DataLabel="Item">@context.Item.Name</MudTd>
-                                            <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
-                                            <MudTd DataLabel="Cost">$@context.UnitCost</MudTd>
-                                        </RowTemplate>
-                                    </MudTable>
+                                    <MudItem xs="12" md="5" Class="rpl-0">
+                                        <MudTable T="PurchaseOrderLine" Items="@_selectedPurchaseOrder.PurchaseOrderLines.ToList()" Dense="true" FixedHeader="true">
+                                            <ToolBarContent>
+                                                <MudText Typo="Typo.subtitle1">
+                                                    <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.MoveToInbox" Size="Size.Medium"/>
+                                                    Lines for Purchase Order #@(_selectedPurchaseOrder.POId)
+                                                </MudText>
+                                            </ToolBarContent>
+                                            <HeaderContent>
+                                                <MudTh>Item</MudTh>
+                                                <MudTh>Qty</MudTh>
+                                                <MudTh>Cost</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd DataLabel="Item">@context.Item.Name</MudTd>
+                                                <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
+                                                <MudTd DataLabel="Cost">$@context.UnitCost</MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    </MudItem>
                                 }
                                 else
                                 {
-                                    <MudChip T="string" Color="Color.Dark" tabindex="-1" Class="p-2 m-2">
-                                        <MudText Typo="Typo.body1" Color="Color.Default">
-                                            <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium" />
-                                            Select a Purchase Order View Lines
-                                        </MudText>
-                                    </MudChip>
+                                    <MudItem xs="12" md="5" Class="rpl-0 align-content-center">
+                                        <MudChip T="string" Color="Color.Dark" tabindex="-1" Class="p-2 m-2">
+                                            <MudText Typo="Typo.body1" Color="Color.Default">
+                                                <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium" />
+                                                Select a Purchase Order View Lines
+                                            </MudText>
+                                        </MudChip>
+                                    </MudItem>
                                 }
-                            </MudItem>
                         </MudGrid>
 
                     </MudTabPanel>
