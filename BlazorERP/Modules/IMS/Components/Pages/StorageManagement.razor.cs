@@ -29,6 +29,12 @@ public class StorageManagementBase : ComponentBase
     public string[] ChartLabels { get; set; } = Array.Empty<string>();
     public double[] ChartValues { get; set; } = Array.Empty<double>();
     
+    // Secondary Button Params
+    protected string SecondaryButtonText = "Deactivate";
+    protected string SecondaryButtonIcon = Icons.Material.Filled.Error;
+    protected Color SecondaryButtonColor { get; set; } = Color.Error;
+    protected EventCallback SecondaryButtonClick { get; set; }
+    
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -38,6 +44,23 @@ public class StorageManagementBase : ComponentBase
         
         // Load storage locations
         _stores = await Ims.GetAllStorageLocations(includeStocks: true);
+    }
+    
+    private async Task SetSecondaryButtonClick()
+    {
+        if (_selectedStore.IsActive)
+        {
+            SecondaryButtonText = "Deactivate";
+            SecondaryButtonIcon = Icons.Material.Filled.Error;
+            SecondaryButtonColor = Color.Error;
+            SecondaryButtonClick = EventCallback.Factory.Create(this, DeactivateStorageLocation);   
+        } else if (!_selectedStore.IsActive)
+        {
+            SecondaryButtonText = "Reactivate";
+            SecondaryButtonIcon = Icons.Material.Filled.Check;
+            SecondaryButtonColor = Color.Info;
+            SecondaryButtonClick = EventCallback.Factory.Create(this, ReactivateStorageLocation);
+        }
     }
     
     public async Task LocationSelected(TableRowClickEventArgs<StorageLocation> args)
@@ -97,5 +120,53 @@ public class StorageManagementBase : ComponentBase
             _stores = await Ims.GetAllStorageLocations(includeStocks: true);
             Snackbar.Add("Storage location added", Severity.Success);
         }
+    }
+
+    private async Task ReactivateStorageLocation()
+    {
+        if (_selectedStore is null)
+            throw new ArgumentNullException(nameof(_selectedStore), "Storage location cannot be null.");
+        
+        bool? confirm = await Dialog.ShowMessageBox("Warning", "Are you sure you want to reactivate this storage location?",
+            yesText: "Reactivate", noText: "Cancel", options: new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = true, Position = DialogPosition.Center });
+        
+        if (confirm != true)
+        {
+            Snackbar.Add("Reactivation cancelled", Severity.Warning);
+            return;
+        }
+        
+        // Reactivate the storage location
+        _selectedStore.IsActive = true;
+        await Ims.SaveStorageLocation(_selectedStore);
+        
+        // Refresh the list of storage locations
+        _stores = await Ims.GetAllStorageLocations(includeStocks: true);
+        
+        Snackbar.Add("Storage location reactivated", Severity.Success);
+    }
+    
+    public async Task DeactivateStorageLocation()
+    {
+        if (_selectedStore is null)
+            throw new ArgumentNullException(nameof(_selectedStore), "Storage location cannot be null.");
+        
+        bool? confirm = await Dialog.ShowMessageBox("Warning", "Once deactivating a storage location, it will remain inactive until all stock has been removed. At this point the storage location will be deleted automatically. Are you sure you want to deactivate this storage location?",
+            yesText: "Deactivate", noText: "Cancel", options: new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = true, Position = DialogPosition.Center });
+        
+        if (confirm != true)
+        {
+            Snackbar.Add("Deactivation cancelled", Severity.Warning);
+            return;
+        }
+        
+        // Deactivate the storage location
+        _selectedStore.IsActive = false;
+        await Ims.SaveStorageLocation(_selectedStore);
+        
+        // Refresh the list of storage locations
+        _stores = await Ims.GetAllStorageLocations(includeStocks: true);
+        
+        Snackbar.Add("Storage location deactivated", Severity.Success);
     }
 }

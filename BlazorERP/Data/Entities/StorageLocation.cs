@@ -13,6 +13,8 @@ public partial class StorageLocation
 
     public string? Address { get; set; }
 
+    public bool IsActive { get; set; }
+
     public virtual ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
 
     public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
