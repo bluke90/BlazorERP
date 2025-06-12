@@ -11,7 +11,7 @@
         <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%;">
             <MudImage Src="Images/protech_full_transp.png" Alt="Company Logo"
                   ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Bottom" Height="50"/>
-            <MudText Typo="Typo.h5" Class="ml-3 mt-2" Align="Align.End">MyERP</MudText>
+            <MudText Typo="Typo.h5" Class="ml-3 mt-1" Align="Align.End">MyERP</MudText>
             <div>
                 <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle"/>
                 <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End"/>
@@ -71,6 +71,7 @@
 
     private void DarkModeToggle()
     {
+        return;
         _isDarkMode = !_isDarkMode;
         ApplyGradient();
     }
