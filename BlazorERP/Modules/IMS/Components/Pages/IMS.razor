@@ -12,7 +12,7 @@
 
 <ImsMenu/>
 
-<MudGrid>
+<MudGrid Style="height: 100vh;">
     
     <!-- ==== Card 1 | TL ==== -->
     <MudItem xs="12" sm="12" md="6">
@@ -46,7 +46,7 @@
     </MudBreakpointProvider>
     
     <!-- ==== Card 3 | TL ==== -->
-    <MudItem xs="12" sm="12" md="6">
+    <MudItem xs="12" sm="12" md="6" Class="h-100">
         <MudCard Elevation="10" Class="expand">
             <MudCardHeader>
                 <MudText Typo="Typo.h6">
@@ -57,7 +57,7 @@
             
             <MudCardContent Class="pa-4">
                 
-                <MudTable Items="@Purchases" Elevation="2" Breakpoint="Breakpoint.Sm" Dense="true" FixedHeader="true" Height="250">
+                <MudTable Items="@Purchases" Elevation="2" Breakpoint="Breakpoint.Sm" Dense="true" FixedHeader="true" Height="100%">
                     
                     <HeaderContent>
                         <MudTh>PO #</MudTh>
@@ -80,7 +80,7 @@
     </MudItem>
     
     <!-- ==== Card 4 | TL ==== -->
-    <MudItem xs="12" sm="12" md="6">
+    <MudItem xs="12" sm="12" md="6" Class="h-100">
         <MudCard Elevation="10" Class="expand">
             <MudCardHeader>
                 <MudText Typo="Typo.h6">
@@ -92,7 +92,7 @@
             <MudCardContent Class="pa-4">
                 
                 <MudTable Items="@CurrentStock" Elevation="2" Breakpoint="Breakpoint.Sm" SortLabel="Sort By"
-                          Dense="true" FixedHeader="true" Height="275px">
+                          Dense="true" FixedHeader="true" Height="100%">
                     
                     <HeaderContent>
                         <MudTh>Item #</MudTh>

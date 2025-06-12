@@ -6,11 +6,13 @@
 
 @page "/IMS/Products"
 
+<PageTitle>IMS Products</PageTitle>
+
 <!-- ((SelectedItem == null) ? null : (SelectedItem.IsActive ? DeactivateProduct : ActivateProduct)) -->
 
 <ImsMenu/>
 <MudGrid Class="fix-pos">
-    <MudToolWindow WindowTitle="Product Details" OnSave="@SaveProduct" OnSecondary="@SecondaryButtonClick"
+    <MudToolWindow WindowTitle="Product Details" ChildContentPopulated="@(SelectedItem != null)" OnSave="@SaveProduct" OnSecondary="@SecondaryButtonClick"
                    SecondButtonText="@SecondaryButtonText" SecondaryButtonIcon="@SecondaryButtonIcon" SecondaryButtonColor="@SecondaryButtonColor">
         <!-- Card 1 -->
 
@@ -65,7 +67,7 @@
                                 <MudItem xs="12" sm="12" md="6">
                                     <MudExpansionPanels>
                                         <MudExpansionPanel Text="Item Stocks" Icon="@Icons.Material.Filled.Storage">
-                                            <ItemStockTable Stocks="SelectedItem.Stocks.ToList()" TableOnly="true" SelectedItem="SelectedItem"/>
+                                            <ItemStockTable TableClass="dark" Stocks="SelectedItem.Stocks.ToList()" TableOnly="true" SelectedItem="SelectedItem"/>
                                         </MudExpansionPanel>
                                         <MudExpansionPanel Text="Stock Locations">
 
@@ -104,7 +106,7 @@
                         
                         <ToolBarContent>
                             <MudGrid>
-                                <MudItem xs="4">
+                                <MudItem xs="12" sm="12" md="4">
                                     <MudSelect Class="no-label" T="StorageLocation" @bind-SelectedValues="LocationFilter" @bind-Value="SelectedStorageLocation" MultiSelection="true"
                                                Dense="true" Variant="Variant.Filled" Text="Filter By Location" MaxHeight="180" Typo="Typo.body2" >
                                         @if (StorageLocations != null)

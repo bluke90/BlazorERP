@@ -5,11 +5,14 @@
 
 @page "/IMS/StorageManagement"
 
+<PageTitle>IMS Storage Management</PageTitle>
 
 <ImsMenu/>
 
 <MudGrid Class="fix-pos">
-        <MudToolWindow WindowTitle="Storage Location Details">
+    <MudToolWindow WindowTitle="Storage Location Details" OnSave="SaveStorageLocation" OnSecondary="SecondaryButtonClick" SecondaryButtonColor="SecondaryButtonColor"
+                   SecondaryButtonIcon="@SecondaryButtonIcon" SecondButtonText="@SecondaryButtonText" ChildContentPopulated="@(_selectedStore != null)">
+        
         @if (_selectedStore != null)
         {
             <MudGrid>
@@ -35,20 +38,6 @@
                                 <MudItem xs="12" sm="12" md="6">
 
                                 </MudItem>
-                                <MudItem xs="12" Class="flex flex-row justify-center p-1" Style="margin-left: 24px">
-                                    <MudStack Row="true">
-                                        <MudButton Variant="Variant.Filled" Color="Color.Success">
-                                            <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/>
-                                            Save
-                                        </MudButton>
-                                        <MudSpacer/>
-                                        <MudButton Variant="Variant.Filled" Color="Color.Error">
-                                            <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Cancel"/>
-                                            Deactivate
-                                        </MudButton>
-                                    </MudStack>
-                                </MudItem>
-
                             </MudGrid>
                         </MudTabPanel>
 
@@ -75,23 +64,23 @@
 
             </MudGrid>
         }
-        else
-        {
-            <MudPaper Class="justify-center bg-none flex">
-
-                <MudChip T="string"
-                         Color="Color.Dark"
-                         tabindex="-1"
-                         Class="p-2 m-2">
-                    <MudText Typo="Typo.body1" Color="Color.Default">
-                        <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium"/>
-                        Select a Storage Location to View Details
-                    </MudText>
-                </MudChip>
-
-            </MudPaper>
-        }
-        </MudToolWindow>
+        @* else *@
+        @* { *@
+        @*     <MudPaper Class="justify-center bg-none flex"> *@
+        @* *@
+        @*         <MudChip T="string" *@
+        @*                  Color="Color.Dark" *@
+        @*                  tabindex="-1" *@
+        @*                  Class="p-2 m-2"> *@
+        @*             <MudText Typo="Typo.body1" Color="Color.Default"> *@
+        @*                 <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium"/> *@
+        @*                 Select a Storage Location to View Details *@
+        @*             </MudText> *@
+        @*         </MudChip> *@
+        @* *@
+        @*     </MudPaper> *@
+        @* } *@
+    </MudToolWindow>
     
     
     <MudItem xs="12">
