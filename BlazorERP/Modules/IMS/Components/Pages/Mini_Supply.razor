@@ -1,6 +1,226 @@
-﻿
+﻿@using BlazorERP.Data.Entities
+@using BlazorERP.Modules.IMS.Components.Dialogs
+@using BlazorERP.Modules.IMS.Components.PageComponents
+@using BlazorERP.Modules.Services
+@inject ImsService Ims
+@inject IDialogService Dialog
+@inject ISnackbar Snackbar
 
 <!-- Mini Sales Pages -->
+@page "/IMS/Supply"
 
+<ImsMenu/>
 
 <!-- tabbed tables with suppliers and purchases -->
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12">
+        <MudCard Elevation="10" Outlined="true">
+            <MudCardContent Class="p-0">
+
+                <MudTabs Elevation="5" Rounded="true" ApplyEffectsToContainer="true" PanelClass="p-6" Border="true">
+
+                    <MudTabPanel Text="Suppliers" Icon="@Icons.Material.Filled.Person">
+
+                        <MudTable T="Supplier" Items="@_suppliers" Dense="true"
+                                  @bind-SelectedItem="_selectedSupplier" SortLabel="Sort By" OnCommitEditClick="SaveSupplier">
+                            
+                            <ColGroup>
+                                <MudHidden Breakpoint="Breakpoint.MdAndDown">
+                                    <col style="width: 5%"/>
+                                    <col style="width: 25%"/>
+                                    <col style="width: 25%"/>
+                                    <col style="width: 25%"/>
+                                    <col style="width: 20%"/>
+                                </MudHidden>
+                            </ColGroup>
+
+                            <HeaderContent>
+                                <MudTh>ID</MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Supplier, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Supplier, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<Supplier, object>(x => x.Phone)">Phone</MudTableSortLabel></MudTh>
+                            </HeaderContent>
+
+                            <RowTemplate>
+                                <MudTd DataLabel="ID">@context.SupplierId</MudTd>
+                                <MudTd DataLabel="Name">@context.Name</MudTd>
+                                <MudTd DataLabel="Email">@context.Email</MudTd>
+                                <MudTd DataLabel="Phone">@context.Phone</MudTd>
+                            </RowTemplate>
+
+                            <RowEditingTemplate>
+                                <MudTd DataLabel="ID">@context.SupplierId</MudTd>
+                                <MudTd DataLabel="Name">
+                                    <MudTextField @bind-Value="_selectedSupplier.Name" Required />
+                                </MudTd>
+                                <MudTd DataLabel="Email">
+                                    <MudTextField @bind-Value="_selectedSupplier.Email" />
+                                </MudTd>
+                                <MudTd DataLabel="Phone">
+                                    <MudTextField @bind-Value="_selectedSupplier.Phone" Mask="@(new PatternMask(@"(000) - 000 - 000"))" />
+                                </MudTd>
+                            </RowEditingTemplate>
+
+                            <EditButtonContent Context="button">
+                                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
+                            </EditButtonContent>
+                            
+                            <FooterContent>
+                                <td colspan="5">
+                                    <div style="width: 100%; text-align: center;">
+                                        <MudButton Size="Size.Small" FullWidth="true" Color="Color.Info" Variant="Variant.Filled" OnClick="OpenAddSupplierDialog">
+                                            <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add" Color="Color.Secondary" />
+                                            Add New Supplier
+                                        </MudButton>
+                                    </div>
+                                </td>
+                            </FooterContent>
+                            
+
+                        </MudTable>
+
+                    </MudTabPanel>
+                    <!-- Purchase Orders Tab -->
+                    <MudTabPanel Text="Purchase Orders" Icon="@Icons.Material.Filled.ShoppingCart">
+
+                        <MudGrid>
+                            <MudItem xs="12" md="5">
+                                <MudTable T="PurchaseOrder" Items="@_purchaseOrders" Dense="true" Hover="true"
+                                          RowClass="cursor-pointer" OnRowClick="PurchaseOrderSelected">
+                                    <HeaderContent>
+                                        <MudTh>ID</MudTh>
+                                        <MudTh><MudTableSortLabel SortBy="new Func<PurchaseOrder, object>(x => x.OrderedUtc)">Ordered</MudTableSortLabel></MudTh>
+                                        <MudTh><MudTableSortLabel SortBy="new Func<PurchaseOrder, object>(x => x.Supplier!.Name)">Supplier</MudTableSortLabel></MudTh>
+                                        <MudTh>Status</MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd DataLabel="ID">@context.POId</MudTd>
+                                        <MudTd DataLabel="Ordered">@context.OrderedUtc.ToShortDateString()</MudTd>
+                                        <MudTd DataLabel="Supplier">@context.Supplier?.Name</MudTd>
+                                        <MudTd DataLabel="Status">@context.Status</MudTd>
+                                    </RowTemplate>
+                                    <FooterContent>
+                                        <td colspan="4">
+                                            <div style="width: 100%; text-align: center;">
+                                                <MudButton Size="Size.Small" FullWidth="true" Color="Color.Info" Variant="Variant.Filled" OnClick="OpenNewPurchaseOrderDialog">
+                                                    <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add" Color="Color.Secondary" />
+                                                    Add New Purchase Order
+                                                </MudButton>
+                                            </div>
+                                        </td>
+                                    </FooterContent>
+                                </MudTable>
+                            </MudItem>
+                            <MudItem xs="0" md="1" Style="padding-left: 0;">
+                                <MudStack Spacing="0" Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-left: var(--mud-palette-secondary) 4px solid;">
+                                    <MudIcon Class="ml-2" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage" />
+                                    <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.ArrowRight" />
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" md="5">
+                                @if (_selectedPurchaseOrder is not null)
+                                {
+                                    <MudTable T="PurchaseOrderLine" Items="@_selectedPurchaseOrder.PurchaseOrderLines.ToList()" Dense="true" FixedHeader="true">
+                                        <HeaderContent>
+                                            <MudTh>Item</MudTh>
+                                            <MudTh>Qty</MudTh>
+                                            <MudTh>Cost</MudTh>
+                                        </HeaderContent>
+                                        <RowTemplate>
+                                            <MudTd DataLabel="Item">@context.Item.Name</MudTd>
+                                            <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
+                                            <MudTd DataLabel="Cost">$@context.UnitCost</MudTd>
+                                        </RowTemplate>
+                                    </MudTable>
+                                }
+                                else
+                                {
+                                    <MudChip T="string" Color="Color.Dark" tabindex="-1" Class="p-2 m-2">
+                                        <MudText Typo="Typo.body1" Color="Color.Default">
+                                            <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium" />
+                                            Select a Purchase Order View Lines
+                                        </MudText>
+                                    </MudChip>
+                                }
+                            </MudItem>
+                        </MudGrid>
+
+                    </MudTabPanel>
+
+
+                </MudTabs>
+
+
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+</MudGrid>
+
+@code {
+
+    private bool blockSwitch = false;
+
+    private List<Supplier> _suppliers = new List<Supplier>();
+
+    private List<PurchaseOrder> _purchaseOrders = new List<PurchaseOrder>();
+    private PurchaseOrder? _selectedPurchaseOrder;
+
+    private Supplier _selectedSupplier = new Supplier();
+
+    private async Task SaveSupplier()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _suppliers = await Ims.GetSuppliers();
+        _purchaseOrders = await Ims.GetPurchaseOrders();
+    }
+
+    private void PurchaseOrderSelected(TableRowClickEventArgs<PurchaseOrder> args)
+    {
+        _selectedPurchaseOrder = args.Item;
+    }
+
+    private async Task OpenNewPurchaseOrderDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true,
+            Position = DialogPosition.Center
+        };
+
+        var dialog = await Dialog.ShowAsync<_AddPurchaseOrder>("New Purchase Order", options: options);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            _purchaseOrders = await Ims.GetPurchaseOrders();
+            Snackbar.Add("Purchase order added", Severity.Success);
+        }
+    }
+
+    private async Task OpenAddSupplierDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            BackdropClick = true,
+            Position = DialogPosition.Center
+        };
+
+        var dialog = await Dialog.ShowAsync<_AddSupplier>("New Storage Location", options: options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            _suppliers = await Ims.GetSuppliers();
+        }
+    }
+
+}

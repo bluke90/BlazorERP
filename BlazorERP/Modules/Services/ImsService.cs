@@ -227,4 +227,20 @@ public class ImsService
     {
         return _context.Stocks.Any(x => x.ItemId == stock.ItemId && x.StorageLocationId == stock.StorageLocationId);
     }
+    
+    public async Task<List<PurchaseOrder>> GetPurchaseOrders()
+    {
+        var orders = await _context.PurchaseOrders
+            .Include(x => x.Supplier)
+            .Include(x => x.PurchaseOrderLines)
+            .ThenInclude(line => line.Item)
+            .ToListAsync();
+
+        return orders;
+    }
+    
+    public async Task<List<Supplier>> GetSuppliers()
+    {
+        return await _context.Suppliers.ToListAsync();
+    }
 }

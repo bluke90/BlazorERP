@@ -1,0 +1,137 @@
+﻿@using BlazorERP.Data.Context
+@using BlazorERP.Data.Entities
+@using BlazorERP.Modules.Services
+@inject ImsService Ims
+@inject IDialogService Dialog
+@inject ISnackbar Snackbar
+@inject proContext _context
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Medium" />
+            Add Purchase Order
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="6">
+                <MudSelect T="Supplier" Label="Supplier" @bind-Value="_newOrder.Supplier" Variant="Variant.Outlined" Required>
+                    @foreach (var sup in _suppliers)
+                    {
+                        <MudSelectItem Value="@sup">@sup.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="6">
+                <MudDatePicker @bind-Date="_orderedDate" Label="Order Date" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudDatePicker @bind-Date="_expectedDate" Label="Expected Date" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Status" @bind-Value="_newOrder.Status" Variant="Variant.Outlined" />
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="my-2" />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="AddLine" StartIcon="@Icons.Material.Filled.Add">
+            Add Line
+        </MudButton>
+
+        <MudTable T="PurchaseOrderLine" Items="_lines" Dense="true" @bind-SelectedItem="_selectedLine" Class="mt-2">
+            <HeaderContent>
+                <MudTh>Item</MudTh>
+                <MudTh>Qty</MudTh>
+                <MudTh>Cost</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Item">@context.Item?.Name</MudTd>
+                <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
+                <MudTd DataLabel="Cost">$@context.UnitCost</MudTd>
+            </RowTemplate>
+            <RowEditingTemplate>
+                <MudTd DataLabel="Item">
+                    <MudSelect T="Item" @bind-Value="context.Item" Variant="Variant.Outlined" Dense Required>
+                        @foreach (var item in _items)
+                        {
+                            <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudTd>
+                <MudTd DataLabel="Qty">
+                    <MudNumericField @bind-Value="context.QtyOrdered" Variant="Variant.Outlined" Required />
+                </MudTd>
+                <MudTd DataLabel="Cost">
+                    <MudNumericField @bind-Value="context.UnitCost" Variant="Variant.Outlined" Required />
+                </MudTd>
+            </RowEditingTemplate>
+            <EditButtonContent Context="button">
+                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
+            </EditButtonContent>
+        </MudTable>
+    </DialogContent>
+
+    <DialogActions>
+        <MudGrid Justify="Justify.SpaceAround">
+            <MudItem xs="6">
+                <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Cancel" FullWidth="true">Cancel</MudButton>
+            </MudItem>
+            <MudItem xs="6">
+                <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="Save" FullWidth="true">Save</MudButton>
+            </MudItem>
+        </MudGrid>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private PurchaseOrder _newOrder = new() { OrderedUtc = DateTime.Today, Status = "Pending" };
+    private List<PurchaseOrderLine> _lines = new();
+    private PurchaseOrderLine? _selectedLine;
+    private DateTime? _orderedDate = DateTime.Today;
+    private DateTime? _expectedDate = DateTime.Today;
+
+    private List<Supplier> _suppliers = new();
+    private List<Item> _items = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _suppliers = await Ims.GetSuppliers();
+        _items = await Ims.GetItems();
+    }
+
+    private void AddLine()
+    {
+        var line = new PurchaseOrderLine { QtyOrdered = 1, UnitCost = 0 };
+        _lines.Add(line);
+        _selectedLine = line;
+    }
+
+    private async Task Save()
+    {
+        _newOrder.OrderedUtc = _orderedDate ?? DateTime.Today;
+        _newOrder.ExpectedUtc = _expectedDate;
+
+        if (_newOrder.Supplier != null)
+            _newOrder.SupplierId = _newOrder.Supplier.SupplierId;
+
+        foreach (var line in _lines)
+        {
+            if (line.Item != null)
+                line.ItemId = line.Item.ItemId;
+            _newOrder.PurchaseOrderLines.Add(line);
+        }
+
+        _context.Add(_newOrder);
+        await _context.SaveChangesAsync();
+        Snackbar.Add("Purchase order added", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(_newOrder));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}
