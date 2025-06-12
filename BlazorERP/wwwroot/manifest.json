@@ -1,0 +1,21 @@
+﻿{
+  "name": "BlazorERP",
+  "short_name": "BlzrERO",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#1944b4",
+  "description": "A Blazor Server showcase app built with MudBlazor by Blake Ganzerla",
+  "icons": [
+    {
+      "src": "icons/BlazorERP_Icon_192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/BlazorERP_Icon_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

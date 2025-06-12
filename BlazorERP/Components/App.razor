@@ -16,6 +16,15 @@
     <link href="CSS/MudBlazorFixes.css?version=@Random.Shared.Next()" rel="stylesheet"/>
     <link href=@Assets["_content/*.razor.css"] rel="stylesheet" />
     <HeadOutlet @rendermode="InteractiveServer"/>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3f51b5" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <script>
+        window.addEventListener('beforeinstallprompt', (e) => {
+          window.deferredPrompt = e;
+        });
+    </script>
 </head>
 
 <body>
@@ -34,7 +43,11 @@ window.setGradientClass = cls => {
 };
 </script>
 
-
+<script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('JS/service-worker.js');
+        }   
+</script>
 </body>
 
 </html>
