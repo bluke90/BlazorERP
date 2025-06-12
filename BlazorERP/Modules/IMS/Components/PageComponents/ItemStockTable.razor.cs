@@ -12,6 +12,8 @@ public class ItemStockTableBase : ComponentBase
 {
     [Parameter]
     public required List<Stock> Stocks { get; set; }
+    [Parameter]
+    public string TableClass { get; set; } = string.Empty;
     
     [Parameter]
     public ItemStockTableVariant ItemStockTableVariant { get; set; } = ItemStockTableVariant.ByStorageLocation;
@@ -98,6 +100,14 @@ public class ItemStockTableBase : ComponentBase
         var newStock = SelectedStock.Stock.StorageLocationId == 0;
         if (newStock)
         {
+            if (SelectedStock.Stock.StorageLocation.Code == "Default Location")
+            {
+                Snackbar.Add("Please select a valid storage location.", Severity.Warning);
+                ItemStockModels.Remove(SelectedStock);
+                SelectedStock = null;
+                return;
+            }
+            
             SelectedStock.Stock.StorageLocation = StorageLocations.FirstOrDefault(x => x.Code == SelectedStock.Stock.StorageLocation.Code);
             SelectedStock.Stock.StorageLocationId = SelectedStock.Stock.StorageLocation.StorageLocationId;            
             

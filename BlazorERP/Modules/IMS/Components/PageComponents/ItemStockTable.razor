@@ -69,7 +69,7 @@
 }
 else
 {
-    <MudTable Class="w-100" Items="ItemStockModels" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
+    <MudTable Class="@TableClass" Style="width: 100%" Items="ItemStockModels" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true" CanCancelEdit="true" IsEditRowSwitchingBlocked="true" 
               @bind-SelectedItem="SelectedStock" SortLabel="Sort By" OnCommitEditClick="SaveStock" ReadOnly="Readonly">
         <HeaderContent>
             <MudTh>@(ItemStockTableVariant == ItemStockTableVariant.ByStorageLocation ? "Storage Location" : "Item Name")</MudTh>
