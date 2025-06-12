@@ -16,7 +16,7 @@
 
 <ImsMenu/>
 
-    <MudGrid Justify="Justify.Center"> 
+    <MudGrid> 
         <MudItem xs="12">
             <MudCard Elevation="10" Outlined="true">
                 <MudCardContent Class="p-0">
@@ -25,16 +25,18 @@
 
                         <MudTabPanel Text="Customers" Icon="@Icons.Material.Filled.Person">
 
-                            <MudTable T="Customer" Items="@_customers" Dense="true" Breakpoint="Breakpoint.SmAndDown"
+                            <MudTable T="Customer" Items="@_customers" Dense="true"
                                       @bind-SelectedItem="_selectedCustomer" SortLabel="Sort By" OnCommitEditClick="SaveCustomer">
                                 
                                 <ColGroup>
-                                    <col style="width: 5%"/>
-                                    <col style="width: 20%"/>
-                                    <col style="width: 20%"/>
-                                    <col style="width: 20%"/>
-                                    <col style="width: 30%"/>
-                                    <col style="width: 5%;"/>
+                                    <MudHidden Breakpoint="Breakpoint.MdAndDown">
+                                        <col style="width: 5%"/>
+                                        <col style="width: 20%"/>
+                                        <col style="width: 20%"/>
+                                        <col style="width: 20%"/>
+                                        <col style="width: 30%"/>
+                                        <col style="width: 5%;"/>
+                                    </MudHidden>
                                 </ColGroup>
 
                                 <HeaderContent>
@@ -82,9 +84,15 @@
                         <MudTabPanel Text="Sales Orders" Icon="@Icons.Material.Filled.ShoppingCart">
 
                             <MudGrid>
-                                <MudItem xs="12" md="5">
-                                    <MudTable T="SalesOrder" Items="@_salesOrders" Dense="true" Breakpoint="Breakpoint.SmAndDown" Hover="true"
+                                <MudItem xs="12" md="6">
+                                    <MudTable Class="dense-toolbar" T="SalesOrder" Items="@_salesOrders" Dense="true" Hover="true"
                                               RowClass="cursor-pointer" OnRowClick="SalesOrderSelected">
+                                        <ToolBarContent>
+                                            <MudText Typo="Typo.subtitle1">
+                                                <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.MoveToInbox" Size="Size.Medium"/>
+                                                Orders
+                                            </MudText>
+                                        </ToolBarContent>
                                         <HeaderContent>
                                             <MudTh>ID</MudTh>
                                             <MudTh><MudTableSortLabel SortBy="new Func<SalesOrder, object>(x => x.OrderedUtc)">Ordered</MudTableSortLabel></MudTh>
@@ -111,14 +119,21 @@
                                 </MudItem>
                                 <MudItem xs="0" md="1" Style="padding-left: 0;">
                                     <MudStack Spacing="0" Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-left: var(--mud-palette-secondary) 4px solid;">
-                                        <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
+                                        <MudIcon Class="ml-2" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
                                         <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.ArrowRight"/>
                                     </MudStack>
                                 </MudItem>
                                 <MudItem xs="12" md="5">
                                     @if (_selectedSalesOrder is not null)
                                     {
-                                        <MudTable T="SalesOrderLine" Items="@_selectedSalesOrder.SalesOrderLines.ToList()" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true">
+                                        <MudTable Class="dense-toolbar" T="SalesOrderLine" Items="@_selectedSalesOrder.SalesOrderLines.ToList()" Dense="true" FixedHeader="true">
+                                            <ToolBarContent>
+                                                    <MudText Typo="Typo.subtitle1">
+                                                        <MudIcon Class="align-sub" Size="Size.Medium" Icon="@Icons.Material.Filled.Style"/>
+                                                        Lines for Sales Order @(_selectedSalesOrder.SOId)
+                                                    </MudText>
+                                            </ToolBarContent>
+                                            
                                             <HeaderContent>
                                                 <MudTh>Item</MudTh>
                                                 <MudTh>Qty</MudTh>

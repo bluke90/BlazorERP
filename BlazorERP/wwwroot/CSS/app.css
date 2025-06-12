@@ -2,14 +2,33 @@
     --theme-primary: #1e499e;
     --theme-primary-overlay: #112a90cc;
     --DarkHightlight: #00000078;
+    --DarkHighlight: #00000078;
+    --LightBackgroundGradient: radial-gradient(circle,rgba(191, 191, 191, 1) 7%, rgba(219, 219, 219, 1) 39%, rgba(140, 140, 140, 1) 100%);
+    --DarkBackgroundGradient: linear-gradient(137deg,rgba(64, 64, 64, 1) 6%, rgba(48, 48, 48, 1) 46%, rgba(56, 56, 56, 1) 80%);
+}
+
+html.light-gradient {
+    background: var(--LightBackgroundGradient);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    body {
+        background: none;
+    }
+}
+html.dark-gradient {
+    background: var(--DarkBackgroundGradient);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    body {
+        background: none;
+    }
 }
 
 /* MudToolWindow Styles */
-:root {
-    --theme-primary: #1e499e;
-    --theme-primary-overlay: #112a90cc;
-    --DarkHighlight: #00000078;
-}
 
 .tool-window {
     padding: 4px 0 1rem !important;
