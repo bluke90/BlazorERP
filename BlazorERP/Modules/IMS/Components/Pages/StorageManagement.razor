@@ -1,5 +1,6 @@
 ﻿@using BlazorERP.Data.Entities
 @using BlazorERP.Modules.IMS.Components.PageComponents
+@using BlazorERP.Components.Global.Components
 @inherits StorageManagementBase
 
 @page "/IMS/StorageManagement"
@@ -8,7 +9,7 @@
 <ImsMenu/>
 
 <MudGrid Class="fix-pos">
-    <MudItem xs="12" Style="z-index: 1;" Class="alternate-bg-50">
+        <MudToolWindow WindowTitle="Storage Location Details">
         @if (_selectedStore != null)
         {
             <MudGrid>
@@ -16,14 +17,20 @@
                     <PieTypeChartCard Labels="ChartLabels" Values="ChartValues" Title="Storage Location Contents" DenseHeader="true"/>
                 </MudItem>
                 <MudItem xs="12" sm="12" md="7">
-                    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" ActiveTabClass="alternate">
-                        
+                    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true">
+
                         <MudTabPanel Text="Details" Icon="@Icons.Material.Filled.Info">
                             <MudGrid>
                                 <MudItem xs="12" sm="12" md="6">
-                                    <MudTextField Label="Name" @bind-Value="_selectedStore.Name" Variant="Variant.Filled" AdornmentIcon="@Icons.Material.Filled.PermIdentity">@_selectedStore.Name</MudTextField>
-                                    <MudTextField Label="Code" @bind-Value="_selectedStore.Code" Variant="Variant.Filled" AdornmentIcon="@Icons.Material.Filled.Code">@_selectedStore.Code</MudTextField>
-                                    <MudTextField Label="Address" @bind-Value="_selectedStore.Address" Variant="Variant.Filled" AdornmentIcon="@Icons.Material.Filled.LocationOn">@_selectedStore.Address</MudTextField>
+                                    <MudTextField Label="Name" @bind-Value="_selectedStore.Name" Variant="Variant.Filled" AdornmentIcon="@Icons.Material.Filled.PermIdentity">
+                                        @_selectedStore.Name
+                                    </MudTextField>
+                                    <MudTextField Label="Code" @bind-Value="_selectedStore.Code" Variant="Variant.Filled" AdornmentIcon="@Icons.Material.Filled.Code">
+                                        @_selectedStore.Code
+                                    </MudTextField>
+                                    <MudTextField Label="Address" @bind-Value="_selectedStore.Address" Variant="Variant.Filled" AdornmentIcon="@Icons.Material.Filled.LocationOn">
+                                        @_selectedStore.Address
+                                    </MudTextField>
                                 </MudItem>
                                 <MudItem xs="12" sm="12" md="6">
 
@@ -44,12 +51,12 @@
 
                             </MudGrid>
                         </MudTabPanel>
-                        
+
                         <MudTabPanel Text="Contents" Icon="@Icons.Material.Filled.Storage">
                             <MudPaper Class="justify-center" Style="background: none;">
-                                
+
                                 <ItemStockTable ItemStockTableVariant="ItemStockTableVariant.ByItem" Stocks="_selectedStoreStocks" TableOnly="true"></ItemStockTable>
-                        
+
                                 <MudChip T="string"
                                          Color="Color.Info"
                                          tabindex="-1"
@@ -59,10 +66,10 @@
                                         Click On Any Quantity to Edit
                                     </MudText>
                                 </MudChip>
-                            
+
                             </MudPaper>
                         </MudTabPanel>
-                        
+
                     </MudTabs>
                 </MudItem>
 
@@ -71,7 +78,7 @@
         else
         {
             <MudPaper Class="justify-center bg-none flex">
-                
+
                 <MudChip T="string"
                          Color="Color.Dark"
                          tabindex="-1"
@@ -81,10 +88,11 @@
                         Select a Storage Location to View Details
                     </MudText>
                 </MudChip>
-                
+
             </MudPaper>
         }
-    </MudItem>
+        </MudToolWindow>
+    
     
     <MudItem xs="12">
         

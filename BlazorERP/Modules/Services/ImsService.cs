@@ -243,4 +243,29 @@ public class ImsService
     {
         return await _context.Suppliers.ToListAsync();
     }
+
+    public async Task SaveItem(Item item)
+    {
+        var itemToUpdate = await _context.Items
+            .FirstOrDefaultAsync(x => x.ItemId == item.ItemId);
+        
+        if (itemToUpdate != null)
+        {
+            itemToUpdate.Name = item.Name;
+            itemToUpdate.CategoryId = item.CategoryId;
+            itemToUpdate.UnitId = item.UnitId;
+            itemToUpdate.SKU = item.SKU;
+            itemToUpdate.ReorderPoint = item.ReorderPoint;
+            itemToUpdate.DefaultCost = item.DefaultCost;
+            itemToUpdate.DefaultPrice = item.DefaultPrice;
+            _context.Items.Update(itemToUpdate);
+        }
+        else
+        {
+            // If the item does not exist, add it
+            _context.Items.Add(item);
+        }
+        
+        await _context.SaveChangesAsync();
+    }
 }

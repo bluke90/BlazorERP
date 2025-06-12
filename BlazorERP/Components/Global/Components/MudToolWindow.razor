@@ -34,11 +34,11 @@
             @if (ChildContent != null)
             {
                 <MudItem xs="2">
-                    <MudHidden Breakpoint="Breakpoint.MdAndUp">
-                        <MudIconButton Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.Save"/>    
+                    <MudHidden Breakpoint="Breakpoint.SmAndUp">
+                        <MudIconButton Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.Save" OnClick="OnSave"/>    
                     </MudHidden>
-                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Success" FullWidth="true" Size="Size.Small">
+                    <MudHidden Breakpoint="Breakpoint.Xs">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Success" FullWidth="true" Size="Size.Small" OnClick="OnSave">
                             <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/>
                             Save
                         </MudButton>                        
@@ -46,13 +46,13 @@
                 </MudItem>
                 <MudSpacer/>
                 <MudItem xs="2">
-                    <MudHidden Breakpoint="Breakpoint.MdAndUp">
-                        <MudIconButton Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" Icon="@Icons.Material.Filled.Cancel"/>    
+                    <MudHidden Breakpoint="Breakpoint.SmAndUp">
+                        <MudIconButton Variant="Variant.Outlined" Color="@SecondaryButtonColor" Size="Size.Small" Icon="@SecondaryButtonIcon" OnClick="@OnSecondary"/>    
                     </MudHidden>
-                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Error" FullWidth="true" Size="Size.Small">
-                            <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Cancel"/>
-                            Deactivate
+                    <MudHidden Breakpoint="Breakpoint.Xs">
+                        <MudButton Variant="Variant.Outlined" Color="@SecondaryButtonColor" FullWidth="true" Size="Size.Small" OnClick="@OnSecondary">
+                            <MudIcon Class="align-sub" Icon="@SecondaryButtonIcon"/>
+                            @SecondButtonText
                         </MudButton>                        
                     </MudHidden>
                 </MudItem>
@@ -68,5 +68,16 @@
     public string WindowTitle { get; set; } = "Tool Window";
     [Parameter]
     public string FooterIcon { get; set; } = Icons.Material.Filled.Info;
-    
+    [Parameter]
+    public string SecondButtonText { get; set; } = "Deactivate";
+    [Parameter]
+    public Color SecondaryButtonColor { get; set; } = Color.Error;
+    [Parameter]
+    public string SecondaryButtonIcon { get; set; } = Icons.Material.Filled.Cancel;
+    // Event callbacks for save and secondary actions
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+    [Parameter] 
+    public EventCallback OnSecondary { get; set; }
+
 }

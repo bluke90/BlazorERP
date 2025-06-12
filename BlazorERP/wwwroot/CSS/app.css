@@ -43,9 +43,11 @@ html.dark-gradient {
     border-bottom: 2px solid var(--mud-palette-table-striped);
     min-height: 15vh;
     
-    .mud-input, .mud-input-label {
-        color: var(--mud-palette-white) !important;
-    }
+    .white-input {
+        .mud-input, .mud-input-label {
+            color: var(--mud-palette-white) !important;    
+        }
+    }    
 }
 
 .tool-window-footer {
@@ -85,6 +87,14 @@ html.dark-gradient {
 }
 
 /* ======= End Base Layout Styling ======== */
+/* - MudList */
+.mud-list {
+    background-color: var(--mud-palette-black);
+    color: var(--mud-palette-white);
+}
+.mud-list-item-icon {
+    color: var(--mud-palette-white);
+}
 
 /* - Mud Tab Panel */
 .mud-tabs {

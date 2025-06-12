@@ -6,11 +6,12 @@
 
 @page "/IMS/Products"
 
-
+<!-- ((SelectedItem == null) ? null : (SelectedItem.IsActive ? DeactivateProduct : ActivateProduct)) -->
 
 <ImsMenu/>
 <MudGrid Class="fix-pos">
-    <MudToolWindow WindowTitle="Product Details">
+    <MudToolWindow WindowTitle="Product Details" OnSave="@SaveProduct" OnSecondary="@SecondaryButtonClick"
+                   SecondButtonText="@SecondaryButtonText" SecondaryButtonIcon="@SecondaryButtonIcon" SecondaryButtonColor="@SecondaryButtonColor">
         <!-- Card 1 -->
 
         @if (SelectedItem != null)
@@ -24,8 +25,8 @@
                                         </MudItem>
 
                                         <MudItem xs="12" sm="12" md="7">
-                                            <MudTextField Label="Name" @bind-Value="@SelectedItem.Name" Variant="Variant.Outlined"/>
-                                            <MudTextField Label="Category" @bind-Value="@SelectedItem.Category.Name" Variant="Variant.Outlined"/>
+                                            <MudTextField Label="Name" @bind-Value="@SelectedItem.Name" Variant="Variant.Outlined" Class="white-input"/>
+                                            <MudTextField Label="Category" @bind-Value="@SelectedItem.Category.Name" Variant="Variant.Outlined" Class="white-input"/>
                                             <MudStack Row="true" Spacing="10" Justify="Justify.SpaceBetween" Class="relative">
                                                 @if (@SelectedItem.IsActive)
                                                 {
@@ -33,10 +34,10 @@
                                                 }
                                                 else
                                                 {
-                                                    <MudText Class="mt-2" Color="Color.Error" Typo="Typo.body2"><MudIcon Icon="@Icons.Material.Filled.FlagCircle" Color="Color.Warning"/>Not Active</MudText>
+                                                    <MudText Class="mt-2" Color="Color.Error" Typo="Typo.body2"><MudIcon Class="align-bottom" Icon="@Icons.Material.Filled.FlagCircle" Color="Color.Error"/>Not Active</MudText>
                                                 }
                                                 <div class="w-50">
-                                                    <MudTextField Label="Total Stock" ReadOnly="true" Variant="Variant.Text" Adornment="Adornment.Start" Class="no-hover"
+                                                    <MudTextField Label="Total Stock" ReadOnly="true" Variant="Variant.Text" Adornment="Adornment.Start" Class="no-hover white-input"
                                                                   AdornmentIcon="@Icons.Material.Filled.Warehouse" AdornmentColor="@(SelectedItem.Stocks.ToList().SumList(x => x.OnHand) > SelectedItem.ReorderPoint ? Color.Success : Color.Warning)"
                                                                   Value="@SelectedItem.Stocks.ToList().SumList(x => x.OnHand)" Underline="false"/>
                                                 </div>
@@ -48,15 +49,15 @@
                                     <MudGrid>
                                         <MudItem xs="6">
                                             <MudTextField Label="SKU" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.QrCode2"
-                                                          @bind-Value="@SelectedItem.SKU" Variant="Variant.Text"/>
+                                                          @bind-Value="@SelectedItem.SKU" Variant="Variant.Text" Class="white-input"/>
                                             <MudTextField Label="Default Cost" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Adornment="Adornment.Start"
-                                                          @bind-Value="@SelectedItem.DefaultCost" Variant="Variant.Text" InputMode="InputMode.numeric"/>
+                                                          @bind-Value="@SelectedItem.DefaultCost" Variant="Variant.Text" InputMode="InputMode.numeric" Class="white-input"/>
                                         </MudItem>
                                         <MudItem xs="6">
                                             <MudTextField Label="Reorder Point" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.SyncProblem"
-                                                          @bind-Value="@SelectedItem.ReorderPoint" Variant="Variant.Text"/>
+                                                          @bind-Value="@SelectedItem.ReorderPoint" Variant="Variant.Text" Class="white-input"/>
                                             <MudTextField Label="Default Price" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Adornment="Adornment.Start"
-                                                          @bind-Value="@SelectedItem.DefaultPrice" Variant="Variant.Text" InputMode="InputMode.numeric"/>
+                                                          @bind-Value="@SelectedItem.DefaultPrice" Variant="Variant.Text" InputMode="InputMode.numeric" Class="white-input"/>
 
                                         </MudItem>
                                     </MudGrid>

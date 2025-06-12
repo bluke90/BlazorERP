@@ -14,7 +14,6 @@ public class ProductsBase : ComponentBase
     protected ISnackbar Snackbar { get; set; }
     [Inject]
     protected IDialogService Dialog { get; set; }
-    
     // List
     public List<Item>? Items { get; set; } = new List<Item>();
     
@@ -32,6 +31,12 @@ public class ProductsBase : ComponentBase
     protected IEnumerable<StorageLocation> LocationFilter { get; set; } = new List<StorageLocation>();
 
     protected bool LocationFilterFunc(Item item) => LocFilter(item, LocationFilter.ToList());
+    
+    // Tool Window Params
+    protected string SecondaryButtonText = "Deactivate";
+    protected string SecondaryButtonIcon = Icons.Material.Filled.Error;
+    protected Color SecondaryButtonColor { get; set; } = Color.Error;
+    protected EventCallback SecondaryButtonClick { get; set; }
 
     private bool LocFilter(Item item, List<StorageLocation> locations)
     {
@@ -73,8 +78,54 @@ public class ProductsBase : ComponentBase
             SelectedItemImageUrl = SetItemImageUrl(itemImage);
             // Get Location codes containing the item
             SelectedStores = await Ims.GetItemStore(SelectedItem.ItemId);
+
+            if (SelectedItem.IsActive)
+            {
+                SecondaryButtonText = "Deactivate";
+                SecondaryButtonIcon = Icons.Material.Filled.Error;
+                SecondaryButtonColor = Color.Error;
+                SecondaryButtonClick = EventCallback.Factory.Create(this, async () => await DeactivateProduct());
+            }
+            else
+            {
+                SecondaryButtonText = "Activate";
+                SecondaryButtonIcon = Icons.Material.Filled.Start;
+                SecondaryButtonColor = Color.Info;
+                SecondaryButtonClick = EventCallback.Factory.Create(this, async () => await ActivateProduct());
+            }
+            
             StateHasChanged();
         }
+    }
+    
+    protected async Task ActivateProduct()
+    {
+        if (SelectedItem is null)
+        {
+            Snackbar.Add("No product selected", Severity.Error);
+            return;
+        }
+
+        // Activate the selected item
+        SelectedItem.IsActive = true;
+        await SaveProduct();
+        
+        Snackbar.Add("Product activated successfully", Severity.Success);
+    }
+    
+    protected async Task DeactivateProduct()
+    {
+        if (SelectedItem is null)
+        {
+            Snackbar.Add("No product selected", Severity.Error);
+            return;
+        }
+
+        // Deactivate the selected item
+        SelectedItem.IsActive = false;
+        await SaveProduct();
+        
+        Snackbar.Add("Product deactivated successfully", Severity.Warning);
     }
     
     private static string SetItemImageUrl(ItemImage itemImage)
@@ -105,6 +156,24 @@ public class ProductsBase : ComponentBase
         SelectedStock = null;
         
         Snackbar.Add("Stock saved", Severity.Success);
+    }
+    
+    // Save product method
+    protected async Task SaveProduct()
+    {
+        if (SelectedItem is null)
+        {
+            Snackbar.Add("Item cannot be null", Severity.Error);
+            return;
+        }
+
+        // Save the item
+        await Ims.SaveItem(SelectedItem);
+
+        // Refresh the items list
+        Items = await Ims.GetItems(includeStockLocations: true);
+        
+        Snackbar.Add("Product saved successfully", Severity.Success);
     }
     
     public async Task OpenNewProductDialog()
