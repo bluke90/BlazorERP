@@ -1,0 +1,42 @@
+﻿BlazorERP Showcase License (Non-Commercial Use Only)
+
+Copyright © 2025 Proton Technologies LLC
+
+Permission is hereby granted to any individual or organization to view, study, and use the source code and materials of the BlazorERP Showcase project for personal educational and non-commercial purposes only, subject to the following conditions:
+
+1. Non-Commercial Use Only
+You may not use the BlazorERP Showcase project, in whole or in part, for any purpose that results in monetary gain, either directly or indirectly.
+This includes, but is not limited to:
+- Incorporating the software into any product or service that is sold, licensed, or offered commercially.
+- Using the software in consulting, training, or commercial education settings.
+- Hosting or distributing the software on paid platforms.
+
+2. No Redistribution or Commercial Derivatives
+You may not:
+- Rehost, resell, sublicense, or otherwise redistribute this software or modified versions of it.
+- Use the codebase or its components to create derivative works intended for public or commercial release.
+
+3. Attribution Requirement
+All permitted usage must retain the original copyright notice and visibly attribute Proton Technologies LLC.
+If you use this code in any published non-commercial project, you must include a link to the original repository.
+
+4. No Warranty
+This software is provided "as is", without warranty of any kind.
+Proton Technologies LLC is not liable for any claims, damages, or other liabilities arising from its use.
+
+5. Commercial Licensing
+If you wish to use the BlazorERP Showcase software or any portion of it for commercial purposes, you must obtain a separate commercial license.
+To request a commercial license, contact:
+Proton Technologies LLC: sales@protontechservices.com
+
+
+Summary:
+
+Allowed:
+- Viewing, running, and modifying the software for personal learning
+- Studying the codebase for educational or experimental purposes
+
+Not Allowed:
+- Any use that earns money
+- Redistribution or rebranding
+- Use in paid products, services, or training

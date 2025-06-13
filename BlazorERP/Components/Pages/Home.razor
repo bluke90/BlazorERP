@@ -50,8 +50,8 @@
     <MudItem xs="12" md="6">
         <MudCard Elevation="10">
             <MudCardHeader>
-                <MudText Typo="Typo.h6" Align="Align.Justify">
-                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Medium" />
+                <MudText Typo="Typo.h6" Align="Align.Justify"  Style="text-align: start;">
+                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Medium"/>
                     Welcome to BlazorERP Showcase
                 </MudText>
             </MudCardHeader>
@@ -99,43 +99,55 @@
                     <MudIcon Icon="@Icons.Material.Filled.Build" /> Featured Projects
                 </MudText>
             </MudCardHeader>
-            <MudCardContent>
-                <MudList T="MudChip<string>" Dense="true" Class="chip-list">
-                    <MudChip T="string" Color="Color.Tertiary">
-                        <MudText>
-                            <b class="blk-clr">TradingCo (.NET MAUI)</b> — Learn core economic principles in a gamified way.  
-                            <MudLink Href="https://github.com/bluke90/TradingCo_8" Target="_blank">GitHub ↗</MudLink>
-                        </MudText>
-                    </MudChip>
-                    <MudChip Color="Color.Tertiary">
-                        <MudText>
-                            <b>TaskIt (.NET MAUI)</b> — Smart daily planner and task manager.  
-                            <MudLink Href="https://github.com/bluke90/TaskIt_7.0" Target="_blank">GitHub ↗</MudLink>
-                        </MudText>
-                    </MudChip>
-                    <MudChip Color="Color.Tertiary">
-                        <MudText>
-                            <b>MessageSense</b> — WebSockets learning playground for client/server packets.  
-                            <MudLink Href="https://github.com/bluke90/MessageSense" Target="_blank">GitHub ↗</MudLink>
-                        </MudText>
-                    </MudChip>
-                    <MudChip Color="Color.Tertiary">
-                        <MudText>
-                            <b>Business Logic API (Work)</b> — Supports rule validation, capacity planning, ingot analysis.
-                        </MudText>
-                    </MudChip>
-                    <MudChip Color="Color.Tertiary">
-                        <MudText>
-                            <b>Scanware</b> — MMudTextapp for scanning, printing, and moving tagged items in real-time.
-                        </MudText>
-                    </MudChip>
-                    <MudChip Color="Color.Tertiary">
-                        <MudText>
-                            <b>PLXX_Altis_Life MudText</b> — Full mod for Arma 3 Altis Life gameplay.
-                            <MudLink Href="https:/MudText.com/bluke90/PLXX_Altis_Life.altis" Target="_blank">GitHub ↗</MudLink>
-                        </MudText>
-                    </MudChip>
-                </MudList>
+            <MudCardContent Class="p-4 pl-5">
+                    <MudGrid Class="chip-list">
+                        <MudItem sm="4">
+                            <MudChip T="string" Color="Color.Tertiary">
+                                <MudText>
+                                    <b class="blk-clr">TradingCo (.NET MAUI)</b> — Learn core economic principles in a gamified way.
+                                    <MudLink Href="https://github.com/bluke90/TradingCo_8" Target="_blank">GitHub ↗</MudLink>
+                                </MudText>
+                            </MudChip>
+                        </MudItem>
+                        <MudItem sm="4">
+                            <MudChip T="string" Color="Color.Tertiary">
+                                <MudText>
+                                    <b>TaskIt (.NET MAUI)</b> — Smart daily planner and task manager.
+                                    <MudLink Href="https://github.com/bluke90/TaskIt_7.0" Target="_blank">GitHub ↗</MudLink>
+                                </MudText>
+                            </MudChip>
+                        </MudItem>
+                        <MudItem sm="4">
+                            <MudChip T="string" Color="Color.Tertiary">
+                                <MudText>
+                                    <b>MessageSense</b> — WebSockets learning playground for client/server packets.
+                                    <MudLink Href="https://github.com/bluke90/MessageSense" Target="_blank">GitHub ↗</MudLink>
+                                </MudText>
+                            </MudChip>
+                        </MudItem>
+                        <MudItem sm="4">
+                            <MudChip T="string" Color="Color.Tertiary">
+                                <MudText>
+                                    <b>Business Logic API (Work)</b> — Supports rule validation, capacity planning, ingot analysis.
+                                </MudText>
+                            </MudChip>
+                        </MudItem>
+                        <MudItem sm="4">
+                            <MudChip T="string" Color="Color.Tertiary">
+                                <MudText>
+                                    <b>Scanware</b> — MMudTextapp for scanning, printing, and moving tagged items in real-time.
+                                </MudText>
+                            </MudChip>
+                        </MudItem>
+                        <MudItem sm="4">
+                            <MudChip T="string" Color="Color.Tertiary">
+                                <MudText>
+                                    <b>PLXX_Altis_Life MudText</b> — Full mod for Arma 3 Altis Life gameplay.
+                                    <MudLink Href="https:/MudText.com/bluke90/PLXX_Altis_Life.altis" Target="_blank">GitHub ↗</MudLink>
+                                </MudText>
+                            </MudChip>
+                        </MudItem>
+                    </MudGrid>
             </MudCardContent>
         </MudCard>
     </MudItem>

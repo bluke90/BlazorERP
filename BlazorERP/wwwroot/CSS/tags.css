@@ -302,11 +302,27 @@ img.mud-image.auto-fit {
     color: var(--mud-palette-black) !important;
 }
 
-.chip-list.mud-list {
-    background-color: var(--mud-palette-dark);
-    border: 5px solid var(--mud-palette-dark-lighten);
-    border-radius: 0.75rem;
-    padding: 0.5rem 0 0.5rem 0.5rem;
+.chip-list.mud-grid {
+    position: relative;
+    
+    .mud-grid-item {
+        padding-left: 1vh;
+        padding-top: 1vh;
+        z-index: 2;
+    }
+}
+
+.chip-list.mud-grid:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -1.75%;
+        width: calc(100% + 4%);
+        height: calc(100% + 1.5vh);
+        background-color: var(--mud-palette-dark);
+        border: 5px solid var(--mud-palette-dark-lighten);
+        border-radius: 0.75rem;
+        z-index: 1;
 }
 
 .chip-list {
