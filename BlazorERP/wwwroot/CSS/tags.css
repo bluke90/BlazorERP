@@ -298,6 +298,41 @@ img.mud-image.auto-fit {
         padding-left: 24px !important;
     }
 }
+.blk-clr {
+    color: var(--mud-palette-black) !important;
+}
+
+.chip-list.mud-list {
+    background-color: var(--mud-palette-dark);
+    border: 5px solid var(--mud-palette-dark-lighten);
+    border-radius: 0.75rem;
+    padding: 0.5rem 0 0.5rem 0.5rem;
+}
+
+.chip-list {
+    .mud-chip {
+        text-wrap: wrap;
+        height: fit-content !important;
+        width: fit-content !important;
+        padding: 0.75rem !important;
+        background-color: var(--mud-palette-background) !important;
+        
+        b {
+            color: var(--mud-palette-tertiary) !important;
+        }
+        
+        .mud-link {
+            color: var(--mud-palette-info) !important;
+            background-color: var(--mud-palette-tertiary-lighten) !important;
+            padding: 0.25rem 0.5rem !important;
+            border-radius: 0.75rem;
+            margin-left: 10px;
+            text-wrap: nowrap;
+            text-align: center;
+        }
+        
+    }
+}
 
 /* === Width and Height Tags === */
 .h-fit-content {

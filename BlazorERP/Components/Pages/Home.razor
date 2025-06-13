@@ -3,26 +3,72 @@
 <PageTitle>Home</PageTitle>
 
 <MudGrid>
-    <MudItem xs="12" sm="12" md="6">
-        <MudCard Elevation="10">
+
+    <!-- Contact Info -->
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="12" Class="h-100">
             <MudCardHeader>
-                <MudText Typo="Typo.h6" Align="Align.Justify">
-                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Medium" /> Welcome to the BlazorERP Showcase
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.ContactMail" /> Contact Information
                 </MudText>
             </MudCardHeader>
             <MudCardContent>
-                <MudText Typo="Typo.body2">
+                <MudGrid>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudText Typo="Typo.h6" Class="mb-1">
+                            <b>Personal</b> <br/>
+                            Blake Ganzerla<br/>
+                            <MudDivider/>
+                        </MudText>
+                        <MudText Typo="Typo.subtitle1">
+                            <b>Email:</b> <MudLink Href="mailto:blake.ganzerla@outlook.com">blake.ganzerla@outlook.com</MudLink><br/>
+                            <b>Phone:</b> 601-287-3833<br/>
+                            <b>GitHub:</b> <MudLink Href="https://github.com/bluke90" Target="_blank">github.com/bluke90 ↗</MudLink><br/>
+                            <b>Location:</b> Madison, MS
+                        </MudText>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="6">
+                        <MudText Typo="Typo.h6" Class="mb-1">
+                            <b class="wht-clr">Business</b> <br/>
+                            Proton Technologies LLC<br/>
+                            <MudDivider/>
+                        </MudText>
+                        <MudText Typo="Typo.subtitle1">
+                            <b>Email:</b> <MudLink Href="mailto:sales@protontechservices.com">sales@protontechservices.com</MudLink><br/>
+                            <b>Phone:</b> 601-287-3833<br/>
+                            <b>GitHub:</b> <MudLink Href="https://github.com/ProtonX-Technologies" Target="_blank">github.com/ProtonX-Technologies ↗</MudLink><br/>
+                            <b>Location:</b> Madison, MS
+                        </MudText>
+                    </MudItem>
+                </MudGrid>
+
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+    <!-- Welcome Card -->
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="10">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6" Align="Align.Justify">
+                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Medium" />
+                    Welcome to BlazorERP Showcase
+                </MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText Typo="Typo.body1">
                     This project is a personal showcase built by <b>Blake Ganzerla</b> to demonstrate full-stack development capabilities using modern .NET technologies.
-                    <br/><br/>
-                    The application is developed using <b>Blazor</b> and styled with <b>MudBlazor</b>, hosted on Azure, and backed by an SQL database — all configured with GitHub Actions for continuous deployment. It's structured to show off modular design, responsive UI, and real-world development practices.
-                    <br/><br/>
+                    <br /><br />
+                    The application is developed using <b>Blazor</b> and styled with <b>MudBlazor</b>, hosted on Azure, and backed by an SQL database — all configured with GitHub Actions for continuous deployment.
+                    <br /><br />
                     From database scaffolding and automation integration to scalable API architecture and cloud deployment, this app reflects the same patterns and quality you'd find in a production ERP environment — just streamlined for demo purposes.
                 </MudText>
             </MudCardContent>
         </MudCard>
     </MudItem>
 
-    <MudItem xs="12" sm="12" md="6">
+    <!-- About Developer -->
+    <MudItem xs="12" md="6">
         <MudCard Elevation="10">
             <MudCardHeader>
                 <MudText Typo="Typo.h6" Align="Align.Justify">
@@ -30,16 +76,68 @@
                 </MudText>
             </MudCardHeader>
             <MudCardContent>
-                <MudText Typo="Typo.body2">
-                    I'm <b>Blake Ganzerla</b>, a software developer with a strong background in C#, Blazor, .NET MAUI, and full-stack web application design. I hold a Bachelor's in Business Information Systems and am currently pursuing a Master's in Information Systems at Mississippi State University.
-                    <br/><br/>
-                    My professional experience includes building enterprise-grade tools for manufacturing, universities, and law firms — from backend APIs and automation systems to cloud-hosted web portals.
-                    <br/><br/>
-                    If you're a potential client or employer, this project serves as a live example of my work — clean, modular, cloud-deployed, and built with care.
-                    <br/><br/>
+                <MudText Typo="Typo.body1">
+                    I'm <b>Blake Ganzerla</b>, a software developer with a strong background in C#, Blazor, .NET MAUI, and full-stack application design. I earned my Bachelor's in Business Information Systems and am currently pursuing a Master's in Information Systems at Mississippi State University.
+                    <br /><br />
+                    I’ve worked in the manufacturing, education, and legal industries — building internal systems, automation frameworks, and cloud-based tools. I love working on meaningful problems and architecting clean, scalable solutions.
+                    <br /><br />
+                    Outside of work, I enjoy exploring new tech, tuning performance vehicles, and developing experimental side projects that push my learning forward. I also have experience with Raspberry Pis, Arduinos, and game modding.
+                    <br /><br />
+                    This project is not just a demo — it’s a reflection of my work ethic, style, and attention to detail.
+                    <br /><br />
                     <MudLink Href="https://github.com/bluke90" Target="_blank">View my GitHub ↗</MudLink>
                 </MudText>
             </MudCardContent>
         </MudCard>
     </MudItem>
+
+    <!-- Projects -->
+    <MudItem xs="12" md="6">
+        <MudCard Elevation="10">
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Build" /> Featured Projects
+                </MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudList T="MudChip<string>" Dense="true" Class="chip-list">
+                    <MudChip T="string" Color="Color.Tertiary">
+                        <MudText>
+                            <b class="blk-clr">TradingCo (.NET MAUI)</b> — Learn core economic principles in a gamified way.  
+                            <MudLink Href="https://github.com/bluke90/TradingCo_8" Target="_blank">GitHub ↗</MudLink>
+                        </MudText>
+                    </MudChip>
+                    <MudChip Color="Color.Tertiary">
+                        <MudText>
+                            <b>TaskIt (.NET MAUI)</b> — Smart daily planner and task manager.  
+                            <MudLink Href="https://github.com/bluke90/TaskIt_7.0" Target="_blank">GitHub ↗</MudLink>
+                        </MudText>
+                    </MudChip>
+                    <MudChip Color="Color.Tertiary">
+                        <MudText>
+                            <b>MessageSense</b> — WebSockets learning playground for client/server packets.  
+                            <MudLink Href="https://github.com/bluke90/MessageSense" Target="_blank">GitHub ↗</MudLink>
+                        </MudText>
+                    </MudChip>
+                    <MudChip Color="Color.Tertiary">
+                        <MudText>
+                            <b>Business Logic API (Work)</b> — Supports rule validation, capacity planning, ingot analysis.
+                        </MudText>
+                    </MudChip>
+                    <MudChip Color="Color.Tertiary">
+                        <MudText>
+                            <b>Scanware</b> — MMudTextapp for scanning, printing, and moving tagged items in real-time.
+                        </MudText>
+                    </MudChip>
+                    <MudChip Color="Color.Tertiary">
+                        <MudText>
+                            <b>PLXX_Altis_Life MudText</b> — Full mod for Arma 3 Altis Life gameplay.
+                            <MudLink Href="https:/MudText.com/bluke90/PLXX_Altis_Life.altis" Target="_blank">GitHub ↗</MudLink>
+                        </MudText>
+                    </MudChip>
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
 </MudGrid>
