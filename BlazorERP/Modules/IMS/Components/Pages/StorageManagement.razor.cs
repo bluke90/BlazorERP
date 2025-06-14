@@ -93,8 +93,11 @@ public class StorageManagementBase : ComponentBase
     public async Task SaveStorageLocation()
     {
         if (_selectedStore is null)
-            throw new InvalidOperationException("_selectedStore was null when trying to update storage location.");
-        
+        {
+            Snackbar.Add("No Store Selected", Severity.Error);
+            return;
+        }
+
         // Save the storage location
         await Ims.SaveStorageLocation(_selectedStore);
         
@@ -125,7 +128,10 @@ public class StorageManagementBase : ComponentBase
     private async Task ReactivateStorageLocation()
     {
         if (_selectedStore is null)
-            throw new ArgumentNullException(nameof(_selectedStore), "Storage location cannot be null.");
+        {
+            Snackbar.Add("No Store Selected", Severity.Error);
+            return;
+        }
         
         bool? confirm = await Dialog.ShowMessageBox("Warning", "Are you sure you want to reactivate this storage location?",
             yesText: "Reactivate", noText: "Cancel", options: new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = true, Position = DialogPosition.Center });
@@ -149,7 +155,10 @@ public class StorageManagementBase : ComponentBase
     public async Task DeactivateStorageLocation()
     {
         if (_selectedStore is null)
-            throw new ArgumentNullException(nameof(_selectedStore), "Storage location cannot be null.");
+        {
+            Snackbar.Add("No Store Selected", Severity.Error);
+            return;
+        }
         
         bool? confirm = await Dialog.ShowMessageBox("Warning", "Once deactivating a storage location, it will remain inactive until all stock has been removed. At this point the storage location will be deleted automatically. Are you sure you want to deactivate this storage location?",
             yesText: "Deactivate", noText: "Cancel", options: new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true, BackdropClick = true, Position = DialogPosition.Center });

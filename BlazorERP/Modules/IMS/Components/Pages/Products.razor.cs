@@ -146,6 +146,7 @@ public class ProductsBase : ComponentBase
         // Validate that both SelectedStock and SelectedItem are not null
         if (SelectedStock is null || SelectedItem is null)
         {
+            Snackbar.Add("No Stock Selected", Severity.Error);
             return;
         }
         
@@ -163,7 +164,7 @@ public class ProductsBase : ComponentBase
     {
         if (SelectedItem is null)
         {
-            Snackbar.Add("Item cannot be null", Severity.Error);
+            Snackbar.Add("No Item Selected", Severity.Error);
             return;
         }
 
