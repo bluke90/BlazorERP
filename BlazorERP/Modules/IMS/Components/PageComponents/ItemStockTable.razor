@@ -13,17 +13,19 @@
         </MudCardHeader>
         <MudCardContent>
 
-            <MudTable Items="ItemStockModels" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true"
-                      @bind-SelectedItem="SelectedStock" SortLabel="Sort By" OnCommitEditClick="SaveStock">
+            <MudTable Class="@TableClass" Style="width: 100%" Items="ItemStockModels" Dense="true" Breakpoint="Breakpoint.SmAndDown" FixedHeader="true" CanCancelEdit="true" IsEditRowSwitchingBlocked="true" 
+                      @bind-SelectedItem="SelectedStock" SortLabel="Sort By" OnCommitEditClick="SaveStock" ReadOnly="Readonly">
                 <HeaderContent>
-                    <MudTh>Storage Location</MudTh>
+                    <MudTh>@(ItemStockTableVariant == ItemStockTableVariant.ByStorageLocation ? "Storage Location" : "Item Name")</MudTh>
                     <MudTh>Qty.</MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     @switch (ItemStockTableVariant)
                     {
                         case ItemStockTableVariant.ByStorageLocation:
-                            <MudTd DataLabel="Storage Location">@context.Stock.StorageLocation.Name</MudTd>
+                            <MudTd DataLabel="Storage Location">@context.Stock.StorageLocation.Code
+
+                            </MudTd>
                             break;
                         case ItemStockTableVariant.ByItem:
                             <MudTd DataLabel="Item Name">@context.Item.Name</MudTd>
@@ -58,9 +60,20 @@
                         @context.Item.Unit?.Name.Pluralize()
                     </MudTd>
                 </RowEditingTemplate>
-                <EditButtonContent Context="button">
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled"/>
-                </EditButtonContent>
+                <FooterContent>
+                    @if (!Readonly && ItemStockTableVariant == ItemStockTableVariant.ByStorageLocation)
+                    {
+                        <td colspan="3">
+                            <div class="100%">
+                                <MudButton Color="Color.Info" Size="Size.Small" FullWidth="true" OnClick="AddStockClick"
+                                           Style="border-top: 1px black solid; background-color: var(--DarkHightlight)">
+                                    <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add"/>
+                                    Add New Stock
+                                </MudButton>
+                            </div>
+                        </td>
+                    }
+                </FooterContent>
             </MudTable>
 
         </MudCardContent>
