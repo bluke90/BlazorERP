@@ -9,23 +9,45 @@
 <MudLayout>
     <MudAppBar Elevation="5">
         <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%;">
-            <MudImage Src="Images/protech_full_transp.png" Alt="Company Logo"
-                  ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Bottom" Height="50"/>
-            <MudText Typo="Typo.h5" Class="ml-3 mt-1" Align="Align.End">MyERP</MudText>
+            <!-- Desktop -->
+            <MudHidden Breakpoint="Breakpoint.Xs">
+                <MudImage Src="Images/protech_full_transp.png" Alt="Company Logo"
+                          ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Bottom" Height="50"/>
+                <MudText Typo="Typo.h5" Class="ml-3 mt-1" Align="Align.End">MyERP</MudText>
+            </MudHidden>
+            
+            <!-- Mobile -->
+            <MudHidden Breakpoint="Breakpoint.SmAndUp">
+                <MudIconButton Class="wht-clr" Icon="@Icons.Material.Filled.Menu" Ripple="false" ClickPropagation="false" Color="Color.Inherit" OnClick="@((e) => MainDrawerToggle())"/>
+                <div class="flex flex-row justify-start">
+                    <MudImage Src="Images/protech_full_transp.png" Alt="Company Logo"
+                              ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Bottom" Height="50"/>
+                    <MudText Typo="Typo.h5" Class="ml-0 mt-1" Align="Align.End">MyERP</MudText>
+                </div>
+            </MudHidden>
+            
             <div>
                 <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle"/>
                 <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End"/>
             </div>
         </div>
     </MudAppBar>
-    <MudDrawer id="nav-drawer" @bind-Open="_mainDrawerOpen" Fixed="true" ClipMode="DrawerClipMode.Always" Elevation="4" Variant="DrawerVariant.Mini">
-        <NavMenu/>
-        <MudSpacer/>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Ripple="false" ClickPropagation="false" Color="Color.Inherit" OnClick="@((e) => MainDrawerToggle())"/>
-    </MudDrawer>
+    <MudHidden Breakpoint="Breakpoint.Xs">
+        <MudDrawer id="nav-drawer" @bind-Open="_mainDrawerOpen" Fixed="true" ClipMode="DrawerClipMode.Always" Elevation="4" Variant="DrawerVariant.Mini">
+            <NavMenu/>
+            <MudSpacer/>
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Ripple="false" ClickPropagation="false" Color="Color.Inherit" OnClick="@((e) => MainDrawerToggle())"/>
+        </MudDrawer>
+    </MudHidden>
+    <MudHidden Breakpoint="Breakpoint.SmAndUp">
+        <MudDrawer id="nav-drawer" @bind-Open="_mainDrawerOpen" Fixed="true" ClipMode="DrawerClipMode.Always" Elevation="4" Variant="DrawerVariant.Temporary">
+            <NavMenu/>
+            <MudSpacer/>
+        </MudDrawer>
+    </MudHidden>
     <MudMainContent Class="pt-20 pa-4">
         @* <CascadingValue Value="(Action)CloseMainDrawer"> *@
-            @Body
+        @Body
         @* </CascadingValue> *@
     </MudMainContent>
 </MudLayout>
@@ -38,7 +60,7 @@
 </div>
 
 @code {
-    public bool _mainDrawerOpen = true;
+    public bool _mainDrawerOpen = false;
     private bool _isDarkMode = true;
     private MudTheme? _theme = null;
 
