@@ -101,14 +101,14 @@
                     </MudGrid>
                 </MudCardHeader>
                 <MudCardContent>
-                    <MudTable T="Item" Items="Items" Breakpoint="Breakpoint.Sm" Dense="true" Elevation="2" Hover="true"
+                    <MudTable T="Item" Items="Items" Dense="true" Elevation="2" Hover="true" Breakpoint="Breakpoint.Sm"
                               RowClass="cursor-pointer" OnRowClick="ProductSelected" Filter="new Func<Item, bool>(LocationFilterFunc)">
                         
                         <ToolBarContent>
                             <MudGrid>
                                 <MudItem xs="12" sm="12" md="4">
                                     <MudSelect Class="no-label" T="StorageLocation" @bind-SelectedValues="LocationFilter" @bind-Value="SelectedStorageLocation" MultiSelection="true"
-                                               Dense="true" Variant="Variant.Filled" Text="Filter By Location" MaxHeight="180" Typo="Typo.body2" >
+                                               Dense="true" Variant="Variant.Filled" Text="Filter By Location" MaxHeight="180" Typo="Typo.body2">
                                         @if (StorageLocations != null)
                                         {
                                             foreach (var store in StorageLocations)
@@ -122,12 +122,14 @@
                         </ToolBarContent>
                         
                         <ColGroup>
-                            <col style="width: 30%"/>
-                            <col style="width: 28%"/>
-                            <col style="width: 12%"/>
-                            <col style="width: 12%"/>
-                            <col style="width: 9%"/>
-                            <col style="width: 9%"/>
+                            <MudHidden Breakpoint="Breakpoint.Sm">
+                                <col style="width: 30%"/>
+                                <col style="width: 28%"/>
+                                <col style="width: 12%"/>
+                                <col style="width: 12%"/>
+                                <col style="width: 9%"/>
+                                <col style="width: 9%"/>
+                            </MudHidden>
                         </ColGroup>
                         <HeaderContent>
                             <MudTh><MudTableSortLabel SortBy="new Func<Item, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>

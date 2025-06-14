@@ -220,6 +220,10 @@ img.mud-image.auto-fit {
     justify-content: center !important;
     justify-items: center !important;
 }
+.justify-start {
+    justify-content: flex-start !important;
+    justify-items: flex-start !important;
+}
 
 
 /* === Text Tags === */
@@ -292,14 +296,19 @@ img.mud-image.auto-fit {
 .pl-5 { padding-left: 5vh !important; }
 
 .rpl-0 { padding-left: 0 !important; }
-
+.rpt-0 { padding-top: 0 !important; }
+.mrpt-0 { padding-top: 24px !important; }
 @media (max-width: 768px) {
-    .rpl-0 {
-        padding-left: 24px !important;
-    }
+    .rpl-0 { padding-left: 24px !important; }
+    .rpt-0 { padding-top: 24px !important; }
+    .mrpt-0 { padding-top: 0 !important; }
 }
 .blk-clr {
     color: var(--mud-palette-black) !important;
+}
+
+.wht-clr {
+    color: var(--mud-palette-secondary) !important;
 }
 
 .chip-list.mud-grid {

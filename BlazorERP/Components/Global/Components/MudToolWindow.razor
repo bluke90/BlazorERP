@@ -24,7 +24,7 @@
     </div>
     <div class="tool-window-footer">
         <MudGrid Justify="Justify.FlexStart" Class="pr-2">
-            <MudItem xs="10" sm="8" md="8">
+            <MudItem xs="9" sm="8" md="8">
                 <MudText Typo="Typo.h6" Color="Color.Secondary">
                     <MudIcon Color="Color.Secondary" Class="align-sub" Icon="@FooterIcon"/>
                     @WindowTitle
@@ -33,29 +33,53 @@
             <MudSpacer/>
             @if (ChildContent != null)
             {
-                <MudItem xs="1" sm="3" md="2" Class="pl-0">
-                    <MudHidden Breakpoint="Breakpoint.MdAndUp">
-                        <MudIconButton Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.Save" OnClick="OnSave"/>    
-                    </MudHidden>
-                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Success" FullWidth="true" Size="Size.Small" OnClick="OnSave">
-                            <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/>
-                            Save
-                        </MudButton>                        
-                    </MudHidden>
+                <MudItem xs="3" sm="2" md="4">
+                    <MudStack Row="true" Wrap="Wrap.NoWrap">
+                        <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                            <MudIconButton Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.Save" OnClick="OnSave"/>
+                        </MudHidden>
+                        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                            <MudButton Variant="Variant.Outlined" Color="Color.Success" FullWidth="true" Size="Size.Small" OnClick="OnSave">
+                                <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/>
+                                Save
+                            </MudButton>
+                        </MudHidden>
+                        <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                            <MudIconButton Variant="Variant.Outlined" Color="@SecondaryButtonColor" Size="Size.Small" Icon="@SecondaryButtonIcon" OnClick="@OnSecondary"/>
+                        </MudHidden>
+                        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                            <MudButton Variant="Variant.Outlined" Color="@SecondaryButtonColor" FullWidth="true" Size="Size.Small" OnClick="@OnSecondary">
+                                <MudIcon Class="align-sub" Icon="@SecondaryButtonIcon"/>
+                                @SecondButtonText
+                            </MudButton>
+                        </MudHidden>
+                    </MudStack>
                 </MudItem>
-                <MudSpacer/>
-                <MudItem xs="1" sm="3" md="2" Class="pl-1">
-                    <MudHidden Breakpoint="Breakpoint.MdAndUp">
-                        <MudIconButton Variant="Variant.Outlined" Color="@SecondaryButtonColor" Size="Size.Small" Icon="@SecondaryButtonIcon" OnClick="@OnSecondary"/>    
-                    </MudHidden>
-                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
-                        <MudButton Variant="Variant.Outlined" Color="@SecondaryButtonColor" FullWidth="true" Size="Size.Small" OnClick="@OnSecondary">
-                            <MudIcon Class="align-sub" Icon="@SecondaryButtonIcon"/>
-                            @SecondButtonText
-                        </MudButton>                        
-                    </MudHidden>
-                </MudItem>
+                
+                
+                @* <MudItem xs="1" sm="1" md="2" Class="pl-0"> *@
+                @*     <MudHidden Breakpoint="Breakpoint.MdAndUp"> *@
+                @*         <MudIconButton Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.Save" OnClick="OnSave"/>     *@
+                @*     </MudHidden> *@
+                @*     <MudHidden Breakpoint="Breakpoint.SmAndDown"> *@
+                @*         <MudButton Variant="Variant.Outlined" Color="Color.Success" FullWidth="true" Size="Size.Small" OnClick="OnSave"> *@
+                @*             <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Save"/> *@
+                @*             Save *@
+                @*         </MudButton>                         *@
+                @*     </MudHidden> *@
+                @* </MudItem> *@
+                @* <MudSpacer/> *@
+                @* <MudItem xs="1" sm="1" md="2" Class="pl-1"> *@
+                @*     <MudHidden Breakpoint="Breakpoint.MdAndUp"> *@
+                @*         <MudIconButton Variant="Variant.Outlined" Color="@SecondaryButtonColor" Size="Size.Small" Icon="@SecondaryButtonIcon" OnClick="@OnSecondary"/>     *@
+                @*     </MudHidden> *@
+                @*     <MudHidden Breakpoint="Breakpoint.SmAndDown"> *@
+                @*         <MudButton Variant="Variant.Outlined" Color="@SecondaryButtonColor" FullWidth="true" Size="Size.Small" OnClick="@OnSecondary"> *@
+                @*             <MudIcon Class="align-sub" Icon="@SecondaryButtonIcon"/> *@
+                @*             @SecondButtonText *@
+                @*         </MudButton>                         *@
+                @*     </MudHidden> *@
+                @* </MudItem> *@
             }
         </MudGrid>
     </div>

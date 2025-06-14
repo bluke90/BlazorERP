@@ -84,7 +84,7 @@
                         <!-- Sales Orders Tab -->
                         <MudTabPanel Text="Sales Orders" Icon="@Icons.Material.Filled.ShoppingCart">
 
-                            <MudGrid>
+                            <MudGrid Justify="Justify.Center">
                                 <MudItem xs="12" md="6">
                                     <MudTable Class="dense-toolbar" T="SalesOrder" Items="@_salesOrders" Dense="true" Hover="true"
                                               RowClass="cursor-pointer" OnRowClick="SalesOrderSelected">
@@ -118,21 +118,22 @@
                                         </FooterContent>
                                     </MudTable>
                                 </MudItem>
-                                <MudItem xs="1" Style="padding-left: 0;">
+                                <MudItem xs="12" sm="12" md="1" Style="padding-left: 0;" Class="mrpt-0">
                                     <MudHidden Breakpoint="Breakpoint.SmAndDown">
-                                        <MudStack Spacing="0" Row="true" Justify="Justify.FlexStart" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-left: var(--mud-palette-secondary) 4px solid;">
+                                        <MudStack Spacing="0" Row="true" Justify="Justify.FlexStart" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-left: var(--mud-palette-black) 4px solid; background-color: var(--mud-palette-surface)">
                                             <MudIcon Class="ml-2" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
                                             <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.ArrowRight"/>
                                         </MudStack>
                                     </MudHidden>
-                                    <MudHidden Breakpoint="Breakpoint.SmAndUp">
-                                        <MudStack Spacing="0" Justify="Justify.Center" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-top: var(--mud-palette-secondary) 4px solid;">
+                                    <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                                        <MudStack Spacing="0" Justify="Justify.Center" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Style="margin-left: 2px; width:100%; border-top: var(--mud-palette-black) 4px solid; background-color: var(--mud-palette-surface)">
                                             <MudIcon Class="mt-1" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
                                             <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.KeyboardArrowDown"/>
                                         </MudStack>
                                     </MudHidden>
+                                
                                 </MudItem>
-                                <MudItem xs="12" md="5" Class="rpl-0">
+                                <MudItem xs="12" md="5" Class="rpl-0 text-center">
                                     @if (_selectedSalesOrder is not null)
                                     {
                                         <MudTable Class="dense-toolbar" T="SalesOrderLine" Items="@_selectedSalesOrder.SalesOrderLines.ToList()"Dense="true" FixedHeader="true">
