@@ -55,7 +55,7 @@
             </RowTemplate>
             <RowEditingTemplate>
                 <MudTd DataLabel="Item">
-                    <MudSelect T="Item" @bind-Value="context.Item" ValueChanged="(val) => LineItemSelected(val)" Variant="Variant.Outlined" Dense Required>
+                    <MudSelect T="Item" ValueChanged="(val) => LineItemSelected(val)" Variant="Variant.Outlined" Dense Required>
                         @foreach (var item in _items)
                         {
                             <MudSelectItem Value="@item">@item.Name</MudSelectItem>
