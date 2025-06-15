@@ -35,6 +35,8 @@ public partial class proContext : DbContext
 
     public virtual DbSet<ItemPriceHistory> ItemPriceHistories { get; set; }
 
+    public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
+
     public virtual DbSet<PurchaseOrder> PurchaseOrders { get; set; }
 
     public virtual DbSet<PurchaseOrderLine> PurchaseOrderLines { get; set; }
@@ -171,6 +173,18 @@ public partial class proContext : DbContext
                 .HasConstraintName("FK__ItemPrice__ItemI__7C4F7684");
         });
 
+        modelBuilder.Entity<OrderStatus>(entity =>
+        {
+            entity.HasKey(e => e.OrderStatusId).HasName("OrderStatus_pk");
+
+            entity.ToTable("OrderStatus", "Status");
+
+            entity.HasIndex(e => e.Code, "UQ__OrderSta__A25C5AA75A62459D").IsUnique();
+
+            entity.Property(e => e.Code).HasMaxLength(4);
+            entity.Property(e => e.Name).HasMaxLength(100);
+        });
+
         modelBuilder.Entity<PurchaseOrder>(entity =>
         {
             entity.HasKey(e => e.POId).HasName("PK__Purchase__5F02A2D4E8836831");
@@ -179,12 +193,15 @@ public partial class proContext : DbContext
 
             entity.Property(e => e.ExpectedUtc).HasColumnType("datetime");
             entity.Property(e => e.OrderedUtc).HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(20);
+
+            entity.HasOne(d => d.OrderStatus).WithMany(p => p.PurchaseOrders)
+                .HasForeignKey(d => d.OrderStatusId)
+                .HasConstraintName("PurchaseOrder_OrdStatus__fk");
 
             entity.HasOne(d => d.Supplier).WithMany(p => p.PurchaseOrders)
                 .HasForeignKey(d => d.SupplierId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PurchaseO__Suppl__02084FDA");
+                .HasConstraintName("PurchaseOrder_Supplier__fk");
         });
 
         modelBuilder.Entity<PurchaseOrderLine>(entity =>
@@ -211,11 +228,15 @@ public partial class proContext : DbContext
             entity.HasKey(e => e.SOId).HasName("PK__SalesOrd__A7FF3282BFD7641C");
 
             entity.Property(e => e.OrderedUtc).HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(20);
 
             entity.HasOne(d => d.Customer).WithMany(p => p.SalesOrders)
                 .HasForeignKey(d => d.CustomerId)
                 .HasConstraintName("FK__SalesOrde__Custo__0C85DE4D");
+
+            entity.HasOne(d => d.OrderStatus).WithMany(p => p.SalesOrders)
+                .HasForeignKey(d => d.OrderStatusId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("SalesOrders_OrderStatus__fk");
         });
 
         modelBuilder.Entity<SalesOrderLine>(entity =>

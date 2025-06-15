@@ -268,4 +268,10 @@ public class ImsService
         
         await _context.SaveChangesAsync();
     }
+
+    public async Task<List<OrderStatus>> GetOrderStatuses()
+    {
+        return await _context.OrderStatuses
+            .ToListAsync();
+    }
 }

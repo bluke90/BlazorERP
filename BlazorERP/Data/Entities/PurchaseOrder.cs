@@ -13,7 +13,9 @@ public partial class PurchaseOrder
 
     public DateTime? ExpectedUtc { get; set; }
 
-    public string Status { get; set; } = null!;
+    public int? OrderStatusId { get; set; }
+
+    public virtual OrderStatus? OrderStatus { get; set; }
 
     public virtual ICollection<PurchaseOrderLine> PurchaseOrderLines { get; set; } = new List<PurchaseOrderLine>();
 

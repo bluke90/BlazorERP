@@ -30,7 +30,12 @@
                 <MudDatePicker @bind-Date="_orderedDate" Label="Order Date" />
             </MudItem>
             <MudItem xs="12">
-                <MudTextField Label="Status" @bind-Value="_newOrder.Status" Variant="Variant.Outlined" />
+                <MudSelect T="OrderStatus" Label="Status" @bind-Value="_newOrder.OrderStatus" Variant="Variant.Filled" Required>
+                    @foreach (var status in _orderStatuses)
+                    {
+                        <MudSelectItem Value="@status">@status.Name</MudSelectItem>
+                    }
+                </MudSelect>
             </MudItem>
         </MudGrid>
 
@@ -47,9 +52,18 @@
                 <MudTh>Price</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Item">@context.Item?.Name</MudTd>
-                <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
-                <MudTd DataLabel="Price">$@context.UnitPrice</MudTd>
+                @if (context.SOLineId == -1) // New line being edited
+                {
+                    <MudTd Class="edit-overlay cursor-pointer" DataLabel="Item">@(context.Item?.Name ?? "Click To Edit")</MudTd>
+                    <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
+                    <MudTd DataLabel="Price">$@context.UnitPrice</MudTd>
+                }
+                else
+                {
+                    <MudTd DataLabel="Item">@context.Item?.Name</MudTd>
+                    <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
+                    <MudTd DataLabel="Price">$@context.UnitPrice</MudTd>
+                }
             </RowTemplate>
             <RowEditingTemplate>
                 <MudTd DataLabel="Item">
@@ -89,18 +103,24 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
-    private SalesOrder _newOrder = new() { OrderedUtc = DateTime.Today, Status = "Pending" };
+    private SalesOrder _newOrder = new() { OrderedUtc = DateTime.Today, OrderStatusId = 1 };
     private List<SalesOrderLine> _lines = new();
     private SalesOrderLine? _selectedLine;
     private DateTime? _orderedDate = DateTime.Today;
 
     private List<Customer> _customers = new();
     private List<Item> _items = new();
+    private List<OrderStatus> _orderStatuses = new();
 
     protected override async Task OnInitializedAsync()
     {
         _customers = await Ims.GetCustomers();
         _items = await Ims.GetItems();
+        _orderStatuses = await Ims.GetOrderStatuses();
+        if (_orderStatuses.Count > 0)
+        {
+            _newOrder.OrderStatus = _orderStatuses.FirstOrDefault(x => x.OrderStatusId == 1);    
+        }
     }
 
     private void AddLine()
@@ -120,13 +140,21 @@
 
     private async Task Save()
     {
+        // Set Dates
         _newOrder.OrderedUtc = _orderedDate ?? DateTime.Today;
         
+        // Set IDs
         if (_newOrder.Customer != null)
             _newOrder.CustomerId = _newOrder.Customer.CustomerId;
 
+        _newOrder.OrderStatusId = _newOrder.OrderStatus?.OrderStatusId ?? 1;
+        
         foreach (var line in _lines)
         {
+            // Ensure new lines have a valid ID for EF Core
+            if (line.SOLineId == -1) 
+                line.SOLineId = 0; 
+            
             if (line.Item != null)
                 line.ItemId = line.Item.ItemId;
             _newOrder.SalesOrderLines.Add(line);

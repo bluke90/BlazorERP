@@ -124,6 +124,10 @@
 
 /* === MudTable Tags === */
 
+td.edit-overlay.mud-table-cell {
+    background-color: #2adfbb90 !important;
+}
+
 .dense-toolbar {
     .mud-table-toolbar {
         height: fit-content !important;

@@ -67,7 +67,7 @@
                     
                     <RowTemplate>
                         <MudTd DataLabel="PO #">@context.POId</MudTd>
-                        <MudTd DataLabel="Status">@context.Status</MudTd>
+                        <MudTd DataLabel="Status">@context.OrderStatus?.Name</MudTd>
                         <MudTd DataLabel="Supplier">@context.Supplier.Name</MudTd>
                     </RowTemplate>
                     

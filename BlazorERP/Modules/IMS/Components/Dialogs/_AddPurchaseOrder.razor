@@ -32,7 +32,12 @@
                 <MudDatePicker @bind-Date="_expectedDate" Label="Expected Date" />
             </MudItem>
             <MudItem xs="12">
-                <MudTextField Label="Status" @bind-Value="_newOrder.Status" Variant="Variant.Outlined" />
+                <MudSelect T="OrderStatus" Label="Status" Text="Pending" @bind-Value="_newOrder.OrderStatus" Variant="Variant.Filled" Required>
+                    @foreach (var status in _orderStatuses)
+                    {
+                        <MudSelectItem Value="@status">@status.Name</MudSelectItem>
+                    }
+                </MudSelect>
             </MudItem>
         </MudGrid>
 
@@ -49,9 +54,18 @@
                 <MudTh>Cost</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Item">@context.Item?.Name</MudTd>
-                <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
-                <MudTd DataLabel="Cost">$@context.UnitCost</MudTd>
+                @if (context.POLineId == -1) // New line being edited
+                {
+                    <MudTd Class="edit-overlay cursor-pointer" DataLabel="Item">@(context.Item?.Name ?? "Click To Edit")</MudTd>
+                    <MudTd Class="edit-overlay cursor-pointer" DataLabel="Qty">@context.QtyOrdered</MudTd>
+                    <MudTd Class="edit-overlay cursor-pointer" DataLabel="Cost">$@context.UnitCost</MudTd>
+                }
+                else
+                {
+                    <MudTd DataLabel="Item">@context.Item?.Name</MudTd>
+                    <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
+                    <MudTd DataLabel="Cost">$@context.UnitCost</MudTd>
+                }
             </RowTemplate>
             <RowEditingTemplate>
                 <MudTd DataLabel="Item">
@@ -70,7 +84,7 @@
                 </MudTd>
             </RowEditingTemplate>
             <EditButtonContent Context="button">
-                <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
+                    <MudIconButton Size="Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled"/>
             </EditButtonContent>
         </MudTable>
     </DialogContent>
@@ -91,7 +105,7 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
-    private PurchaseOrder _newOrder = new() { OrderedUtc = DateTime.Today, Status = "Pending" };
+    private PurchaseOrder _newOrder = new() { OrderedUtc = DateTime.Today, OrderStatusId = 1 };
     private List<PurchaseOrderLine> _lines = new();
     private PurchaseOrderLine? _selectedLine;
     private DateTime? _orderedDate = DateTime.Today;
@@ -99,16 +113,22 @@
 
     private List<Supplier> _suppliers = new();
     private List<Item> _items = new();
+    private List<OrderStatus> _orderStatuses = new();
 
     protected override async Task OnInitializedAsync()
     {
         _suppliers = await Ims.GetSuppliers();
         _items = await Ims.GetItems();
+        _orderStatuses = await Ims.GetOrderStatuses();
+        if (_orderStatuses.Count > 0)
+        {
+            _newOrder.OrderStatus = _orderStatuses.FirstOrDefault(x => x.OrderStatusId == 1);    
+        }
     }
 
     private void AddLine()
     {
-        var line = new PurchaseOrderLine { QtyOrdered = 1, UnitCost = 0 };
+        var line = new PurchaseOrderLine { POLineId = -1, QtyOrdered = 1, UnitCost = 0 };
         _lines.Add(line);
         _selectedLine = line;
     }
@@ -123,16 +143,27 @@
 
     private async Task Save()
     {
+        // Set Dates
         _newOrder.OrderedUtc = _orderedDate ?? DateTime.Today;
         _newOrder.ExpectedUtc = _expectedDate;
 
+        // Set SupplierId from Supplier object if it was set
         if (_newOrder.Supplier != null)
             _newOrder.SupplierId = _newOrder.Supplier.SupplierId;
 
+        _newOrder.OrderStatusId = _newOrder.OrderStatus?.OrderStatusId ?? 1;
+
         foreach (var line in _lines)
         {
+            // Ensure new lines have a valid ID for EF Core
+            if (line.POLineId == -1) 
+                line.POLineId = 0; 
+            
+            // Set ItemId from Item object if it was set
             if (line.Item != null)
                 line.ItemId = line.Item.ItemId;
+            
+            // Add the line to the purchase order
             _newOrder.PurchaseOrderLines.Add(line);
         }
 

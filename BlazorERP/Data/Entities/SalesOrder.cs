@@ -11,9 +11,11 @@ public partial class SalesOrder
 
     public DateTime OrderedUtc { get; set; }
 
-    public string Status { get; set; } = null!;
+    public int OrderStatusId { get; set; }
 
     public virtual Customer? Customer { get; set; }
+
+    public virtual OrderStatus OrderStatus { get; set; } = null!;
 
     public virtual ICollection<SalesOrderLine> SalesOrderLines { get; set; } = new List<SalesOrderLine>();
 }

@@ -104,7 +104,7 @@
                                             <MudTd DataLabel="ID">@context.SOId</MudTd>
                                             <MudTd DataLabel="Ordered">@context.OrderedUtc.ToShortDateString()</MudTd>
                                             <MudTd DataLabel="Customer">@context.Customer?.Name</MudTd>
-                                            <MudTd DataLabel="Status">@context.Status</MudTd>
+                                            <MudTd DataLabel="Status">@context.OrderStatus?.Name</MudTd>
                                         </RowTemplate>
                                         <FooterContent>
                                             <td colspan="4">
