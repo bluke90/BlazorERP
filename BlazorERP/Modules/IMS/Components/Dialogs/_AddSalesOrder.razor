@@ -53,7 +53,7 @@
             </RowTemplate>
             <RowEditingTemplate>
                 <MudTd DataLabel="Item">
-                    <MudSelect T="Item" @bind-Value="context.Item" Variant="Variant.Outlined" Dense Required>
+                    <MudSelect T="Item" ValueChanged="(value) => LineItemSelected(value)" Variant="Variant.Outlined" Dense Required>
                         @foreach (var item in _items)
                         {
                             <MudSelectItem Value="@item">@item.Name</MudSelectItem>
@@ -61,10 +61,10 @@
                     </MudSelect>
                 </MudTd>
                 <MudTd DataLabel="Qty">
-                    <MudNumericField @bind-Value="context.QtyOrdered" Variant="Variant.Outlined" Required />
+                    <MudNumericField @bind-Value="context.QtyOrdered" Variant="Variant.Text" Required />
                 </MudTd>
                 <MudTd DataLabel="Price">
-                    <MudNumericField @bind-Value="context.UnitPrice" Variant="Variant.Outlined" Required />
+                    <MudNumericField @bind-Value="context.UnitPrice" Variant="Variant.Text" Required />
                 </MudTd>
             </RowEditingTemplate>
             <EditButtonContent Context="button">
@@ -108,6 +108,14 @@
         var line = new SalesOrderLine { QtyOrdered = 1, UnitPrice = 0 };
         _lines.Add(line);
         _selectedLine = line;
+    }
+    
+    private void LineItemSelected(Item? item)
+    {
+        if (item == null || _selectedLine == null) return;
+
+        _selectedLine.Item = item;
+        _selectedLine.UnitPrice = _selectedLine.Item.DefaultPrice;
     }
 
     private async Task Save()

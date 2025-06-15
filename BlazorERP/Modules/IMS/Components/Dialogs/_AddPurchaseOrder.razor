@@ -1,6 +1,7 @@
 ﻿@using BlazorERP.Data.Context
 @using BlazorERP.Data.Entities
 @using BlazorERP.Modules.Services
+@using MudBlazor.Charts
 @inject ImsService Ims
 @inject IDialogService Dialog
 @inject ISnackbar Snackbar
@@ -54,7 +55,7 @@
             </RowTemplate>
             <RowEditingTemplate>
                 <MudTd DataLabel="Item">
-                    <MudSelect T="Item" @bind-Value="context.Item" Variant="Variant.Outlined" Dense Required>
+                    <MudSelect T="Item" @bind-Value="context.Item" ValueChanged="(val) => LineItemSelected(val)" Variant="Variant.Outlined" Dense Required>
                         @foreach (var item in _items)
                         {
                             <MudSelectItem Value="@item">@item.Name</MudSelectItem>
@@ -110,6 +111,14 @@
         var line = new PurchaseOrderLine { QtyOrdered = 1, UnitCost = 0 };
         _lines.Add(line);
         _selectedLine = line;
+    }
+    
+    private void LineItemSelected(Item? item)
+    {
+        if (item == null || _selectedLine == null) return;
+
+        _selectedLine.Item = item;
+        _selectedLine.UnitCost = _selectedLine.Item.DefaultCost;
     }
 
     private async Task Save()
