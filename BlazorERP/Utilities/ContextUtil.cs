@@ -77,5 +77,23 @@ public static class ContextUtil
             .LoadAsync()
             .ConfigureAwait(false);
     }
+    
+    public static async Task GetStatusesAsync<TEntity>(
+        this DbContext context,
+        TEntity entity,
+        Expression<Func<TEntity, bool>> predicate)
+        where TEntity : class
+    {
+        // Load the entity with the specified predicate
+        var entry = context.Entry(entity);
+        
+        if (entry.State == EntityState.Detached)
+        {
+            await context.Set<TEntity>()
+                .Where(predicate)
+                .LoadAsync()
+                .ConfigureAwait(false);
+        }
+    }
 
 }
