@@ -203,11 +203,20 @@
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var screenSize = await JS.GetScreenSize();
-        await ApplyGradient();
+        try
+        {
+            var screenSize = await JS.GetScreenSize();
+            await ApplyGradient();
         
-        _theme.Typography = screenSize.Width > 1080 ? _desktop_typography : _mobile_typography;
-        
+            _theme.Typography = screenSize.Width > 1080 ? _desktop_typography : _mobile_typography;    
+        } catch (Exception ex)
+        {
+            Console.WriteLine($"Error in OnAfterRenderAsync: {ex.Message}");
+            if (firstRender)
+            {
+                _theme.Typography = _desktop_typography; // Fallback to desktop typography on error   
+            }
+        }
         
         await base.OnAfterRenderAsync(firstRender);
     }
