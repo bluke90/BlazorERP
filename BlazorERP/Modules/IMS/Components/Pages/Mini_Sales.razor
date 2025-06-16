@@ -3,6 +3,7 @@
 
 
 <!-- Tabbed table with Customers and Sales Orders -->
+@using BlazorERP.Components.Global.Components
 @using BlazorERP.Data.Entities
 @using BlazorERP.Modules.IMS.Components.Dialogs
 @using BlazorERP.Modules.IMS.Components.PageComponents
@@ -66,7 +67,7 @@
                                         <MudTextField @bind-Value="_selectedCustomer.Email" Required/>
                                     </MudTd>
                                     <MudTd DataLabel="Phone">
-                                        <MudTextField @bind-Value="_selectedCustomer.Phone" Required/>
+                                        <MudTextField @bind-Value="_selectedCustomer.Phone" Mask="@(new PatternMask(@"(000) - 000 - 000"))" Required/>
                                     </MudTd>
                                     <MudTd DataLabel="Mailing Address">
                                         <MudTextField @bind-Value="_selectedCustomer.MailingAddress"/>
@@ -77,6 +78,17 @@
                                 <EditButtonContent Context="button">
                                     <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled"/>
                                 </EditButtonContent>
+                                
+                                <FooterContent>
+                                    <td colspan="5">
+                                        <div style="width: 100%; text-align: center;">
+                                            <MudButton Size="Size.Small" FullWidth="true" Color="Color.Info" Variant="Variant.Filled">
+                                                <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add" Color="Color.Secondary" />
+                                                Add New Customer
+                                            </MudButton>
+                                        </div>
+                                    </td>
+                                </FooterContent>
 
                             </MudTable>
 
@@ -99,17 +111,21 @@
                                             <MudTh><MudTableSortLabel SortBy="new Func<SalesOrder, object>(x => x.OrderedUtc)">Ordered</MudTableSortLabel></MudTh>
                                             <MudTh><MudTableSortLabel SortBy="new Func<SalesOrder, object>(x => x.Customer!.Name)">Customer</MudTableSortLabel></MudTh>
                                             <MudTh>Status</MudTh>
+                                            <MudTh></MudTh>
                                         </HeaderContent>
                                         <RowTemplate>
                                             <MudTd DataLabel="ID">@context.SOId</MudTd>
                                             <MudTd DataLabel="Ordered">@context.OrderedUtc.ToShortDateString()</MudTd>
                                             <MudTd DataLabel="Customer">@context.Customer?.Name</MudTd>
                                             <MudTd DataLabel="Status">@context.OrderStatus?.Name</MudTd>
+                                            <MudTd DataLabel="">
+                                                <MudButton Variant="Variant.Outlined" Color="Color.Info" OnClick="@(() => OpenActionMenu(context))">Actions</MudButton>
+                                            </MudTd>
                                         </RowTemplate>
                                         <FooterContent>
-                                            <td colspan="4">
+                                            <td colspan="5">
                                                 <div style="width: 100%; text-align: center;">
-                                                    <MudButton Size="Size.Small" FullWidth="true" Color="Color.Info" Variant="Variant.Filled" OnClick="OpenNewSalesOrderDialog">
+                                                    <MudButton Size="Size.Small" FullWidth="true" Color="Color.Info" Variant="Variant.Filled" OnClick="@( () => OpenNewSalesOrderDialog())">
                                                         <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add" Color="Color.Secondary"/>
                                                         Add New Sales Order
                                                     </MudButton>
@@ -118,22 +134,40 @@
                                         </FooterContent>
                                     </MudTable>
                                 </MudItem>
-                                <MudItem xs="12" sm="12" md="1" Style="padding-left: 0;" Class="mrpt-0">
+                                <MudItem xs="12" md="@dynamicMdSize" Class="rpl-0">
+                                    <MudPaper Elevation="4" Class="@ActionMenuClass" Height="100%" Width="100%">
+                                        <MudText Class="paper-menu-header" Typo="Typo.subtitle2">
+                                            <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Task" Size="Size.Small"/>
+                                            PO# @_selectedSalesOrder?.SOId  Quick Actions
+                                        </MudText>
+                                        <MudMenuItem Class="paper-menu-item" OnClick="@(() => OpenSelectStatusDialog(_selectedSalesOrder?.OrderStatus))">
+                                            <MudIcon Icon="@Icons.Material.Filled.ChangeCircle" Class="align-sub" Color="Color.Warning"/>
+                                            Change Status
+                                        </MudMenuItem>
+                                        <MudMenuItem Class="paper-menu-item" OnClick="@(() => MarkCompleted())">
+                                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Class="align-sub" Color="Color.Success"/>
+                                            Mark as Completed
+                                        </MudMenuItem>
+                                        <MudMenuItem Class="paper-menu-item" OnClick="@(() => OpenNewSalesOrderDialog(false))">
+                                            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="align-sub" Color="Color.Info"/>
+                                            Edit Order
+                                        </MudMenuItem>
+                                    </MudPaper>
                                     <MudHidden Breakpoint="Breakpoint.SmAndDown">
                                         <MudStack Spacing="0" Row="true" Justify="Justify.FlexStart" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Style="margin-left: 2px; height: 100%; border-left: var(--mud-palette-black) 4px solid; background-color: var(--mud-palette-surface)">
                                             <MudIcon Class="ml-2" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
                                             <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.ArrowRight"/>
                                         </MudStack>
                                     </MudHidden>
-                                    <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                                    <MudHidden Breakpoint="Breakpoint.SmAndUp">
                                         <MudStack Spacing="0" Justify="Justify.Center" Wrap="Wrap.NoWrap" AlignItems="AlignItems.Center" Style="margin-left: 2px; width:100%; border-top: var(--mud-palette-black) 4px solid; background-color: var(--mud-palette-surface)">
                                             <MudIcon Class="mt-1" Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.RequestPage"/>
                                             <MudIcon Size="Size.Large" Color="Color.Secondary" Icon="@Icons.Material.Filled.KeyboardArrowDown"/>
                                         </MudStack>
                                     </MudHidden>
-                                
+
                                 </MudItem>
-                                <MudItem xs="12" md="5" Class="rpl-0 text-center">
+                                <MudItem xs="12" md="4" Class="rpl-0 text-center">
                                     @if (_selectedSalesOrder is not null)
                                     {
                                         <MudTable Class="dense-toolbar" T="SalesOrderLine" Items="@_selectedSalesOrder.SalesOrderLines.ToList()"Dense="true" FixedHeader="true">
@@ -158,15 +192,14 @@
                                     }
                                     else
                                     {
-                                        <MudChip T="string"
-                                                 Color="Color.Dark"
-                                                 tabindex="-1"
-                                                 Class="p-2 m-2">
-                                            <MudText Typo="Typo.body1" Color="Color.Default">
-                                                <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium"/>
-                                                Select a Sales Order View Lines
-                                            </MudText>
-                                        </MudChip>
+                                        <MudItem xs="12" md="4" Class="rpl-0 align-content-center">
+                                            <MudChip T="string" Color="Color.Dark" tabindex="-1" Class="p-2 m-2">
+                                                <MudText Typo="Typo.body1" Color="Color.Default">
+                                                    <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium" />
+                                                    Select a Purchase Order View Lines
+                                                </MudText>
+                                            </MudChip>
+                                        </MudItem>
                                     }
                                 </MudItem>
                             </MudGrid>
@@ -190,6 +223,10 @@
 
 @code {
     
+    private int dynamicMdSize = 1; // Default size for medium screens
+    private string ActionMenuClass = "paper-menu bg-surface hidden";
+    private bool showActionMenu = false;
+    
     private bool blockSwitch = false;
 
     private List<Customer> _customers = new List<Customer>();
@@ -198,6 +235,21 @@
     private SalesOrder? _selectedSalesOrder;
     
     private Customer _selectedCustomer = new Customer();
+    
+    private void OpenActionMenu(SalesOrder order)
+    {
+        var baseClass = "paper-menu bg-surface";
+        _selectedSalesOrder = order;
+        showActionMenu = !showActionMenu;
+        
+        switch (showActionMenu) {
+            case true:
+                ActionMenuClass = baseClass;
+                dynamicMdSize = 2;
+                break;
+
+        }
+    }
 
     private async Task SaveCustomer()
     {
@@ -206,8 +258,23 @@
     
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         _customers = await Ims.GetCustomers();
         _salesOrders = await Ims.GetSalesOrders();
+    }
+    
+    private async Task MarkCompleted()
+    {
+        if (_selectedSalesOrder is null)
+        {
+            Snackbar.Add("No Purchase Order selected", Severity.Error);
+            return;
+        }
+
+        _selectedSalesOrder.OrderStatusId = 5; // completed status
+        await Ims.UpdateSalesOrder(_selectedSalesOrder);
+        _salesOrders = await Ims.GetSalesOrders();
+        Snackbar.Add("Purchase Order marked as completed", Severity.Success);
     }
 
     private void SalesOrderSelected(TableRowClickEventArgs<SalesOrder> args)
@@ -215,7 +282,39 @@
         _selectedSalesOrder = args.Item;
     }
     
-    private async Task OpenNewSalesOrderDialog()
+    private async Task OpenSelectStatusDialog(OrderStatus selected)
+    {
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            Position = DialogPosition.Center
+        };
+
+        var statuses = await Ims.GetOrderStatuses();
+        
+        var parameters = new DialogParameters<SelectDialog>
+        {
+            { x => x.SelectedItem, selected ?? statuses.FirstOrDefault() },
+            { x => x.Items, statuses.ToList<object>() },
+            { x => x.TextProperty, "Name" },
+            { x => x.ValueProperty, "OrderStatusId" }
+        };
+        
+        var dialog = await Dialog.ShowAsync<SelectDialog>("Select Order Status", options: options, parameters: parameters);
+        var result = await dialog.Result;
+        if (!result.Canceled && (OrderStatus)result.Data != null)
+        {
+            var selectedStatus = (OrderStatus)result.Data;
+            _selectedSalesOrder.OrderStatusId = selectedStatus.OrderStatusId;
+            await Ims.UpdateSalesOrder(_selectedSalesOrder);
+            Snackbar.Add("Purchase Order status updated", Severity.Success);
+        }
+        
+    }
+    
+    private async Task OpenNewSalesOrderDialog(bool isNew = true)
     {
         var options = new DialogOptions
         {
@@ -225,7 +324,10 @@
             Position = DialogPosition.Center
         };
 
-        var dialog = await Dialog.ShowAsync<_AddSalesOrder>("New Sales Order", options: options);
+        
+        var parameters = new DialogParameters<_AddSalesOrder> { { x=> x._newOrder, isNew ? null : _selectedSalesOrder } };
+
+        var dialog = await Dialog.ShowAsync<_AddSalesOrder>("New Sales Order", options: options, parameters: parameters);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

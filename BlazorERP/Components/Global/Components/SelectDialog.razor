@@ -1,0 +1,98 @@
+﻿<MudDialog TitleClass="simple-header">
+    <DialogContent>
+            <MudSelect T="SelectDialogOption"
+                       Label="@Label"
+                       @bind-Value="_selectedOption">
+                @if (Items is not null)
+                {
+                    @foreach (var opt in _options)
+                    {
+                        <MudSelectItem Value="@opt">@opt.Text</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="ReturnValue">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code
+{
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter]
+    public string Label { get; set; } = "Select Status";
+    
+    [Parameter] public List<object> Items { get; set; } = new();
+    [Parameter] public object? SelectedItem { get; set; }
+    [Parameter] public string TextProperty { get; set; } = string.Empty;
+    [Parameter] public string ValueProperty { get; set; } = "Code";
+    
+    private List<SelectDialogOption> _options = new();
+    private SelectDialogOption _selectedOption = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var titleIcon = new MudIcon() { Icon = Icons.Material.Filled.List, Class = "align-sub" };
+        await MudDialog.SetTitleAsync($"{titleIcon.ChildContent} {MudDialog.Title}");
+        // convert Items list to _options list
+        if (Items != null && Items.Count > 0)
+        {
+            _options = Items.Select(item => new SelectDialogOption
+            {
+                Text = item.GetType().GetProperty(TextProperty)?.GetValue(item)?.ToString() ?? string.Empty,
+                Value = item.GetType().GetProperty(ValueProperty)?.GetValue(item)?.ToString() ?? string.Empty,
+                OptionType = item.GetType(),
+                Option = item,
+                IsSelected = SelectedItem == item
+            }).ToList();
+        }
+        
+        // set the selected option based on SelectedItem
+        if (SelectedItem != null)
+        {
+            var selectedType = SelectedItem.GetType();
+            _selectedOption = _options.FirstOrDefault(opt => opt.OptionType == selectedType && opt.Option.Equals(SelectedItem)) 
+                              ?? new SelectDialogOption { OptionType = selectedType, Option = SelectedItem };
+        }
+    }
+
+    private void ReturnValue()
+    {
+        // convert selected option to the original item type
+        if (_selectedOption.OptionType != null && _selectedOption.Option != null)
+        {
+            var selectedItem = Activator.CreateInstance(_selectedOption.OptionType);
+            foreach (var prop in _selectedOption.OptionType.GetProperties())
+            {
+                prop.SetValue(selectedItem, prop.GetValue(_selectedOption.Option));
+            }
+            SelectedItem = selectedItem;
+        }
+        else
+        {
+            SelectedItem = null;
+        }
+        
+        
+        MudDialog.Close(DialogResult.Ok(SelectedItem));
+    }
+    
+    public class SelectDialogOption
+    {
+        public string Text { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+        public Type? OptionType { get; set; } = typeof(object);
+        public object? Option { get; set; }
+        public bool IsSelected { get; set; } = false;
+        public override string ToString()
+        {
+            return Text;
+        }
+    }
+}

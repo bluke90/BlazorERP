@@ -55,8 +55,8 @@
                 @if (context.SOLineId == -1) // New line being edited
                 {
                     <MudTd Class="edit-overlay cursor-pointer" DataLabel="Item">@(context.Item?.Name ?? "Click To Edit")</MudTd>
-                    <MudTd DataLabel="Qty">@context.QtyOrdered</MudTd>
-                    <MudTd DataLabel="Price">$@context.UnitPrice</MudTd>
+                    <MudTd Class="edit-overlay cursor-pointer" DataLabel="Qty">@context.QtyOrdered</MudTd>
+                    <MudTd Class="edit-overlay cursor-pointer" DataLabel="Price">$@context.UnitPrice</MudTd>
                 }
                 else
                 {
@@ -103,7 +103,8 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
-    private SalesOrder _newOrder = new() { OrderedUtc = DateTime.Today, OrderStatusId = 1 };
+    [Parameter]
+    public SalesOrder? _newOrder { get; set; }
     private List<SalesOrderLine> _lines = new();
     private SalesOrderLine? _selectedLine;
     private DateTime? _orderedDate = DateTime.Today;
@@ -114,6 +115,20 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (_newOrder == null)
+        {
+            _newOrder = new SalesOrder()
+            {
+                OrderedUtc = DateTime.Today,
+                OrderStatusId = 1,
+                SalesOrderLines = new List<SalesOrderLine>()
+            };
+        }
+        else
+        {
+            _lines = _newOrder.SalesOrderLines.ToList();
+        }
+        
         _customers = await Ims.GetCustomers();
         _items = await Ims.GetItems();
         _orderStatuses = await Ims.GetOrderStatuses();
@@ -125,7 +140,7 @@
 
     private void AddLine()
     {
-        var line = new SalesOrderLine { QtyOrdered = 1, UnitPrice = 0 };
+        var line = new SalesOrderLine { SOLineId = -1, QtyOrdered = 1, UnitPrice = 0 };
         _lines.Add(line);
         _selectedLine = line;
     }
@@ -151,16 +166,22 @@
         
         foreach (var line in _lines)
         {
+            if (_newOrder.SalesOrderLines.Contains(line))
+                continue; // Skip if line already exists in the order
+            
             // Ensure new lines have a valid ID for EF Core
             if (line.SOLineId == -1) 
                 line.SOLineId = 0; 
             
+            // Set ItemId from Item object if it was set
             if (line.Item != null)
                 line.ItemId = line.Item.ItemId;
+            
+            // Add the line to the order
             _newOrder.SalesOrderLines.Add(line);
         }
 
-        _context.Add(_newOrder);
+        _context.Update(_newOrder);
         await _context.SaveChangesAsync();
         Snackbar.Add("Sales order added", Severity.Success);
         MudDialog.Close(DialogResult.Ok(_newOrder));

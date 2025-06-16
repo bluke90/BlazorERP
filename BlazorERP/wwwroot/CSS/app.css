@@ -147,6 +147,22 @@ html.dark-gradient {
 }
 
 
+.mud-dialog-title:not(.simple-header) {
+    background-color: var(--mud-palette-primary);
+    border-bottom: black 1px solid;
+
+    .mud-typography {
+        .mud-icon-root {
+            vertical-align: sub;
+            margin-right: 0.25rem;
+        }
+    }
+
+    .mud-button-close .mud-icon-root {
+        color: white;
+    }
+}
+
 /* - Mud Card Styling */
 
 .mud-card.mud-paper {
@@ -159,7 +175,7 @@ html.dark-gradient {
     color: white;
 }
 
-.mud-card-header, .mud-dialog-title {
+.mud-card-header {
 
     background-color: var(--mud-palette-primary);
     border-bottom: black 1px solid;

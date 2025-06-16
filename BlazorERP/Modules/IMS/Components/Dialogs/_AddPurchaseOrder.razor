@@ -1,6 +1,7 @@
 ﻿@using BlazorERP.Data.Context
 @using BlazorERP.Data.Entities
 @using BlazorERP.Modules.Services
+@using BlazorERP.Utilities
 @using MudBlazor.Charts
 @inject ImsService Ims
 @inject IDialogService Dialog
@@ -104,8 +105,8 @@
 @code {
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
-
-    private PurchaseOrder _newOrder = new() { OrderedUtc = DateTime.Today, OrderStatusId = 1 };
+    [Parameter]
+    public PurchaseOrder? _newOrder { get; set; }
     private List<PurchaseOrderLine> _lines = new();
     private PurchaseOrderLine? _selectedLine;
     private DateTime? _orderedDate = DateTime.Today;
@@ -117,6 +118,20 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (_newOrder == null)
+        {
+            _newOrder = new PurchaseOrder
+            {
+                OrderedUtc = DateTime.Today,
+                OrderStatusId = 1,
+                PurchaseOrderLines = new List<PurchaseOrderLine>()
+            };
+        }
+        else
+        {
+            _lines = _newOrder.PurchaseOrderLines.ToList();
+        }
+        
         _suppliers = await Ims.GetSuppliers();
         _items = await Ims.GetItems();
         _orderStatuses = await Ims.GetOrderStatuses();
@@ -155,6 +170,8 @@
 
         foreach (var line in _lines)
         {
+            if (_newOrder.PurchaseOrderLines.Contains(line))
+                continue; // Skip if line already exists in the order
             // Ensure new lines have a valid ID for EF Core
             if (line.POLineId == -1) 
                 line.POLineId = 0; 
@@ -167,7 +184,7 @@
             _newOrder.PurchaseOrderLines.Add(line);
         }
 
-        _context.Add(_newOrder);
+        _context.Update(_newOrder);
         await _context.SaveChangesAsync();
         Snackbar.Add("Purchase order added", Severity.Success);
         MudDialog.Close(DialogResult.Ok(_newOrder));

@@ -40,6 +40,10 @@
     font-size: calc(0.5rem + 0.8vh);
 }
 
+.hidden {
+    display: none !important;
+}
+
 /* === Mud Card Tags === */
 
 
@@ -115,11 +119,45 @@
 /* === Background-color tags === */
 .bg-none { background:none !important; }
 .bg-primary { background-color: var(--mud-palette-primary) !important;}
-
+.bg-secondary { background-color: var(--mud-palette-secondary) !important; }
+.bg-surface { background-color: var(--mud-palette-surface) !important; }
+.bg-background { background-color: var(--mud-palette-background) !important; }
+.bg-black { background-color: var(--mud-palette-black) !important; }
 
 /* === MudTab Tags === */
 .alternate.mud-tab-active {
     background-color: var(--DarkHightlight) !important;
+}
+
+/* === Menu Tags === */
+.paper-menu.mud-paper {     
+    background-color: var(--DarkHightlight) !important;
+    border: 1px solid var(--mud-palette-table-striped);
+    border-radius: 0.75rem;
+    
+    .paper-menu-header {
+        padding: 0.5rem 1rem !important;
+        font-size: var(--mud-typography-subtitle2-size) !important;
+        color: var(--mud-palette-text-primary) !important;
+        background-color: var(--mud-palette-background) !important;
+    }
+    
+    .mud-list-item {
+        color: var(--mud-palette-text-primary) !important;
+    }
+    
+    .mud-list-item:hover {
+        background-color: var(--DarkHightlight) !important;
+    }
+    
+    .mud-list-item.mud-list-item-selected {
+        background-color: var(--DarkHightlight) !important;
+    }
+}
+
+.paper-menu-item {
+    padding: 5px 5px !important;
+    font-size:var(--mud-typography-subtitle2-size) !important;
 }
 
 /* === MudTable Tags === */
@@ -299,10 +337,10 @@ img.mud-image.auto-fit {
 .pl-4 { padding-left: 4vh !important; }
 .pl-5 { padding-left: 5vh !important; }
 
-.rpl-0 { padding-left: 0 !important; }
+.rpl-0 { padding-left: 1px !important; }
 .rpt-0 { padding-top: 0 !important; }
 .mrpt-0 { padding-top: 24px !important; }
-@media (max-width: 768px) {
+@media (max-width: 960px) {
     .rpl-0 { padding-left: 24px !important; }
     .rpt-0 { padding-top: 24px !important; }
     .mrpt-0 { padding-top: 0 !important; }

@@ -231,6 +231,7 @@ public class ImsService
     public async Task<List<PurchaseOrder>> GetPurchaseOrders()
     {
         var orders = await _context.PurchaseOrders
+            .Include(x => x.OrderStatus)
             .Include(x => x.Supplier)
             .Include(x => x.PurchaseOrderLines)
             .ThenInclude(line => line.Item)
@@ -273,5 +274,16 @@ public class ImsService
     {
         return await _context.OrderStatuses
             .ToListAsync();
+    }
+    
+    public async Task UpdatePurchaseOrder(PurchaseOrder purchaseOrder)
+    {
+        _context.Update(purchaseOrder);
+        await _context.SaveChangesAsync();
+    }
+    public async Task UpdateSalesOrder(SalesOrder salesOrder)
+    {
+        _context.Update(salesOrder);
+        await _context.SaveChangesAsync();
     }
 }
