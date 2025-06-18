@@ -3,7 +3,7 @@
 @inherits PieTypeChartCardBase
 
 
-<MudCard Elevation="10" Class="expand h-100">
+<MudCard Elevation="10" Class="">
     <MudCardHeader Class="@(DenseHeader ? "dense" : "")">
         <MudGrid Style="align-items: center;">
             <MudItem xs="2" Class="PieTypeChartHeaderSelectItem w-min">
@@ -24,19 +24,19 @@
         </MudGrid>
     </MudCardHeader>
         
-    <MudCardContent Class="pa-4">
+    <MudCardContent Class="pa-4 align-self-center">
         <MudBreakpointProvider OnBreakpointChanged="BreakpointChanged">
             @if (Breakpoint <= Breakpoint.Sm)
             {
-                <MudChart ChartType="ChartType" InputData="@Values" InputLabels="@Labels" Height="100" Width="100"/>        
+                <MudChart ChartType="ChartType" InputData="@Values" InputLabels="@Labels" Width="40vh" Height="29vh"/>        
             }
             else if (Breakpoint >= Breakpoint.Md)
             {
-                <MudChart ChartType="ChartType" InputData="@Values" InputLabels="@Labels" Height="250" Width="103%"/>
+                <MudChart ChartType="ChartType" InputData="@Values" InputLabels="@Labels" Width="40vh" Height="29vh"/>
             }
             else
             {
-                <MudChart ChartType="ChartType" InputData="@Values" InputLabels="@Labels" Height="100" Width="100"/>
+                <MudChart ChartType="ChartType" InputData="@Values" InputLabels="@Labels" Width="40vh" Height="29vh"/>
             }
 
         </MudBreakpointProvider>
