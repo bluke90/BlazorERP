@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using BlazorERP.Components;
 using BlazorERP.Services;
+using Serilog;
 
 namespace BlazorERP;
 
@@ -23,6 +24,20 @@ public class Program
         Configuration = builder.Configuration;
         
         // Logging - Serilog
+        builder.Host.UseSerilog((context, services, configuration) =>
+        {
+            configuration
+                .ReadFrom.Configuration(context.Configuration)
+                .ReadFrom.Services(services)
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+                .Filter.ByExcluding(logEvent =>
+                    logEvent.Properties.TryGetValue("SourceContext", out var source) &&
+                    source.ToString().Contains("Microsoft.EntityFrameworkCore.Database.Command")
+                );;
+        });
+        Console.WriteLine($"{LogPre}Serilog configured with settings from appsettings.json and user secrets.");
         
         // ======= Initialize Base Services ========
         Console.WriteLine($"{LogPre}Initializing Base Services...");

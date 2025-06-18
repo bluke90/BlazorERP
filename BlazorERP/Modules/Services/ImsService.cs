@@ -8,11 +8,14 @@ public class ImsService
 {
     private readonly proContext _context;
     public readonly IDbContextFactory<proContext> _dbContextFactory;
+    private readonly ILogger<ImsService> _logger;
     
-    public ImsService(proContext context, IDbContextFactory<proContext> dbContextFactory)
+    public ImsService(proContext context, IDbContextFactory<proContext> dbContextFactory, ILogger<ImsService> logger)
     {
         _context = context;
         _dbContextFactory = dbContextFactory;
+        _logger = logger;
+        _logger.LogInformation("ImsService initialized");
     }
     
     public async Task SaveStorageLocation(StorageLocation storageLocation)
