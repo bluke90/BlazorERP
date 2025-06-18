@@ -159,8 +159,8 @@
                             </MudItem>
                                 @if (_selectedPurchaseOrder is not null)
                                 {
-                                    <MudItem xs="12" md="4" Class="rpl-0">
-                                        <MudTable T="PurchaseOrderLine" Items="@_selectedPurchaseOrder.PurchaseOrderLines.ToList()" Dense="true" FixedHeader="true">
+                                    <MudItem xs="12" md="4" Class="rpl-0 text-center">
+                                        <MudTable Class="dense-toolbar" T="PurchaseOrderLine" Items="@_selectedPurchaseOrder.PurchaseOrderLines.ToList()" Dense="true" FixedHeader="true">
                                             <ToolBarContent>
                                                 <MudText Typo="Typo.subtitle1">
                                                     <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.MoveToInbox" Size="Size.Medium"/>
@@ -218,7 +218,16 @@
     private PurchaseOrder? _selectedPurchaseOrder;
 
     private Supplier _selectedSupplier = new Supplier();
+    
+    // Load data on initialization
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _suppliers = await Ims.GetSuppliers();
+        _purchaseOrders = await Ims.GetPurchaseOrders();
+    }
 
+    // Open the action menu for a selected purchase order
     private void OpenActionMenu(PurchaseOrder order)
     {
         var baseClass = "paper-menu bg-surface";
@@ -226,19 +235,36 @@
         showActionMenu = !showActionMenu;
         
         switch (showActionMenu) {
-            case true:
+            case true: // show the menu and adjust size
                 ActionMenuClass = baseClass;
                 dynamicMdSize = 2;
                 break;
-
         }
     }
     
+    // Add a new supplier
     private async Task SaveSupplier()
     {
-        throw new NotImplementedException();
+        if (_selectedSupplier is null)
+        {
+            Snackbar.Add("No Supplier selected", Severity.Error);
+            return;
+        }
+        
+        // Save the selected supplier
+        await Ims.UpdateSupplier(_selectedSupplier);
+        Snackbar.Add("Supplier updated successfully", Severity.Success);
     }
 
+    // Handle selection of a purchase order from the table
+    private void PurchaseOrderSelected(TableRowClickEventArgs<PurchaseOrder> args)
+    {
+        _selectedPurchaseOrder = args.Item;
+    }
+
+    // ========= Action Menu Actions =========
+    
+    // Mark the selected purchase order as completed
     private async Task MarkCompleted()
     {
         if (_selectedPurchaseOrder is null)
@@ -247,26 +273,17 @@
             return;
         }
 
+        // Set the status to completed and save the order
         _selectedPurchaseOrder.OrderStatusId = 5; // completed status
         await Ims.UpdatePurchaseOrder(_selectedPurchaseOrder);
         _purchaseOrders = await Ims.GetPurchaseOrders();
         Snackbar.Add("Purchase Order marked as completed", Severity.Success);
     }
     
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        _suppliers = await Ims.GetSuppliers();
-        _purchaseOrders = await Ims.GetPurchaseOrders();
-    }
-
-    private void PurchaseOrderSelected(TableRowClickEventArgs<PurchaseOrder> args)
-    {
-        _selectedPurchaseOrder = args.Item;
-    }
-
+    // Open a dialog to select a new status for the purchase order
     private async Task OpenSelectStatusDialog(OrderStatus selected)
     {
+        // Dialog options
         var options = new DialogOptions
         {
             CloseButton = true,
@@ -275,8 +292,10 @@
             Position = DialogPosition.Center
         };
 
+        // Get the list of order statuses
         var statuses = await Ims.GetOrderStatuses();
         
+        // Dialog parameters
         var parameters = new DialogParameters<SelectDialog>
         {
             { x => x.SelectedItem, selected ?? statuses.FirstOrDefault() },
@@ -285,8 +304,11 @@
             { x => x.ValueProperty, "OrderStatusId" }
         };
         
+        // Show the dialog and wait for the result
         var dialog = await Dialog.ShowAsync<SelectDialog>("Select Order Status", options: options, parameters: parameters);
         var result = await dialog.Result;
+        
+        // If the dialog was not canceled, update the purchase order status
         if (!result.Canceled && (OrderStatus)result.Data != null)
         {
             var selectedStatus = (OrderStatus)result.Data;
@@ -294,11 +316,11 @@
             await Ims.UpdatePurchaseOrder(_selectedPurchaseOrder);
             Snackbar.Add("Purchase Order status updated", Severity.Success);
         }
-        
     }
 
     private async Task OpenNewPurchaseOrderDialog(bool isNew = true)
     {
+        // Dialog options
         var options = new DialogOptions
         {
             CloseButton = true,
@@ -307,12 +329,14 @@
             Position = DialogPosition.Center
         };
 
-
-
+        // If not a new order, ensure the selected order is set
         var parameters = new DialogParameters<_AddPurchaseOrder> { { x=> x._newOrder, isNew ? null : _selectedPurchaseOrder } }; 
 
+        // Show the dialog for adding/editing a new purchase order
         var dialog = await Dialog.ShowAsync<_AddPurchaseOrder>("New Purchase Order", options: options, parameters: parameters);
         var result = await dialog.Result;
+        
+        // If the dialog was not canceled, refresh the purchase orders list
         if (!result.Canceled)
         {
             _purchaseOrders = await Ims.GetPurchaseOrders();
@@ -322,6 +346,7 @@
 
     private async Task OpenAddSupplierDialog()
     {
+        // Dialog options
         var options = new DialogOptions
         {
             CloseButton = true,
@@ -331,9 +356,11 @@
             Position = DialogPosition.Center
         };
 
+        // Show the dialog for adding a new supplier
         var dialog = await Dialog.ShowAsync<_AddSupplier>("New Storage Location", options: options);
         var result = await dialog.Result;
 
+        // If the dialog was not canceled, refresh the suppliers list
         if (!result.Canceled)
         {
             _suppliers = await Ims.GetSuppliers();

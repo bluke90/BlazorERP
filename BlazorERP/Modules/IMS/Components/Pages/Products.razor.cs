@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using BlazorERP.Data.Entities;
 using BlazorERP.Modules.IMS.Components.Dialogs;
+using BlazorERP.Modules.IMS.Components.PageComponents;
 using BlazorERP.Modules.Services;
 using MudBlazor;
 
@@ -29,8 +30,9 @@ public class ProductsBase : ComponentBase
     
     // Filters
     protected IEnumerable<StorageLocation> LocationFilter { get; set; } = new List<StorageLocation>();
-
     protected bool LocationFilterFunc(Item item) => LocFilter(item, LocationFilter.ToList());
+    
+    protected ItemStockTable? _itemStockTable { get; set; }
     
     // Tool Window Params
     protected string SecondaryButtonText = "Deactivate";
@@ -51,24 +53,37 @@ public class ProductsBase : ComponentBase
         return false;
     }
     
+             
+    // Loads storage locations and items with stock locations from the IMS service.
     protected override async Task OnInitializedAsync()
     {
+        // Call the base class's initialization logic
         await base.OnInitializedAsync();
         
+        // Ensure the IMS service is injected
         if (Ims is null)
             throw new InvalidOperationException("ImsService was not injected.");
         
-        // Load storage locations for dropdown
+        // Load storage locations for the dropdown menu
         StorageLocations = await Ims.GetAllStorageLocations();
         
+        // Fetch items with stock locations from the IMS service
         var ItemsTask = Ims.GetItems(includeStockLocations: true);
         await Task.WhenAll(ItemsTask);
+        
+        // Assign the fetched items to the Items property
         Items = ItemsTask.Result;
+        
+        StateHasChanged();
     }
+
 
     public async Task ProductSelected(TableRowClickEventArgs<Item> args)
     {
+        // Get the clicked item from the event arguments
         Item clicked_item = args.Item;
+        
+        // Check if the clicked item is different from the currently selected item
         if (SelectedItem != clicked_item) 
         {
             // Set Item
@@ -79,6 +94,7 @@ public class ProductsBase : ComponentBase
             // Get Location codes containing the item
             SelectedStores = await Ims.GetItemStore(SelectedItem.ItemId);
 
+            // Set secondary button parameters based on the item's active status
             if (SelectedItem.IsActive)
             {
                 SecondaryButtonText = "Deactivate";
@@ -130,15 +146,15 @@ public class ProductsBase : ComponentBase
     
     private static string SetItemImageUrl(ItemImage itemImage)
     {
-            var ImageUrl = string.Empty;
-            
-            // Set the image URL for the selected item       
-            if (itemImage is not null && itemImage.Content is not null)
-            {
-                ImageUrl = $"data:{itemImage.MimeType};base64,{Convert.ToBase64String(itemImage.Content)}";
-            }
-            
-            return ImageUrl;
+        var ImageUrl = string.Empty;
+        
+        // Set the image URL for the selected item       
+        if (itemImage is not null && itemImage.Content is not null)
+        {
+            ImageUrl = $"data:{itemImage.MimeType};base64,{Convert.ToBase64String(itemImage.Content)}";
+        }
+        
+        return ImageUrl;
     }
 
     public async Task SaveStock()
@@ -196,6 +212,15 @@ public class ProductsBase : ComponentBase
             // Refresh the items list after adding a new product
             Items = await Ims.GetItems(includeStockLocations: true);
             Snackbar.Add("Product added successfully", Severity.Success);
+        }
+    }
+
+    private Item prevItem = null;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender && SelectedItem != null && prevItem != SelectedItem)
+        {
+            
         }
     }
     

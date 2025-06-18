@@ -80,9 +80,9 @@
                                 </EditButtonContent>
                                 
                                 <FooterContent>
-                                    <td colspan="5">
+                                    <td colspan="6">
                                         <div style="width: 100%; text-align: center;">
-                                            <MudButton Size="Size.Small" FullWidth="true" Color="Color.Info" Variant="Variant.Filled">
+                                            <MudButton Size="Size.Small" FullWidth="true" Color="Color.Info" Variant="Variant.Filled" OnClick="OpenAddCustomerDialog">
                                                 <MudIcon Class="align-sub" Icon="@Icons.Material.Filled.Add" Color="Color.Secondary" />
                                                 Add New Customer
                                             </MudButton>
@@ -170,7 +170,7 @@
                                 <MudItem xs="12" md="4" Class="rpl-0 text-center">
                                     @if (_selectedSalesOrder is not null)
                                     {
-                                        <MudTable Class="dense-toolbar" T="SalesOrderLine" Items="@_selectedSalesOrder.SalesOrderLines.ToList()"Dense="true" FixedHeader="true">
+                                        <MudTable Class="dense-toolbar" T="SalesOrderLine" Items="@_selectedSalesOrder.SalesOrderLines.ToList()" Dense="true" FixedHeader="true">
                                             <ToolBarContent>
                                                     <MudText Typo="Typo.subtitle1">
                                                         <MudIcon Class="align-sub" Size="Size.Medium" Icon="@Icons.Material.Filled.Style"/>
@@ -196,7 +196,7 @@
                                             <MudChip T="string" Color="Color.Dark" tabindex="-1" Class="p-2 m-2">
                                                 <MudText Typo="Typo.body1" Color="Color.Default">
                                                     <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Info" Size="Size.Medium" />
-                                                    Select a Purchase Order View Lines
+                                                    Select a Sales Order View Lines
                                                 </MudText>
                                             </MudChip>
                                         </MudItem>
@@ -208,11 +208,6 @@
 
 
                     </MudTabs>
-
-
-            
-
-
 
                 </MudCardContent>
             </MudCard>
@@ -236,26 +231,7 @@
     
     private Customer _selectedCustomer = new Customer();
     
-    private void OpenActionMenu(SalesOrder order)
-    {
-        var baseClass = "paper-menu bg-surface";
-        _selectedSalesOrder = order;
-        showActionMenu = !showActionMenu;
-        
-        switch (showActionMenu) {
-            case true:
-                ActionMenuClass = baseClass;
-                dynamicMdSize = 2;
-                break;
-
-        }
-    }
-
-    private async Task SaveCustomer()
-    {
-        throw new NotImplementedException();
-    }
-    
+    // Load data on initialization
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -263,6 +239,45 @@
         _salesOrders = await Ims.GetSalesOrders();
     }
     
+    // Open the action menu for a selected sales order
+    private void OpenActionMenu(SalesOrder order)
+    {
+        var baseClass = "paper-menu bg-surface";
+        _selectedSalesOrder = order;
+        showActionMenu = !showActionMenu;
+        
+        switch (showActionMenu) {
+            case true: // Show the action menu and adjust size
+                ActionMenuClass = baseClass;
+                dynamicMdSize = 2;
+                break;
+
+        }
+    }
+
+    // Save the selected customer (not implemented yet)
+    private async Task SaveCustomer()
+    {
+        if (_selectedCustomer is null)
+        {
+            Snackbar.Add("No Customer selected", Severity.Error);
+            return;
+        }
+
+        await Ims.UpdateCustomer(_selectedCustomer);
+        Snackbar.Add("Customer updated successfully", Severity.Success);
+    }
+    
+
+    // Handle row click event to select a sales order
+    private void SalesOrderSelected(TableRowClickEventArgs<SalesOrder> args)
+    {
+        _selectedSalesOrder = args.Item;
+    }
+    
+    // ======= Action Menu Actions =======
+    
+    // Mark the selected sales order as completed
     private async Task MarkCompleted()
     {
         if (_selectedSalesOrder is null)
@@ -271,19 +286,17 @@
             return;
         }
 
+        // Set status to completed and save the order
         _selectedSalesOrder.OrderStatusId = 5; // completed status
         await Ims.UpdateSalesOrder(_selectedSalesOrder);
         _salesOrders = await Ims.GetSalesOrders();
         Snackbar.Add("Purchase Order marked as completed", Severity.Success);
     }
-
-    private void SalesOrderSelected(TableRowClickEventArgs<SalesOrder> args)
-    {
-        _selectedSalesOrder = args.Item;
-    }
     
+    // Open a dialog to select a new status for the sales order
     private async Task OpenSelectStatusDialog(OrderStatus selected)
     {
+        // Dialog options
         var options = new DialogOptions
         {
             CloseButton = true,
@@ -292,8 +305,10 @@
             Position = DialogPosition.Center
         };
 
+        // Get the list of order statuses
         var statuses = await Ims.GetOrderStatuses();
         
+        // Dialog parameters
         var parameters = new DialogParameters<SelectDialog>
         {
             { x => x.SelectedItem, selected ?? statuses.FirstOrDefault() },
@@ -302,8 +317,11 @@
             { x => x.ValueProperty, "OrderStatusId" }
         };
         
+        // Show the dialog and wait for the result
         var dialog = await Dialog.ShowAsync<SelectDialog>("Select Order Status", options: options, parameters: parameters);
         var result = await dialog.Result;
+        
+        // If the dialog was not canceled, update the sales order status
         if (!result.Canceled && (OrderStatus)result.Data != null)
         {
             var selectedStatus = (OrderStatus)result.Data;
@@ -314,8 +332,10 @@
         
     }
     
+    // Open a dialog to create a new sales order or edit an existing one
     private async Task OpenNewSalesOrderDialog(bool isNew = true)
     {
+        // Dialog options
         var options = new DialogOptions
         {
             CloseButton = true,
@@ -324,11 +344,14 @@
             Position = DialogPosition.Center
         };
 
-        
+        // Dialog Parameters        
         var parameters = new DialogParameters<_AddSalesOrder> { { x=> x._newOrder, isNew ? null : _selectedSalesOrder } };
 
+        // Show the dialog and wait for the result
         var dialog = await Dialog.ShowAsync<_AddSalesOrder>("New Sales Order", options: options, parameters: parameters);
         var result = await dialog.Result;
+        
+        // If the dialog was not canceled, refresh the sales orders list
         if (!result.Canceled)
         {
             _salesOrders = await Ims.GetSalesOrders();

@@ -70,7 +70,12 @@
                                             <ItemStockTable TableClass="dark" Stocks="SelectedItem.Stocks.ToList()" TableOnly="true" SelectedItem="SelectedItem"/>
                                         </MudExpansionPanel>
                                         <MudExpansionPanel Text="Stock Locations">
-
+                                            <MudChip Style="width: 95%" T="string" Color="Color.Warning" tabindex="-1" Class="p-2 m-2">
+                                                <MudText Typo="Typo.body1" Color="Color.Default">
+                                                    <MudIcon Class="align-top" Icon="@Icons.Material.Filled.Warning" Size="Size.Medium" />
+                                                    Under Construction
+                                                </MudText>
+                                            </MudChip>
                                         </MudExpansionPanel>
                                     </MudExpansionPanels>
                                 </MudItem>

@@ -26,7 +26,6 @@ public class ItemStockTableBase : ComponentBase
     
     [Inject]
     protected ImsService Ims { get; private set; }
-    
     [Inject]
     protected ISnackbar Snackbar { get; private set; }
     [Inject]
@@ -35,7 +34,7 @@ public class ItemStockTableBase : ComponentBase
     protected List<ItemStockModel> ItemStockModels { get; set; } = new List<ItemStockModel>();
     protected List<StorageLocation>? StorageLocations { get; set; } = new List<StorageLocation>();
     protected StorageLocation? SelectedStorageLocation { get; set; }
-
+    
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -44,7 +43,8 @@ public class ItemStockTableBase : ComponentBase
             throw new InvalidOperationException("ImsService was not injected.");
         
     }
-
+    
+    
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();

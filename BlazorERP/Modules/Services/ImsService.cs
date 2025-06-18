@@ -1,4 +1,5 @@
-﻿using BlazorERP.Data.Context;
+﻿using System.Formats.Asn1;
+using BlazorERP.Data.Context;
 using BlazorERP.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,115 +19,8 @@ public class ImsService
         _logger.LogInformation("ImsService initialized");
     }
     
-    public async Task SaveStorageLocation(StorageLocation storageLocation)
-    {
-        var storageLocationToUpdate = await _context.StorageLocations
-            .FirstOrDefaultAsync(x => x.StorageLocationId == storageLocation.StorageLocationId);
-        
-        if (storageLocationToUpdate != null)
-        {
-            storageLocationToUpdate.Name = storageLocation.Name;
-            storageLocationToUpdate.Code = storageLocation.Code;
-            storageLocationToUpdate.Address = storageLocation.Address;
-            _context.StorageLocations.Update(storageLocationToUpdate);
-        }
-        else
-        {
-            // If the storage location does not exist, add it
-            _context.StorageLocations.Add(storageLocation);
-        }
-        
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task SaveStock(Stock stock)
-    {
-        var stockToUpdate = await _context.Stocks
-            .Include(x => x.Item)
-            .Include(x => x.StorageLocation)
-            .FirstOrDefaultAsync(x => x.StorageLocationId == stock.StorageLocationId && x.ItemId == stock.ItemId);
-        
-        if (stockToUpdate != null)
-        {
-            stockToUpdate.OnHand = stock.OnHand;
-            _context.Stocks.Update(stockToUpdate);
-        }
-        else
-        {
-            // If the stock does not exist, add it
-            _context.Stocks.Add(stock);
-        }
-        
-        await _context.SaveChangesAsync();
-    }
-    
-    public async Task<List<Stock>> GetStock()
-    {
-        var stock = await _context.Stocks
-            .Include(x => x.StorageLocation)
-            .Include(x => x.Item)
-            .ThenInclude(x => x.Unit)
-            .ToListAsync();
-        
-        return stock;
-    }
-
-    public async Task<List<Stock>> GetItemStock(int ItemId, int StorageLocationId = 0)
-    {
-        // If StorageLocationId is provided, filter by it; otherwise, get all stock(s) for the item
-        var stock = await _context.Stocks.Where(x => x.ItemId == ItemId && 
-                                                (StorageLocationId == 0 || x.StorageLocationId == StorageLocationId))
-            .Include(x => x.StorageLocation)
-            .ToListAsync();
-
-        return stock;
-    }
-
-    public async Task<List<StorageLocation>> GetItemStore(int ItemId)
-    {
-        var db = _dbContextFactory.CreateDbContext();
-        
-        // Get all storage locations that have stock for the specified item
-        var storageLocations = await db.Stocks
-            .Where(x => x.ItemId == ItemId)
-            .Select(x => x.StorageLocation)
-            .Distinct()
-            .ToListAsync();
-
-        return storageLocations;
-    }
-    
-    public async Task<List<PurchaseOrder>> GetPurchases()
-    {
-        var purchases = await _context.PurchaseOrders
-            .Include(x => x.Supplier)
-            .ToListAsync();
-        
-        return purchases;
-    }
-
-    public async Task<List<SalesOrderLine>> GetSales()
-    {
-        var sales = await _context.SalesOrderLines
-            .Include(x => x.Item)
-            .ToListAsync();
-
-        return sales;
-
-    }
-
-    public async Task<List<SalesOrder>> GetSalesOrders()
-    {
-        var orders = await _context.SalesOrders
-            .Include(x => x.Customer)
-            .Include(x => x.SalesOrderLines)
-                .ThenInclude(line => line.Item)
-            .ToListAsync();
-
-        return orders;
-
-    }
-
+    // ======= Get Methods =======
+    // Item and stock related methods
     public async Task<List<Item>> GetItems(bool includeCategory = true, bool includeStocks = true, bool includeStockLocations = false)
     {
         var query = _context.Items.AsQueryable();
@@ -150,62 +44,22 @@ public class ImsService
         
         return items;
     }
-
-    public async Task<List<StorageLocation>> GetAllStorageLocations(bool includeStocks = false, bool includeTransactions = false)
-    {
-        var query = _context.StorageLocations.AsQueryable();
-
-        if (includeStocks)
-        {
-            query = query.Include(x => x.Stocks)
-                .ThenInclude(x => x.Item);
-        }
-
-        if (includeTransactions)
-        {
-            query = query.Include(x => x.InventoryTransactions);
-        }
-
-        var storageLocations = await query.ToListAsync();
-        
-        return storageLocations;
-    }
     
-    public async Task<StorageLocation> GetStorageLocation(int storageLocationId, bool includeStocks = false, bool includeTransactions = false)
+    public async Task<List<Stock>> GetStock()
     {
-        var query = _context.StorageLocations.AsQueryable()
-            .Where(x => x.StorageLocationId == storageLocationId);
-
-        if (includeStocks)
-        {
-            query = query.Include(x => x.Stocks);
-        }
-
-        if (includeTransactions)
-        {
-            query = query.Include(x => x.InventoryTransactions);
-        }
-
-        var storageLocation = await query.FirstOrDefaultAsync();
+        var stock = await _context.Stocks
+            .Include(x => x.StorageLocation)
+            .Include(x => x.Item)
+            .ThenInclude(x => x.Unit)
+            .ToListAsync();
         
-        return storageLocation;
-    }
-    
-    public List<ItemCategory> GetItemCategories()
-    {
-        return 
-            _context.ItemCategories.ToList();
+        return stock;
     }
     
     public async Task<List<ItemCategory>> GetItemCategoriesAsync()
     {
         return 
             await _context.ItemCategories.ToListAsync();
-    }
-    
-    public List<Unit> GetUnits()
-    {
-        return _context.Units.ToList();
     }
 
     public async Task<List<Unit>> GetUnitsAsync()
@@ -220,15 +74,93 @@ public class ImsService
         return await db.ItemImages
             .FirstOrDefaultAsync(x => x.ItemId == itemId);
     }
+    
+    // Storage location related methods
+    public async Task<List<StorageLocation>> GetAllStorageLocations(bool includeStocks = false, bool includeTransactions = false)
+    {
+        // Create a query to get all storage locations
+        var query = _context.StorageLocations.AsQueryable();
 
+        // Include related entities based on the parameters
+        if (includeStocks)
+        {
+            query = query.Include(x => x.Stocks)
+                .ThenInclude(x => x.Item);
+        }
+
+        if (includeTransactions)
+        {
+            query = query.Include(x => x.InventoryTransactions);
+        }
+
+        // Execute the query and get the list of storage locations
+        var storageLocations = await query.ToListAsync();
+        
+        return storageLocations;
+    }
+    
+    public async Task<StorageLocation> GetStorageLocation(int storageLocationId, bool includeStocks = false, bool includeTransactions = false)
+    {
+        // Create a query to get the storage location by ID
+        var query = _context.StorageLocations.AsQueryable()
+            .Where(x => x.StorageLocationId == storageLocationId);
+
+        // Include related entities based on the parameters
+        if (includeStocks)
+        {
+            query = query.Include(x => x.Stocks);
+        }
+
+        if (includeTransactions)
+        {
+            query = query.Include(x => x.InventoryTransactions);
+        }
+
+        // Execute the query and get the storage location
+        var storageLocation = await query.FirstOrDefaultAsync();
+        
+        return storageLocation;
+    }
+    
+    public async Task<List<StorageLocation>> GetItemStore(int ItemId)
+    {
+        // Create a new DbContext instance
+        var db = _dbContextFactory.CreateDbContext();
+        
+        // Get all storage locations that have stock for the specified item
+        var storageLocations = await db.Stocks
+            .Where(x => x.ItemId == ItemId)
+            .Select(x => x.StorageLocation)
+            .Distinct()
+            .ToListAsync();
+
+        return storageLocations;
+    }
+    
+
+    
+    // Sales and Supply related methods
+    public async Task<List<OrderStatus>> GetOrderStatuses()
+    {
+        return await _context.OrderStatuses
+            .ToListAsync();
+    }
+
+    public async Task<List<SalesOrder>> GetSalesOrders()
+    {
+        var orders = await _context.SalesOrders
+            .Include(x => x.OrderStatus)
+            .Include(x => x.Customer)
+            .Include(x => x.SalesOrderLines)
+            .ThenInclude(line => line.Item)
+            .ToListAsync();
+
+        return orders;
+    }
+    
     public async Task<List<Customer>> GetCustomers()
     {
         return await _context.Customers.ToListAsync();
-    }
-
-    public bool StockExist(Stock stock)
-    {
-        return _context.Stocks.Any(x => x.ItemId == stock.ItemId && x.StorageLocationId == stock.StorageLocationId);
     }
     
     public async Task<List<PurchaseOrder>> GetPurchaseOrders()
@@ -247,12 +179,62 @@ public class ImsService
     {
         return await _context.Suppliers.ToListAsync();
     }
+    
+    // ======= Save Methods =======
+    
+    
+    public async Task SaveStorageLocation(StorageLocation storageLocation)
+    {
+        // Check if the storage location already exists
+        var storageLocationToUpdate = await _context.StorageLocations
+            .FirstOrDefaultAsync(x => x.StorageLocationId == storageLocation.StorageLocationId);
+        
+        // If it exists, update the existing storage location
+        if (storageLocationToUpdate != null)
+        {
+            storageLocationToUpdate.Name = storageLocation.Name;
+            storageLocationToUpdate.Code = storageLocation.Code;
+            storageLocationToUpdate.Address = storageLocation.Address;
+            _context.StorageLocations.Update(storageLocationToUpdate);
+        }
+        else // If it does not exist, add the new storage location
+        {
+            _context.StorageLocations.Add(storageLocation);
+        }
+        
+        // Save changes to the database
+        await _context.SaveChangesAsync();
+    }
 
+    public async Task SaveStock(Stock stock)
+    {
+        // Check if the stock already exists for the given item and storage location
+        var stockToUpdate = await _context.Stocks
+            .Include(x => x.Item)
+            .Include(x => x.StorageLocation)
+            .FirstOrDefaultAsync(x => x.StorageLocationId == stock.StorageLocationId && x.ItemId == stock.ItemId);
+        
+        // If it exists, update the existing stock
+        if (stockToUpdate != null)
+        {
+            stockToUpdate.OnHand = stock.OnHand;
+            _context.Stocks.Update(stockToUpdate);
+        }
+        else // If it does not exist, add the new stock
+        {
+            _context.Stocks.Add(stock);
+        }
+        
+        await _context.SaveChangesAsync();
+    }
+    
     public async Task SaveItem(Item item)
     {
+        // Check if the item already exists in the database
         var itemToUpdate = await _context.Items
             .FirstOrDefaultAsync(x => x.ItemId == item.ItemId);
         
+        // If it exists, update the existing item
         if (itemToUpdate != null)
         {
             itemToUpdate.Name = item.Name;
@@ -265,18 +247,11 @@ public class ImsService
             _context.Items.Update(itemToUpdate);
         }
         else
-        {
-            // If the item does not exist, add it
+        { // If it does not exist, add the new item
             _context.Items.Add(item);
         }
         
         await _context.SaveChangesAsync();
-    }
-
-    public async Task<List<OrderStatus>> GetOrderStatuses()
-    {
-        return await _context.OrderStatuses
-            .ToListAsync();
     }
     
     public async Task UpdatePurchaseOrder(PurchaseOrder purchaseOrder)
@@ -289,4 +264,34 @@ public class ImsService
         _context.Update(salesOrder);
         await _context.SaveChangesAsync();
     }
+
+    public async Task UpdateSupplier(Supplier supplier)
+    {
+        _context.Update(supplier);
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task UpdateCustomer(Customer customer)
+    {
+        _context.Update(customer);
+        await _context.SaveChangesAsync();
+    }
+    
+ 
+    // ======= Check Methods =======
+    /// <summary>
+    /// Check if a stock exists for a given item and storage location.
+    /// </summary>
+    /// <param name="stock">The stock entity in which to check for duplicates</param>
+    /// <returns>True if exist, False if doesn't exist</returns>
+    public bool StockExist(Stock stock)
+    {
+        return _context.Stocks.Any(x => x.ItemId == stock.ItemId && x.StorageLocationId == stock.StorageLocationId);
+    }
+    
+
+    
+
+
+ 
 }
