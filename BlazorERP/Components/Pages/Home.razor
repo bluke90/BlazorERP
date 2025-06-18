@@ -6,7 +6,7 @@
 
     <!-- Contact Info -->
     <MudItem xs="12" md="6">
-        <MudCard Elevation="12" Class="h-100">
+        <MudCard Elevation="10" Class="h-100">
             <MudCardHeader>
                 <MudText Typo="Typo.h6">
                     <MudIcon Icon="@Icons.Material.Filled.ContactMail" /> Contact Information
@@ -14,7 +14,7 @@
             </MudCardHeader>
             <MudCardContent>
                 <MudGrid>
-                    <MudItem xs="12" sm="6" md="6">
+                    <MudItem xs="12" sm="12" md="12" lg="12" xl="6" xxl="6">
                         <MudText Typo="Typo.h6" Class="mb-1">
                             <b>Personal</b> <br/>
                             Blake Ganzerla<br/>
@@ -27,7 +27,7 @@
                             <b>Location:</b> Madison, MS
                         </MudText>
                     </MudItem>
-                    <MudItem xs="12" sm="6" md="6">
+                    <MudItem xs="12" sm="12" md="12" lg="12" xl="6" xxl="6">
                         <MudText Typo="Typo.h6" Class="mb-1">
                             <b class="wht-clr">Business</b> <br/>
                             Proton Technologies LLC<br/>
@@ -48,7 +48,7 @@
 
     <!-- Welcome Card -->
     <MudItem xs="12" md="6">
-        <MudCard Elevation="10">
+        <MudCard Elevation="10" Class="h-100">
             <MudCardHeader>
                 <MudText Typo="Typo.h6" Align="Align.Justify"  Style="text-align: start;">
                     <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Medium"/>
@@ -57,11 +57,37 @@
             </MudCardHeader>
             <MudCardContent>
                 <MudText Typo="Typo.body1">
-                    This project is a personal showcase built by <b>Blake Ganzerla</b> to demonstrate full-stack development capabilities using modern .NET technologies.
-                    <br /><br />
+                    <strong>“BlazorERP Showcase”</strong> is a demonstration ERP-style application written in modern .NET. It highlights <strong>full-stack development using Blazor</strong> for the front end, <strong>Entity Framework Core</strong> for data access, and a responsive component library via <strong>MudBlazor</strong> Key features include:
+                    <br/><br/>
+                    <MudList T="string" ReadOnly="true" Color="Color.Dark" Class="mud-list-simple">
+                        <MudListItem>
+                            <MudIcon Icon="@Icons.Material.Filled.Dashboard" Size="Size.Medium" Class="align-sub"/>
+                            Interactive dashboards and forms for inventory management, purchasing, and sales.
+                        </MudListItem>
+                        <MudListItem>
+                            <MudIcon Icon="@Icons.Material.Filled.Extension" Size="Size.Medium" Class="align-sub"/>
+                            Clean UI components such as image drag‑and‑drop uploads, icon selectors, and tool windows.
+                        </MudListItem>
+                        <MudListItem>
+                            <MudIcon Icon="@Icons.Material.Filled.Sync" Size="Size.Medium" Class="align-sub"/>
+                            Asynchronous data handling and custom utilities for database queries.
+                        </MudListItem>
+                        <MudListItem>
+                            <MudIcon Icon="@Icons.Material.Filled.Brightness6" Size="Size.Medium" Class="align-sub"/>
+                            Configurable dark/light themes with custom palettes and responsive layouts. (Still in progress)
+                        </MudListItem>
+                    </MudList>
+                    <br/>
+                    This project serves as a portfolio example to showcase practical development skills—database integration, dependency injection, and cloud-ready Blazor architecture. It demonstrates the same patterns used in production ERP systems but in a streamlined format designed for demo purposes. Potential clients and employers can explore this repository to see how I structure projects, style user interfaces, and manage data access using the latest .NET tools.
+                    
                     The application is developed using <b>Blazor</b> and styled with <b>MudBlazor</b>, hosted on Azure, and backed by an SQL database — all configured with GitHub Actions for continuous deployment.
-                    <br /><br />
-                    From database scaffolding and automation integration to scalable API architecture and cloud deployment, this app reflects the same patterns and quality you'd find in a production ERP environment — just streamlined for demo purposes.
+
+
+                    @* This project is a personal showcase built by <b>Blake Ganzerla</b> to demonstrate full-stack development capabilities using modern .NET technologies. *@
+                    @* <br/><br/> *@
+                    @* The application is developed using <b>Blazor</b> and styled with <b>MudBlazor</b>, hosted on Azure, and backed by an SQL database — all configured with GitHub Actions for continuous deployment. *@
+                    @* <br/><br/> *@
+                    @* From database scaffolding and automation integration to scalable API architecture and cloud deployment, this app reflects the same patterns and quality you'd find in a production ERP environment — just streamlined for demo purposes. *@
                 </MudText>
             </MudCardContent>
         </MudCard>
@@ -93,7 +119,7 @@
 
     <!-- Projects -->
     <MudItem xs="12" md="6">
-        <MudCard Elevation="10">
+        <MudCard Elevation="10" Class="">
             <MudCardHeader>
                 <MudText Typo="Typo.h6">
                     <MudIcon Icon="@Icons.Material.Filled.Build" /> Featured Projects
@@ -105,7 +131,10 @@
                             <MudChip T="string" Color="Color.Tertiary">
                                 <MudText>
                                     <b class="blk-clr">TradingCo (.NET MAUI)</b> — Learn core economic principles in a gamified way.
-                                    <MudLink Href="https://github.com/bluke90/TradingCo_8" Target="_blank">GitHub ↗</MudLink>
+                                    <MudLink Href="https://github.com/bluke90/TradingCo_8" Target="_blank">
+                                        GitHub
+                                        <MudIcon Icon="@Icons.Custom.Brands.GitHub" Size="Size.Small" Class="align-sub"/>
+                                    </MudLink>
                                 </MudText>
                             </MudChip>
                         </MudItem>
@@ -113,7 +142,10 @@
                             <MudChip T="string" Color="Color.Tertiary">
                                 <MudText>
                                     <b>TaskIt (.NET MAUI)</b> — Smart daily planner and task manager.
-                                    <MudLink Href="https://github.com/bluke90/TaskIt_7.0" Target="_blank">GitHub ↗</MudLink>
+                                    <MudLink Href="https://github.com/bluke90/TaskIt_7.0" Target="_blank">
+                                        GitHub
+                                        <MudIcon Icon="@Icons.Custom.Brands.GitHub" Size="Size.Small" Class="align-sub"/>
+                                    </MudLink>
                                 </MudText>
                             </MudChip>
                         </MudItem>
@@ -121,7 +153,10 @@
                             <MudChip T="string" Color="Color.Tertiary">
                                 <MudText>
                                     <b>MessageSense</b> — WebSockets learning playground for client/server packets.
-                                    <MudLink Href="https://github.com/bluke90/MessageSense" Target="_blank">GitHub ↗</MudLink>
+                                    <MudLink Href="https://github.com/bluke90/MessageSense" Target="_blank">
+                                        GitHub
+                                        <MudIcon Icon="@Icons.Custom.Brands.GitHub" Size="Size.Small" Class="align-sub"/>
+                                    </MudLink>
                                 </MudText>
                             </MudChip>
                         </MudItem>
@@ -143,7 +178,10 @@
                             <MudChip T="string" Color="Color.Tertiary">
                                 <MudText>
                                     <b>PLXX_Altis_Life</b> — Full mod for Arma 3 Altis Life gameplay.
-                                    <MudLink Href="https:/MudText.com/bluke90/PLXX_Altis_Life.altis" Target="_blank">GitHub ↗</MudLink>
+                                    <MudLink Href="https://github.com/bluke90/PLXX_Altis_Life.altis">
+                                        GitHub
+                                        <MudIcon Icon="@Icons.Custom.Brands.GitHub" Size="Size.Small" Class="align-sub"/>
+                                    </MudLink>
                                 </MudText>
                             </MudChip>
                         </MudItem>

@@ -31,7 +31,7 @@ html.dark-gradient {
 
 .dark-gradient {
     .mud-link {
-        color: var(--mud-palette-tertiary) !important;
+        color: var(--mud-palette-success-lighten) !important;
     }
 }
 

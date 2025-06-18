@@ -44,6 +44,17 @@
     display: none !important;
 }
 
+.mud-list-simple {
+    background: none;
+    
+    .mud-list-item {
+        background-color: var(--mud-palette-tertiary-darken) !important;
+        margin-bottom: 0.2rem !important;
+        margin-top: 0.2rem !important;
+        border-radius: 0.75rem !important;
+    }
+}
+
 /* === Mud Card Tags === */
 
 
@@ -385,17 +396,22 @@ img.mud-image.auto-fit {
         background-color: var(--mud-palette-background) !important;
         
         b {
-            color: var(--mud-palette-tertiary) !important;
+            color: var(--mud-palette-tertiary-lighten) !important;
         }
         
         .mud-link {
-            color: var(--mud-palette-info) !important;
-            background-color: var(--mud-palette-tertiary-lighten) !important;
+            color: var(--mud-palette-white) !important;
+            background-color: var(--mud-palette-info) !important;
+            font-weight: 500 !important;
             padding: 0.25rem 0.5rem !important;
             border-radius: 0.75rem;
-            margin-left: 10px;
             text-wrap: nowrap;
             text-align: center;
+            text-decoration: none;
+            display: block;
+            &:hover {
+                background-color: var(--mud-palette-primary) !important;
+            }
         }
         
     }
