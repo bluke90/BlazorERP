@@ -335,5 +335,28 @@
             Snackbar.Add("Sales order added", Severity.Success);
         }
     }
+    
+    private async Task OpenAddCustomerDialog()
+    {
+        // Dialog options
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            BackdropClick = true,
+            Position = DialogPosition.Center
+        };
+
+        // Show the dialog for adding a new supplier
+        var dialog = await Dialog.ShowAsync<_AddCustomer>("New Customer", options: options);
+        var result = await dialog.Result;
+
+        // If the dialog was not canceled, refresh the suppliers list
+        if (!result.Canceled)
+        {
+            _customers = await Ims.GetCustomers();
+        }
+    }
 
 }

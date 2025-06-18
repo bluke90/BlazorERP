@@ -1,0 +1,48 @@
+﻿@using BlazorERP.Data.Context
+@using BlazorERP.Data.Entities
+@inject ISnackbar Snackbar
+@inject proContext _context
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Medium"/>
+            Add Customer
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <MudTextField Label="Name" @bind-Value="_newCustomer.Name" Variant="Variant.Outlined" Required />
+        <MudTextField Label="Email" @bind-Value="_newCustomer.Email" Variant="Variant.Outlined" Required />
+        <MudTextField Label="Phone" @bind-Value="_newCustomer.Phone" Variant="Variant.Outlined" Required Mask="@(new PatternMask(@"(000) 000-0000"))" Format="(000) 000-0000"/>
+        <MudTextField Label="Address" @bind-Value="_newCustomer.MailingAddress" Variant="Variant.Outlined" Required />
+    </DialogContent>
+
+    <DialogActions>
+        <MudGrid Justify="Justify.SpaceAround">
+            <MudItem xs="6">
+                <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Cancel" FullWidth="true">Cancel</MudButton>
+            </MudItem>
+            <MudItem xs="6">
+                <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="Save" FullWidth="true">Save</MudButton>
+            </MudItem>
+        </MudGrid>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private Customer _newCustomer = new();
+
+    private async Task Save()
+    {
+        _context.Add(_newCustomer);
+        await _context.SaveChangesAsync();
+        Snackbar.Add("Supplier added!", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(_newCustomer));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}
