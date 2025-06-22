@@ -409,11 +409,27 @@ img.mud-image.auto-fit {
             text-align: center;
             text-decoration: none;
             display: block;
+            margin-top: 0.25rem;
             &:hover {
                 background-color: var(--mud-palette-primary) !important;
             }
         }
         
+    }
+}
+
+.link-git.mud-link {
+    color: var(--mud-palette-white) !important;
+    background-color: var(--mud-palette-info) !important;
+    font-weight: 500 !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 0.75rem;
+    text-wrap: nowrap;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    &:hover {
+        background-color: var(--mud-palette-primary) !important;
     }
 }
 
